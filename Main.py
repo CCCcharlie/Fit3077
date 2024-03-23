@@ -22,6 +22,3 @@ if __name__ == "__main__":
 
   # start world up 
   world.gameLoop()
-
-  print("hello world")
-

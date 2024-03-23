@@ -18,6 +18,7 @@ class SpriteComponent(Component):
 
   def render(self, display_surf):
     # get owner transform coords 
+    # ima be honest this code is terrible, lets use interfaces or something similar 
     tc: TransformComponent = self.owner.get_component(TransformComponent)
 
     if tc != None:
