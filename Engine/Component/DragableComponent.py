@@ -3,17 +3,24 @@ from .Component import Component
 
 from enum import Enum 
 from Engine.Component.ClickableComponent import ClickableComponent
+from Engine.Component.TransformComponent import TransformComponent
 from Engine.Component.RectComponent import RectComponent
+from Engine.Input import Input
 
-class ButtonComponent(Component):
+
+#todo remove the colour stuff and just do dragging 
+class DragableComponent(Component):
   def __init__(self, owner: Entity):
     self.owner = owner
+
+    self.x_offset = 0
+    self.y_offset = 0
     
     # python doesnt have a switch statemnet so we just switched dictionary method 
     self.switcher = {
       1: self.normal_update,
       2: self.hovered_update,
-      3: self.pressed_update,
+      3: self.held_update,
     }
 
     self.colour_switcher = {
@@ -32,19 +39,28 @@ class ButtonComponent(Component):
   def hovered_update(self, ck: ClickableComponent):
     if ck.hover:
       if ck.clicked:
-        return 3  # hover and clicked -> pressed
+        # transform to held state but get x,y offset from transform position
+        # get transform componet 
+        tc: TransformComponent = self.owner.get_component(TransformComponent)
+        if tc != None:
+          self.x_offset = tc.x - Input.getmouseposition()[0]
+          self.y_offset = tc.y - Input.getmouseposition()[1]
+        return 3  # hover and clicked -> held
       return 2    # hover -> hover 
     return 1      #  -> normal 
 
-  def pressed_update(self, ck: ClickableComponent):
+  def held_update(self, ck: ClickableComponent):
     # check if still hovering 
     if ck.hover:
       if ck.clicked:
+        # match transform to mouse position 
+        tc: TransformComponent = self.owner.get_component(TransformComponent)
+        tc.x = Input.getmouseposition()[0] + self.x_offset
+        tc.y = Input.getmouseposition()[1] + self.y_offset
         return 3
-      # todo find what we should do once this event occurs
-      # there exists the start of command code (actions from 2099)
-      # perhaps this should emit a notification 
-      print("Button clicked")
+      # just dropped
+      self.x_offset = 0
+      self.y_offset = 0
       return 2
     return 1
 

@@ -6,3 +6,4 @@ from .RectComponent import RectComponent
 from .TextComponent import TextComponent
 from .ClickableComponent import ClickableComponent
 from .ButtonComponent import ButtonComponent
+from .DragableComponent import DragableComponent
