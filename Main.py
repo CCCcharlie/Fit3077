@@ -22,6 +22,7 @@ if __name__ == "__main__":
 
   # add entity to world
   world.add_entity(e)
+  world.add_entity(Button(300,100,100,50,"TEST"))
 
   # start world up 
   world.gameLoop()

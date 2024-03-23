@@ -12,7 +12,7 @@ class ClickableComponent(Component):
     self.height = height
 
 
-    self.inside = False
+    self.hover = False
     self.clicked = False
 
   def update(self):
@@ -29,10 +29,18 @@ class ClickableComponent(Component):
     # y range is tx.y -> tc.y + self.height
     mx, my = Input.getmouseposition()
 
-    self.inside = tc.x <= mx <= tc.x + self.width and tc.y <= my <= tc.y + self.height
+    #todo think about how we will do different and custom shapes 
+    self.hover = tc.x <= mx <= tc.x + self.width and tc.y <= my <= tc.y + self.height
 
-    if (self.inside):
+    if (self.hover):
       self.clicked = Input.getMouseButton(1)
 
+
+  # interface part 
+  def get_hover(self):
+    return self.hover
+  
+  def get_clicked(self):
+    return self.clicked 
 
 

@@ -16,6 +16,9 @@ class RectComponent(Component):
     self.image_surf = self.image_surf.convert()
     self.image_surf.fill(colour)
 
+  def setColour(self, colour):
+    self.image_surf.fill(colour)
+
   def render(self, display_surf):
     # get owner transform coords 
     # ima be honest this code is terrible, lets use interfaces or something similar 

@@ -1,4 +1,5 @@
 import pygame 
+from typing import Dict
 
 class Input(object):
   """
@@ -9,7 +10,7 @@ class Input(object):
   quitflag = False
   mouse_visibility = True
   keys = {}
-  mouse_buttons = {}
+  mouse_buttons: Dict[int, bool] = {}
 
   @classmethod
   def update(this):
