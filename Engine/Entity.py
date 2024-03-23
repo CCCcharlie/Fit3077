@@ -1,7 +1,9 @@
 from abc import ABC, abstractmethod
-from typing import List 
+from typing import List
 
-from Component.Component import Component
+from Engine import Component 
+
+
 
 
 # https://gameprogrammingpatterns.com/update-method.html
@@ -24,7 +26,6 @@ class Entity(ABC):
       if isinstance(component, component_type):
         return component
     return None
-
 
 
   # this method may not live here https://gameprogrammingpatterns.com/component.html

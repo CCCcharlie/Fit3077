@@ -1,5 +1,7 @@
 
-from engine.Command.Command import Command
+
+
+from Engine import Command
 
 
 class MoveCommand(Command):

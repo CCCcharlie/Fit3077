@@ -1,7 +1,4 @@
-from Engine.Component.SpriteComponent import SpriteComponent
-from Engine.Component.TransformComponent import TransformComponent
-from Engine.Entity import Entity
-from Engine.World import World
+from Engine import *
 
 
 if __name__ == "__main__":
@@ -25,4 +22,6 @@ if __name__ == "__main__":
 
   # start world up 
   world.gameLoop()
+
+  print("hello world")
 
