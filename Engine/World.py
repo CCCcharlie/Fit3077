@@ -65,11 +65,12 @@ class World:
       previous = current
       lag += elapsed
 
-      
+      # fixed timestep
       while lag >= World.MS_PER_UPDATE:
         self.update()
         lag -= World.MS_PER_UPDATE
 
+      # render when we can :)
       self.render()
     self.on_cleanup()
 

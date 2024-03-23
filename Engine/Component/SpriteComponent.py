@@ -14,7 +14,7 @@ class SpriteComponent(Component):
 
     self.image = image
 
-    self.image_surf = pygame.image.load("Game/Assets/" + self.image).convert()
+    self.image_surf = pygame.image.load("Game/Assets/TestSprites" + self.image).convert()
 
   def render(self, display_surf):
     # get owner transform coords 

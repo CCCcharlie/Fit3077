@@ -30,6 +30,7 @@ class ClickableComponent(Component):
     mx, my = Input.getmouseposition()
 
     #todo think about how we will do different and custom shapes 
+    #this should really be some collider component that publises observers 
     self.hover = tc.x <= mx <= tc.x + self.width and tc.y <= my <= tc.y + self.height
 
     if (self.hover):
