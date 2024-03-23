@@ -9,6 +9,7 @@ class Input(object):
   quitflag = False
   mouse_visibility = True
   keys = {}
+  mouse_buttons = {}
 
   @classmethod
   def update(this):
@@ -25,6 +26,14 @@ class Input(object):
 
       if event.type == pygame.KEYDOWN:
         this.keys[event.key] = True
+
+      if event.type == pygame.MOUSEBUTTONDOWN:
+        this.mouse_buttons[event.button] = True
+
+      if event.type == pygame.MOUSEBUTTONUP:
+        this.mouse_buttons[event.button] = False
+
+
 
   @classmethod
   def getkey(this, key):
@@ -43,6 +52,23 @@ class Input(object):
       this.keys[key] = False
       return False
     
+  @classmethod
+  def getMouseButton(this, button: int):
+    """
+    Returns weather a button is pressed or not 
+
+    Parameters
+    ----------
+    button: int
+      Pygame button constant
+    """
+    try:
+      return this.mouse_buttons[button]
+    except KeyError:
+      # key has never been pressed
+      this.mouse_buttons[button] = False
+      return False
+    
   @classmethod 
   def getmouseposition(this):
     """
@@ -50,18 +76,6 @@ class Input(object):
     """
     return pygame.mouse.get_pos()
   
-  @classmethod
-  def getmousebutton(this, index):
-    """
-    Returns weather a button of the mouse is pressed or not 
-
-    Parameters
-    ----------
-    index : int 
-      The index of the mouse button 
-    """
-    return pygame.mouse.get_pressed()[index]
-
   @classmethod
   def getmousevisibility(this):
     """

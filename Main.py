@@ -1,5 +1,5 @@
 from Engine import *
-
+import pygame
 
 if __name__ == "__main__":
   world = World()
@@ -7,18 +7,21 @@ if __name__ == "__main__":
   # --------------------- GENERATE TEST OBJECT ---------------------------------
   # this would be a great usage of factories !!!! with some sort of world etc 
   # create entities
-  testEntity = Entity()
+  e = Entity()
 
-  #create components
-  testEntity_transform = TransformComponent(testEntity, x=100, y=100)
-  testEntity_sprite = SpriteComponent(testEntity, image="Oven_connecting.png")
+  e_trans = TransformComponent(e, x=100, y=100)
+  e_rect = RectComponent(e, 100, 50, (0,0,250))
+  e_text = TextComponent(e, "TEST", pygame.font.SysFont("Corbel", 30), (250,250,250))
+  e_clickable = ClickableComponent(e, 100, 50)
 
-  # add components to entity
-  testEntity.add_component(testEntity_transform)
-  testEntity.add_component(testEntity_sprite)
+
+  e.add_component(e_trans)
+  e.add_component(e_rect)
+  e.add_component(e_text)
+  e.add_component(e_clickable)
 
   # add entity to world
-  world.add_entity(testEntity)
+  world.add_entity(e)
 
   # start world up 
   world.gameLoop()
