@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-from Component.Component import Component
+from src.Component.Component import Component
 
 
 # https://gameprogrammingpatterns.com/update-method.html
@@ -10,7 +10,6 @@ class Entity(ABC):
   def __init__(self):
     self.components = []
 
-    
 
   def add_component(self, component: Component):
     # can you have two of the same component on an object
