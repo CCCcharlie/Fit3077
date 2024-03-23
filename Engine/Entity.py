@@ -2,9 +2,7 @@ from abc import ABC, abstractmethod
 from typing import List
 
 from Engine import Component 
-
-
-
+from Engine.Component import TransformComponent
 
 # https://gameprogrammingpatterns.com/update-method.html
 
@@ -12,7 +10,6 @@ class Entity(ABC):
 
   def __init__(self):
     self.components: List[Component] = []
-
 
   def add_component(self, component: Component):
     # can you have two of the same component on an object

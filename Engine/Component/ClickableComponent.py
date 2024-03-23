@@ -34,6 +34,10 @@ class ClickableComponent(Component):
 
     if (self.hover):
       self.clicked = Input.getMouseButton(1)
+    else:
+      # clicked may still be true as lagging behind 
+      # however we still need to drop it if they deselect
+      self.clicked = Input.getMouseButton(1)
 
 
   # interface part 

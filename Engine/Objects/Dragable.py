@@ -1,7 +1,7 @@
 
 import pygame
 from Engine import Entity
-from Engine.Component import ClickableComponent, RectComponent, TextComponent, TransformComponent, DragableComponent
+from Engine.Component import ClickableComponent, RectComponent, TextComponent, TransformComponent, DragComponent
 
 # https://refactoring.guru/design-patterns/builder
 # maybe im not too sure how we want to do this 
@@ -16,10 +16,10 @@ class Dragable(Entity):
     rect = RectComponent(self, width, height, (0,0,250))
     text = TextComponent(self, textContent, pygame.font.SysFont("Corbel", 30), (250,250,250))
     clickable = ClickableComponent(self, width, height)
-    button = DragableComponent(self)
+    drag = DragComponent(self)
 
     self.add_component(trans)
     self.add_component(rect)
     self.add_component(text)
     self.add_component(clickable)
-    self.add_component(button)
+    self.add_component(drag)
