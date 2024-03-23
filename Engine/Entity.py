@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
+from typing import List 
 
-from src.Component.Component import Component
+from Component.Component import Component
 
 
 # https://gameprogrammingpatterns.com/update-method.html
@@ -8,7 +9,7 @@ from src.Component.Component import Component
 class Entity(ABC): 
 
   def __init__(self):
-    self.components = []
+    self.components: List[Component] = []
 
 
   def add_component(self, component: Component):
@@ -34,8 +35,8 @@ class Entity(ABC):
     
 
   #see above
-  def render(self):
+  def render(self, display_surf):
     for component in self.components:
-      component.render()
+      component.render(display_surf)
   
     

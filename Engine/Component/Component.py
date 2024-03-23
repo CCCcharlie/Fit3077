@@ -5,5 +5,5 @@ class Component:
   def update(self):
     pass
 
-  def render(self):
+  def render(self, display_surf):
     pass
