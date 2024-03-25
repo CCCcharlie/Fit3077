@@ -14,13 +14,13 @@ if __name__ == "__main__":
   anim = AnimatedComponent(e)
   # to show how easy it is lets add the drag component 
   # should have a collider compoennt aswell 
-  #click = ClickableComponent(e, 50,50)
-  #drag = DragComponent(e)
+  click = ClickableComponent(e, 50,50)
+  drag = DragComponent(e)
 
   e.add_component(trans)
   e.add_component(anim)
-  # e.add_component(click)
-  # e.add_component(drag)
+  e.add_component(click)
+  e.add_component(drag)
 
   world.add_entity(e)
 

@@ -9,8 +9,9 @@ class Input(object):
 
   quitflag = False
   mouse_visibility = True
-  keys = {}
+  keys: Dict[int, bool] = {}
   mouse_buttons: Dict[int, bool] = {}
+  mouse_pressed: Dict[int, bool] = {}
 
   @classmethod
   def update(this):

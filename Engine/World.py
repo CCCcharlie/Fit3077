@@ -17,9 +17,9 @@ class World:
 
     
     self.size = self.weight, self.height = 640, 400
-    self.display_surf = pygame.display.set_mode(self.size, pygame.HWSURFACE | pygame.DOUBLEBUF)
+    self.display_surf: pygame.Surface = pygame.display.set_mode(self.size, pygame.HWSURFACE | pygame.DOUBLEBUF)
 
-    self.background = pygame.Surface(self.display_surf.get_size())
+    self.background: pygame.Surface = pygame.Surface(self.display_surf.get_size())
     self.background = self.background.convert()
     self.background.fill((0, 0, 0))
 
