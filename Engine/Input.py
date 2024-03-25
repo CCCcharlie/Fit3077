@@ -11,13 +11,16 @@ class Input(object):
   mouse_visibility = True
   keys: Dict[int, bool] = {}
   mouse_buttons: Dict[int, bool] = {}
-  mouse_pressed: Dict[int, bool] = {}
+  #mouse_pressed: Dict[int, bool] = {}
 
   @classmethod
   def update(this):
     """
     updates class information using the input event data 
     """
+
+    # clear old mouse pressed array
+    this.mouse_pressed = {}
 
     for event in pygame.event.get():
       if event.type == pygame.QUIT:
@@ -31,6 +34,7 @@ class Input(object):
 
       if event.type == pygame.MOUSEBUTTONDOWN:
         this.mouse_buttons[event.button] = True
+        #this.mouse_pressed[event.button] = True
 
       if event.type == pygame.MOUSEBUTTONUP:
         this.mouse_buttons[event.button] = False
@@ -52,6 +56,23 @@ class Input(object):
     except KeyError:
       # key has never been pressed
       this.keys[key] = False
+      return False
+
+  @classmethod
+  def getMousePressed(this, button: int):
+    """
+    Returns weather a button is pressed (this frame) or not 
+
+    Parameters
+    ----------
+    button: int
+      Pygame button constant
+    """
+    try:
+      return this.mouse_pressed[button]
+    except KeyError:
+      # key has never been pressed
+      this.mouse_pressed[button] = False
       return False
     
   @classmethod
