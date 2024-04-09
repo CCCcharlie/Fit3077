@@ -1,9 +1,10 @@
 
-
-
 from Engine import Command
 
-
+"""
+example command code from:
+https://www.patternsgameprog.com/discover-python-and-patterns-20-better-commands
+"""
 class MoveCommand(Command):
     def __init__(self,state,unit,moveVector):
         self.state = state

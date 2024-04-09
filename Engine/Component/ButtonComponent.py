@@ -1,13 +1,17 @@
 from Engine import Entity
+
 from .Component import Component
 
 from enum import Enum 
 from Engine.Component.ClickableComponent import ClickableComponent
 from Engine.Component.RectComponent import RectComponent
+from Engine.Component.CommandComponent import CommandComponent
+from Engine.Command.Command import Command
 
 class ButtonComponent(Component):
-  def __init__(self, owner: Entity):
+  def __init__(self, owner: Entity, command: Command):
     self.owner = owner
+    self.command = command
     
     # python doesnt have a switch statemnet so we just switched dictionary method 
     self.switcher = {
@@ -41,10 +45,10 @@ class ButtonComponent(Component):
     if ck.hover:
       if ck.clicked:
         return 3
-      # todo find what we should do once this event occurs
-      # there exists the start of command code (actions from 2099)
-      # perhaps this should emit a notification 
-      print("Button clicked")
+      # add command to command component
+      cc: CommandComponent = self.owner.get_component(CommandComponent)
+      if cc != None:
+        cc.addCommand(self.command)
       return 2
     return 1
 
