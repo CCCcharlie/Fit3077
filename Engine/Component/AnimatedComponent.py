@@ -2,6 +2,7 @@ from Engine import Entity
 from .Component import Component
 from Engine.Component.TransformComponent import TransformComponent
 from Engine.Command.Command import Command
+from Engine.Component.CommandComponent import CommandComponent
 import pygame
 import math
 
@@ -21,12 +22,18 @@ class AnimatedComponent(Component):
       self.image_surfaces.append(image_surface)
 
     self.image_index = 0
-
+    self.animationFinishTrigger: Command = None
    
 
   def update(self):
     self.image_index += 1 * self.animationSpeed
-    #todo add trigger once reach end 
+
+    if self.image_index >= len(self.sprites):
+      if self.animationFinishTrigger != None:
+        cc: CommandComponent = self.owner.get_component(CommandComponent)
+        if cc != None:
+          cc.owner.add_component(self.animationFinishTrigger)
+
     # todo also add options for one play through etc ... 
     self.image_index = self.image_index % len(self.sprites)
 
