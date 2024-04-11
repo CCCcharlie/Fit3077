@@ -23,6 +23,9 @@ class AnimatedComponent(Component):
 
     self.image_index = 0
     self.animationFinishTrigger: Command = None
+
+  def setAnimationFinishTrigger(self, animationFinishTrigger: Command):
+    self.animationFinishTrigger = animationFinishTrigger
    
 
   def update(self):
@@ -32,7 +35,7 @@ class AnimatedComponent(Component):
       if self.animationFinishTrigger != None:
         cc: CommandComponent = self.owner.get_component(CommandComponent)
         if cc != None:
-          cc.owner.add_component(self.animationFinishTrigger)
+          cc.addCommand(self.animationFinishTrigger)
 
     # todo also add options for one play through etc ... 
     self.image_index = self.image_index % len(self.sprites)

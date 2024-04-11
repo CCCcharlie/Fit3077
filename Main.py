@@ -13,14 +13,22 @@ if __name__ == "__main__":
   # add animated test entity 
   e = Entity()
   trans = TransformComponent(e, 100, 200)
+
+  
   anim = AnimatedComponent(e)
+  animFinTrigger = PrintCommand("AnimationFinishTrigger")
+  anim.setAnimationFinishTrigger(animFinTrigger)
+
   click = ClickableComponent(e, 50,50)
   drag = DragComponent(e)
+  command = CommandComponent(e)
+
 
   e.add_component(trans)
   e.add_component(anim)
   e.add_component(click)
   e.add_component(drag)
+  e.add_component(command)
 
   scene.addEntity(e)
 
