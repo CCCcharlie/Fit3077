@@ -2,6 +2,7 @@ from typing import List
 import time
 import pygame
 from pygame.locals import *
+import sys
 
 from Engine.Input import Input
 from Engine.Scene import Scene
@@ -13,12 +14,12 @@ from Engine.Scene import Scene
 # todo make game loop class 
 
 class World:
+  INSTANCE = None
+
   MS_PER_UPDATE = 16.67  # Assuming 60 frames per second
 
   def __init__(self):
     pygame.init()
-
-    
     self.size = self.weight, self.height = 640, 400
     self.display_surf: pygame.Surface = pygame.display.set_mode(self.size, pygame.HWSURFACE | pygame.DOUBLEBUF)
 
@@ -29,6 +30,12 @@ class World:
     #self.scene: List[Scene] = []
     self.activeScene: Scene = None
 
+  #todo refactor into singleton util class
+  @classmethod
+  def getInstance(self) -> 'World':
+    if not self.INSTANCE:
+      self.INSTANCE = World()
+    return self.INSTANCE
 
   def on_cleanup(self):
     pygame.quit()
@@ -72,6 +79,8 @@ class World:
       # render when we can :)
       self.render()
     self.on_cleanup()
+
+    sys.exit()
 
 
 
