@@ -3,9 +3,11 @@ import pygame
 
 if __name__ == "__main__":
   world = World()
+  scene = Scene()
+  world.setActiveScene(scene)
 
-  world.add_entity(Dragable(100,100,100,50,"TEST"))
-  world.add_entity(Button(300,100,100,50,"TEST", PrintCommand("button pressed")))
+  scene.addEntity(Dragable(100,100,100,50,"TEST"))
+  scene.addEntity(Button(300,100,100,50,"TEST", PrintCommand("button pressed")))
 
 
   # add animated test entity 
@@ -20,10 +22,7 @@ if __name__ == "__main__":
   e.add_component(click)
   e.add_component(drag)
 
-  world.add_entity(e)
-
-
-
+  scene.addEntity(e)
 
   # start world up 
   world.gameLoop()

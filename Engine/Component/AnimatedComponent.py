@@ -1,7 +1,7 @@
 from Engine import Entity
 from .Component import Component
 from Engine.Component.TransformComponent import TransformComponent
-
+from Engine.Command.Command import Command
 import pygame
 import math
 
@@ -21,6 +21,8 @@ class AnimatedComponent(Component):
       self.image_surfaces.append(image_surface)
 
     self.image_index = 0
+
+   
 
   def update(self):
     self.image_index += 1 * self.animationSpeed
