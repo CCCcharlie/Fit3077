@@ -1,7 +1,7 @@
 from Engine import Entity
 from .Component import Component
 
-from enum import Enum 
+
 from Engine.Component.ClickableComponent import ClickableComponent
 from Engine.Component.TransformComponent import TransformComponent
 from Engine.Input import Input
