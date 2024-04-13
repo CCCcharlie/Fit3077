@@ -5,19 +5,20 @@ from Engine import Entity
 from Engine.Component.TransformComponent import TransformComponent
 from .Component import Component
 
-class RectComponent(Component):
-  def __init__(self, owner: Entity, width: int, height: int, colour):
+class CircleComponent(Component):
+  def __init__(self, owner: Entity, radius: int, colour):
     super().__init__(owner)
 
-    self.width = width
-    self.height = height
-    self.colour = colour
-    self.image_surf = pygame.Surface((self.width, self.height))
+    self.radius = radius
+
+    self.image_surf = pygame.Surface((self.radius * 2, self.radius * 2), pygame.SRCALPHA)
     self.image_surf = self.image_surf.convert()
-    self.image_surf.fill(colour)
+    self.image_surf.fill((0,0,0,0))
+    pygame.draw.circle(self.image_surf, colour, (radius, radius), radius)
 
   def setColour(self, colour):
-    self.image_surf.fill(colour)
+    self.image_surf.fill((0,0,0,0))
+    pygame.draw.circle(self.image_surf, colour, (self.radius, self.radius), self.radius)
 
   def render(self, display_surf):
     # get owner transform coords 
@@ -26,4 +27,4 @@ class RectComponent(Component):
 
     if tc != None:
       #Add sprite to display coords
-      display_surf.blit(self.image_surf, (tc.x, tc.y))
+      display_surf.blit(self.image_surf, (tc.x - self.radius, tc.y - self.radius))
