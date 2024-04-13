@@ -15,12 +15,13 @@ from Engine.Scene import Scene
 
 class World:
   INSTANCE = None
-
   MS_PER_UPDATE = 16.67  # Assuming 60 frames per second
+  SCREEN_WIDTH = 640
+  SCREEN_HEIGHT = 400
 
   def __init__(self):
     pygame.init()
-    self.size = self.weight, self.height = 640, 400
+    self.size = self.width, self.height = 640, 400 # todo fix this (maybe screen manager with update screen size method)
     self.display_surf: pygame.Surface = pygame.display.set_mode(self.size, pygame.HWSURFACE | pygame.DOUBLEBUF)
 
     self.background: pygame.Surface = pygame.Surface(self.display_surf.get_size())

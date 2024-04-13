@@ -9,3 +9,4 @@ from .ButtonComponent import ButtonComponent
 from .DragComponent import DragComponent
 from .AnimatedComponent import AnimatedComponent
 from .CommandComponent import CommandComponent
+from .ChildComponent import ChildComponent
