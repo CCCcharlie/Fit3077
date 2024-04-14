@@ -1,0 +1,3 @@
+from .HitboxComponent import HitboxComponent
+from .CircleHitboxComponent import CircleHitboxComponent
+from .RectHitboxComponent import RectHitboxComponent

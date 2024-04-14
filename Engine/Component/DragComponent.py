@@ -20,12 +20,14 @@ class DragComponent(Component):
     ck: ClickableComponent = self.owner.get_component(ClickableComponent)
     tc: TransformComponent = self.owner.get_component(TransformComponent)
 
-    if ck == None or tc == None:
-      return 
+    if ck is None:
+      print("Drag needs clickable component")
+      return
 
-    # todo another implementation would be listenting to this to be clicked??
-    # todo maybe this game would have way better performance if it was just a bunch of mouse
-    # todo click listeners 
+    if tc is None:
+      print("Drag needs transform component")
+      return
+
     if self.grabbed == False:
       if ck.clicked:
         self.grabbed = True
@@ -34,13 +36,10 @@ class DragComponent(Component):
     else:
       if ck.clicked:
         # match transform to mouse position 
-        tc: TransformComponent = self.owner.get_component(TransformComponent)
         tc.x = Input.getmouseposition()[0] + self.x_offset
         tc.y = Input.getmouseposition()[1] + self.y_offset
 
         #todo can drop off screen, use screen manager to manage this 
-
-        
       else:
         self.grabbed = False
   

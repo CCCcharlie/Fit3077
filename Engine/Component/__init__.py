@@ -11,3 +11,4 @@ from .AnimatedComponent import AnimatedComponent
 from .CommandComponent import CommandComponent
 from .ChildComponent import ChildComponent
 from .CircleComponent import CircleComponent
+from .HitboxComponent import *
