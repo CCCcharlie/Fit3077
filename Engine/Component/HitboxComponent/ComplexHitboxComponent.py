@@ -31,7 +31,7 @@ class ComplexHitboxComponent(HitboxComponent):
             hitbox = storedHitbox["hitbox"]
 
 
-            this_hit = hitbox.checkPointCollision(point_x + offset[0], point_y + offset[1])
+            this_hit = hitbox._checkPointCollision(x + offset[0], y + offset[1], point_x, point_y)
             if this_hit:
                 hits.append(key)
 
