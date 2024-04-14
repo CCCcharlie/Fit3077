@@ -24,17 +24,19 @@ class ComplexHitboxComponent(HitboxComponent):
         return self.hitboxes.pop(key)
 
     def _checkPointCollision(self, x, y, point_x, point_y):
-        any_hit = False
+        hits = []
         for key, storedHitbox in self.hitboxes.items():
             # run check on key
             offset = storedHitbox["offset"]
             hitbox = storedHitbox["hitbox"]
 
+
             this_hit = hitbox.checkPointCollision(point_x + offset[0], point_y + offset[1])
+            if this_hit:
+                hits.append(key)
 
-            any_hit = any_hit | this_hit
-
-        return any_hit
+        print(f"Hits are {hits}") #todo somehow return which ones were hit
+        return len(hits) > 0
 
     def _drawDebug(self, display_surf, x,y):
         for key, storedHitbox in self.hitboxes.items():
@@ -42,7 +44,8 @@ class ComplexHitboxComponent(HitboxComponent):
             offset = storedHitbox["offset"]
             hitbox = storedHitbox["hitbox"]
 
-            hitbox.render(display_surf) # todo we should change the offset position some how ??
+            hitbox._drawDebug(display_surf, x + offset[0], y + offset[1])
+     
 
       
         
