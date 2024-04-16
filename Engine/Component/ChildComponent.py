@@ -14,5 +14,5 @@ class ChildComponent(Component):
   def update(self):
     self.child.update()
 
-  def render(self):
-    self.child.render()
+  def render(self, display_surf):
+    self.child.render(display_surf)

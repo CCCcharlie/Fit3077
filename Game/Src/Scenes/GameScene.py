@@ -1,20 +1,45 @@
 from Engine import *
-from Game.Src.Objects.ChitCard import ChitCard 
+from Game.Src.Components.PlayerPositionComponent import PlayerPositionComponent
+from Game.Src.Enums.AnimalType import AnimalType
+from Game.Src.Objects.Cave import Cave
+from Game.Src.Objects.ChitCard import ChitCard
+from Game.Src.Objects.Player import Player
+from Game.Src.Objects.Segment import Segment
+from Game.Src.Objects.TurnManager import TurnManager
+from Game.Src.Objects.VolcanoCard import VolcanoCard 
 
 
 class GameScene(Scene):
   def __init__(self):
     super().__init__()
 
+    #create player in scene
+    player = Player()
+    self.addEntity(player)
+    TurnManager.PLAYER = player
 
     ## add the 8 volcano cards in the right position
+    seg1 = Segment(10,10, AnimalType.BABY_DRAGON)
+    seg2 = Segment(10,30, AnimalType.BAT)
+    seg3 = Segment(10,50, AnimalType.SALAMANDER)
+
+    seg1.get_component(PlayerPositionComponent).next = seg2.get_component(PlayerPositionComponent)
+    seg2.get_component(PlayerPositionComponent).next = seg3.get_component(PlayerPositionComponent)
+
+    # move player to seg 1
+    ppc: PlayerPositionComponent = seg1.get_component(PlayerPositionComponent)
+    ppc.addPlayer(player)
+
+    # cave = Cave(10,100)
+    segments = [seg1, seg2, seg3]
+
+    volcCard = VolcanoCard(segments)
+    self.addEntity(volcCard)
 
 
 
-
-
-    ## add the 16 chid cards in the centre
-    # this is a square chit card generator
+    # add the 16 chid cards in the centre
+    #this is a square chit card generator
     start_pos_x = 3 * World().SCREEN_WIDTH/8
     end_pos_x = 5 * World().SCREEN_WIDTH/8
     start_pos_y = World().SCREEN_HEIGHT/4

@@ -13,3 +13,5 @@ class ChitCardClickedCommand(Command):
     def run(self):
         print("chit card clicked")
         self.chitCard.onClick()
+
+
