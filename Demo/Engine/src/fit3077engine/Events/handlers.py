@@ -2,7 +2,7 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 from collections.abc import MutableSequence
 from typing import Type
-from .events import Event, EventType
+from .events import Event, PygameEvent
 from .observer import ObserverInterface
 import pygame
 
@@ -35,16 +35,23 @@ class EventHandler(ABC):
 class PygameEventHandler(EventHandler):
 
     @classmethod
+    def emit(cls, event_type: int) -> int:
+        i = 0
+        for _ in pygame.event.get(event_type):
+            i += 1
+            cls._emit(PygameEvent(event_type))
+        return i
+
+    @classmethod
     @abstractmethod
     def handle_events(cls) -> None:
-        raise NotImplementedError()
+        pass
 
 
 class PygameQuitHandler(PygameEventHandler):
 
     @classmethod
     def handle_events(cls) -> None:
-        for _ in pygame.event.get(pygame.QUIT):
-            cls._emit(Event(EventType.QUIT))
+        if cls.emit(pygame.QUIT) > 0:
             pygame.quit()
             exit(0)
