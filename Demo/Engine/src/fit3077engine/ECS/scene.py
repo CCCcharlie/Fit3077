@@ -1,6 +1,6 @@
 from __future__ import annotations
 from collections.abc import MutableSequence
-from ..ECS.entity import Entity
+from .entity import Entity
 
 
 class Scene:
