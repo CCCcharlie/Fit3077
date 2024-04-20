@@ -1,9 +1,9 @@
 import pygame
-from fit3077engine.ECS.components import ImageComponent, PositionComponent
-from fit3077engine.ECS.entity import Entity
-from fit3077engine.Events.handlers import PygameEventHandler
+from ..ECS.components import ImageComponent, PositionComponent
+from ..ECS.entity import Entity
+from ..Events.handlers import PygameEventHandler
 
-from fit3077engine.Utils.scene import Scene
+from ..ECS.scene import Scene
 from .settings import Settings
 
 

@@ -3,7 +3,7 @@ from typing import Type
 from pygame import Surface, display
 import pygame
 
-from ..Utils.scene import Scene
+from ..ECS.scene import Scene
 
 
 class Settings:
