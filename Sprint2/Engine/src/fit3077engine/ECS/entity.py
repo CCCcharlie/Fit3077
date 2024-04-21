@@ -5,7 +5,7 @@ from collections.abc import MutableSequence
 if TYPE_CHECKING:
     from .components import Component
 
-C = TypeVar("C", bound=Component)
+    C = TypeVar("C", bound=Component)
 
 
 class Entity:

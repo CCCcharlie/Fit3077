@@ -2,7 +2,7 @@ from enum import Enum
 from abc import ABC, abstractmethod
 import pygame
 from pygame import Rect, Surface
-from ..Utils import settings
+from ..Utils.settings import Settings
 from .entity import Entity
 
 
@@ -27,7 +27,7 @@ class ImageComponent(Component):
     def update(self) -> None:
         pos_component: PositionComponent = self.parent.get_component(PositionComponent)
         pos = (pos_component.x, pos_component.y)
-        settings.Settings.screen.blit(self.surface, pos)
+        Settings.get_instance().screen.blit(self.surface, pos)
 
 
 class RectangleComponent(Component):

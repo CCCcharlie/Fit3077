@@ -27,6 +27,7 @@ class EventHandler(ABC):
 class PygameEventHandler(EventHandler):
 
     def __init__(self, event_type: int) -> None:
+        super().__init__()
         self.event_type = event_type
 
     def handle_events(self) -> int:
@@ -35,6 +36,11 @@ class PygameEventHandler(EventHandler):
             i += 1
             self._emit(self.process_event(event))
         return i
+
+    @classmethod
+    @abstractmethod
+    def get_instance(cls) -> PygameEventHandler:
+        pass
 
     @abstractmethod
     def process_event(self, event: pygame.event.Event) -> Event:
@@ -86,4 +92,4 @@ class PygameClickHandler(PygameEventHandler):
         return cls.instance
 
     def process_event(self, event: pygame.event.Event) -> Event:
-        return ClickEvent(event.pos.x, event.pos.y)
+        return ClickEvent(event.pos[0], event.pos[1])
