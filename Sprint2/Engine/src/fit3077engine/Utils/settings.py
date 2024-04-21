@@ -20,7 +20,8 @@ class Settings:
         self.screen = pygame.display.set_mode((screen_width, screen_height))
         self.clock = pygame.time.Clock()
 
-    def get_instance(self) -> Settings:
-        if self.instance is None:
-            self.instance = Settings(Scene())
-        return self.instance
+    @classmethod
+    def get_instance(cls) -> Settings:
+        if cls.instance is None:
+            cls.instance = Settings(Scene())
+        return cls.instance

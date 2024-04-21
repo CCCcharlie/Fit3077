@@ -1,9 +1,11 @@
 from __future__ import annotations
-from typing import TYPE_CHECKING, Type
+from typing import TYPE_CHECKING, Type, TypeVar
 from collections.abc import MutableSequence
 
 if TYPE_CHECKING:
     from .components import Component
+
+C = TypeVar("C", bound=Component)
 
 
 class Entity:
@@ -16,11 +18,11 @@ class Entity:
             component.update()
 
     def add_component(self, component: Component) -> "Entity":
-        component.entity = self
+        component.parent = self
         self.components.append(component)
         return self
 
-    def get_component(self, component_type: Type[Component]) -> Component:
+    def get_component(self, component_type: Type[C]) -> C:
         for component in self.components:
             if isinstance(component, component_type):
                 return component

@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING
+from enum import Enum
 from abc import ABC, abstractmethod
 import pygame
 from pygame import Rect, Surface
@@ -8,7 +8,7 @@ from .entity import Entity
 
 class Component(ABC):
 
-    entity: Entity = None
+    parent: Entity
 
     def __init__(self) -> None:
         pass
@@ -25,7 +25,7 @@ class ImageComponent(Component):
         self.surface: Surface = pygame.image.load(image_path).convert()
 
     def update(self) -> None:
-        pos_component: PositionComponent = self.entity.get_component(PositionComponent)
+        pos_component: PositionComponent = self.parent.get_component(PositionComponent)
         pos = (pos_component.x, pos_component.y)
         settings.Settings.screen.blit(self.surface, pos)
 
@@ -60,3 +60,32 @@ class PositionComponent(Component):
 
     def update(self) -> None:
         pass
+
+
+class SingleEntityComponent(Component):
+
+    def __init__(self, relation_type: Enum, entity: Entity) -> None:
+        self.entity = entity
+        self.type = relation_type
+
+    def update(self) -> None:
+        self.entity.update()
+
+
+class MultiEntityComponent(Component):
+
+    def __init__(self, relation_type: Enum, *entities: Entity) -> None:
+        self.entities = [entity for entity in entities]
+        self.type = relation_type
+
+    def update(self) -> None:
+        for entity in self.entities:
+            entity.update()
+
+
+class RelationType(Enum):
+
+    LINK = 0
+    PARENT = 1
+    CHILD = 2
+    RELATION = 3
