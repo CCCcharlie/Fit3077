@@ -7,5 +7,6 @@ class Event:
 
 
 @dataclass(frozen=True)
-class PygameEvent(Event):
-    event_type: int
+class ClickEvent(Event):
+    x: int
+    y: int

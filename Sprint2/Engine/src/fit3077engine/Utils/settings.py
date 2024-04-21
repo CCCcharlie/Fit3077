@@ -13,7 +13,7 @@ class Settings:
     ) -> None:
         if self.instance is not None:
             raise ValueError(
-                "Cannot instantiate singleton Settings more than once. Use get_instance()"
+                f"Cannot instantiate singleton {Settings.__name__} more than once. Use get_instance()"
             )
         self.instance = self
         self.scene = scene

@@ -1,57 +1,89 @@
 from __future__ import annotations
 from abc import ABC, abstractmethod
 from collections.abc import MutableSequence
-from typing import Type
-from .events import Event, PygameEvent
+from .events import Event, ClickEvent
 from .observer import ObserverInterface
 import pygame
 
 
 class EventHandler(ABC):
 
-    subscribers: MutableSequence[ObserverInterface] = []
-
     def __init__(self) -> None:
-        raise ValueError(
-            "Cannot instantiate an EventHandler, intended for static use only"
-        )
+        self.subscribers: MutableSequence[ObserverInterface] = []
 
-    @classmethod
-    def add_subscriber(cls, subscriber: ObserverInterface) -> Type["EventHandler"]:
-        cls.subscribers.append(subscriber)
-        return cls
+    def add_subscriber(self, subscriber: ObserverInterface) -> EventHandler:
+        self.subscribers.append(subscriber)
+        return self
 
-    @classmethod
-    def remove_subscriber(cls, subscriber: ObserverInterface) -> Type["EventHandler"]:
-        cls.subscribers.remove(subscriber)
-        return cls
+    def remove_subscriber(self, subscriber: ObserverInterface) -> EventHandler:
+        self.subscribers.remove(subscriber)
+        return self
 
-    @classmethod
-    def _emit(cls, event: Event) -> None:
-        for subscriber in cls.subscribers:
+    def _emit(self, event: Event) -> None:
+        for subscriber in self.subscribers:
             subscriber.notify(event)
 
 
 class PygameEventHandler(EventHandler):
 
-    @classmethod
-    def emit(cls, event_type: int) -> int:
+    def __init__(self, event_type: int) -> None:
+        self.event_type = event_type
+
+    def handle_events(self) -> int:
         i = 0
-        for _ in pygame.event.get(event_type):
+        for event in pygame.event.get(self.event_type):
             i += 1
-            cls._emit(PygameEvent(event_type))
+            self._emit(self.process_event(event))
         return i
 
-    @classmethod
     @abstractmethod
-    def handle_events(cls) -> None:
+    def process_event(self, event: pygame.event.Event) -> Event:
         pass
 
 
 class PygameQuitHandler(PygameEventHandler):
 
+    instance: PygameQuitHandler | None = None
+
+    def __init__(self) -> None:
+        if PygameQuitHandler.instance is not None:
+            raise ValueError(
+                f"Cannot instantiate singleton {PygameQuitHandler.__name__} more than once. Use get_instance()"
+            )
+        super().__init__(pygame.QUIT)
+
     @classmethod
-    def handle_events(cls) -> None:
-        if cls.emit(pygame.QUIT) > 0:
+    def get_instance(cls) -> PygameQuitHandler:
+        if cls.instance is None:
+            cls.instance = PygameQuitHandler()
+        return cls.instance
+
+    def handle_events(self) -> int:
+        i = super().handle_events()
+        if i > 0:
             pygame.quit()
             exit(0)
+        return i
+
+    def process_event(self, event: pygame.event.Event) -> Event:
+        return Event()
+
+
+class PygameClickHandler(PygameEventHandler):
+    instance: PygameClickHandler | None = None
+
+    def __init__(self) -> None:
+        if PygameClickHandler.instance is not None:
+            raise ValueError(
+                f"Cannot instantiate singleton {PygameClickHandler.__name__} more than once. Use get_instance()"
+            )
+        super().__init__(pygame.MOUSEBUTTONDOWN)
+
+    @classmethod
+    def get_instance(cls) -> PygameClickHandler:
+        if cls.instance is None:
+            cls.instance = PygameClickHandler()
+        return cls.instance
+
+    def process_event(self, event: pygame.event.Event) -> Event:
+        return ClickEvent(event.pos.x, event.pos.y)
