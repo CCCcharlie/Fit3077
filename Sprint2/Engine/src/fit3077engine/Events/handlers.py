@@ -4,6 +4,7 @@ from collections.abc import MutableSequence
 from .events import Event, ClickEvent
 from .observer import ObserverInterface
 import pygame
+import sys
 
 
 class EventHandler(ABC):
@@ -68,7 +69,7 @@ class PygameQuitHandler(PygameEventHandler):
         i = super().handle_events()
         if i > 0:
             pygame.quit()
-            exit(0)
+            sys.exit(0)
         return i
 
     def process_event(self, event: pygame.event.Event) -> Event:
