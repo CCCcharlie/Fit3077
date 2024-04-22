@@ -1,12 +1,10 @@
 from __future__ import annotations
 from abc import ABC, abstractmethod
-import builtins
 from collections.abc import Sequence
 
 from fit3077engine.ECS.entity import Entity
-from pygame import init
 
-from Sprint2.FieryDragons.Components.components import AnimalType
+from ..Components.components import AnimalType
 
 
 class EntityBuilder(ABC):
