@@ -6,14 +6,17 @@ from fit3077engine.ECS.components import (
     ColouredRectangleComponent,
     Component,
     MultiEntityComponent,
+    PositionComponent,
     RectangleComponent,
     RelationType,
+    Settings,
     SingleEntityComponent,
 )
 from fit3077engine.ECS.entity import Entity
 from fit3077engine.Events.handlers import PygameClickHandler
 from fit3077engine.Events.events import ClickEvent, Event
 from fit3077engine.Events.observer import ObserverInterface
+import pygame
 from pygame.color import Color
 
 
@@ -102,17 +105,28 @@ class PlayersHandlerComponent(MultiEntityComponent, ObserverInterface):
         super().__init__(RelationType.CHILD, *players)
         self.current_turn = 0
 
+    def get_player_id(self, player: Entity) -> int:
+        for i, entity in enumerate(self.entities):
+            if player is entity:
+                return i
+        raise ValueError("No such entity on the GameBoard")
+
     def notify(self, event: Event) -> None:
         pass
 
 
-class BoardPositionComponent(MultiEntityComponent):
+class VolcanoLinkComponent(Component):
 
-    def __init__(
-        self, animal_type: AnimalType, is_cave: bool, *next_positions: Entity
-    ) -> None:
-        super().__init__(RelationType.LINK, *next_positions)
-        self.animal_type = animal_type
+    def __init__(self, previous: Entity, next: Entity) -> None:
+        super().__init__()
+        self.previous = previous
+        self.next = next
+
+    def get_next_position(self, current_position: Entity, steps: int) -> Entity:
+        pass
+
+    def update(self) -> None:
+        pass
 
 
 class ChitComponent(Component, ObserverInterface):
@@ -139,14 +153,52 @@ class ChitComponent(Component, ObserverInterface):
                 pass
 
 
-class PlayerComponent(Component):
+class PlayerRenderComponent(Component):
 
-    def __init__(self, id: int) -> None:
+    RADIUS = 16
+
+    def __init__(self) -> None:
         super().__init__()
-        self.id = id
 
     def update(self) -> None:
-        pass
+        screen = Settings.get_instance().screen
+        id = (
+            list(
+                filter(
+                    lambda x: x.type is RelationType.PARENT,
+                    self._parent.get_components(SingleEntityComponent),
+                )
+            )[0]
+            .entity.get_components(PlayersHandlerComponent)[0]
+            .get_player_id(self._parent)
+        )
+
+        pos_position_component = self._parent.get_components(PlayerPositionComponent)[
+            0
+        ].entity.get_components(PositionComponent)[0]
+
+        # Render
+        pygame.draw.circle(
+            screen,
+            Color(255, 255, 255),
+            (pos_position_component.x, pos_position_component.y),
+            PlayerRenderComponent.RADIUS,
+        )
+        pygame.draw.circle(
+            screen,
+            Color(0, 0, 0),
+            (pos_position_component.x, pos_position_component.y),
+            PlayerRenderComponent.RADIUS + 1,
+            3,
+        )
+
+        font = pygame.font.Font(None, 32)
+
+        id_text = font.render(str(id), True, Color(0, 0, 0))
+        id_text_rect = id_text.get_rect(
+            center=(pos_position_component.x, pos_position_component.y)
+        )
+        screen.blit(id_text, id_text_rect)
 
 
 class PlayerPositionComponent(SingleEntityComponent):

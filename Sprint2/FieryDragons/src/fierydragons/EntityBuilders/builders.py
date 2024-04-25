@@ -24,7 +24,9 @@ from ..Components.components import (
     ChitRendererComponent,
     PlayerMoveComponent,
     PlayerPositionComponent,
+    PlayerRenderComponent,
     PlayersHandlerComponent,
+    VolcanoLinkComponent,
 )
 
 
@@ -109,15 +111,13 @@ class GameBoardBuilder(EntityBuilder):
                 .cave(cave_type, cave_direction)
                 .build()
             )
-            if len(vc_list) > 0:
-                vc_list[-1].add_component(SingleEntityComponent(RelationType.LINK, vc))
             vc_list.append(vc)
 
-            ### Store Cave
+            #### Store Cave
             if cave_type is not None and cave_direction is not None:
                 cave_list.append(vc.get_components(SingleEntityComponent)[0].entity)
 
-            ### Next Coords
+            #### Next Coords
             match direction:
                 case Direction.UP:
                     vc_y -= vc_height
@@ -141,16 +141,23 @@ class GameBoardBuilder(EntityBuilder):
                         direction = Direction.DOWN
                         vc_width, vc_height = vc_height, vc_width
 
-        vc_list[-1].add_component(
-            SingleEntityComponent(RelationType.LINK, vc_list[0])
-        )  # Wrap around link
+        #### Links
+        for i, vc in enumerate(vc_list):
+            previous = vc_list[(i - 1) % len(vc_list)]
+            next = vc_list[(i + 1) % len(vc_list)]
+            vc.add_component(VolcanoLinkComponent(previous, next))
 
         game_board.add_component(MultiEntityComponent(RelationType.CHILD, *vc_list))
 
         ## Players
         player_list: MutableSequence[Entity] = []
         for player_no in range(self._players):
-            player = PlayerBuilder().cave(cave_list[player_no]).build()
+            player = (
+                PlayerBuilder()
+                .cave(cave_list[player_no])
+                .build()
+                .add_component(SingleEntityComponent(RelationType.PARENT, game_board))
+            )
             player_list.append(player)
 
         game_board.add_component(PlayersHandlerComponent(*player_list))
@@ -251,6 +258,7 @@ class PlayerBuilder(EntityBuilder):
             Entity()
             .add_component(PlayerPositionComponent(self._start))
             .add_component(PlayerMoveComponent())
+            .add_component(PlayerRenderComponent())
         )
         return player
 
