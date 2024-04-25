@@ -33,7 +33,7 @@ class AnimalType(Enum):
             case AnimalType.BABY_DRAGON:
                 return Color(0, 255, 0)
             case AnimalType.BAT:
-                return Color(0, 0, 0)
+                return Color(100, 20, 130)
             case AnimalType.PIRATE_DRAGON:
                 return Color(150, 150, 150)
             case _:

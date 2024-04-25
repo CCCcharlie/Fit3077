@@ -323,7 +323,6 @@ class VolcanoCardBuilder(EntityBuilder):
             segment = (
                 SegmentBuilder()
                 .dimensions(pos_size, pos_size)
-                .animal_type(AnimalType.get_random_animal())
                 .position(seg_x, seg_y)
                 .build()
             )
@@ -331,8 +330,10 @@ class VolcanoCardBuilder(EntityBuilder):
             segments_list.append(segment)
 
             ## Coords Update
-            seg_x += pos_size + border
-            seg_y += pos_size + border
+            if self._width > self._height:
+                seg_x += pos_size + border
+            else:
+                seg_y += pos_size + border
 
         volcano_card.add_component(
             MultiEntityComponent(RelationType.CHILD, *segments_list)
@@ -417,11 +418,24 @@ class PositionBuilder(EntityBuilder):
             Entity()
             .add_component(AnimalTypeComponent(self._animal_type))
             .add_component(PositionComponent(self._x, self._y))
+            .add_component(
+                ColouredRectangleComponent(
+                    self._animal_type.get_colour(),
+                    x=self._x,
+                    y=self._y,
+                    width=self._width,
+                    height=self._height,
+                )
+            )
         )
         return position
 
 
 class SegmentBuilder(PositionBuilder):
+
+    def __init__(self) -> None:
+        super().__init__()
+        self._animal_type = AnimalType.get_random_animal()
 
     def build(self) -> Entity:
         segment = super().build()
