@@ -5,6 +5,11 @@ from ..Components.components import AnimalType
 
 
 @dataclass(frozen=True)
+class TurnEvent(Event):
+    pass
+
+
+@dataclass(frozen=True)
 class ChitEvent(Event):
     animal_type: AnimalType
     count: int

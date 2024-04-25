@@ -1,6 +1,8 @@
 from __future__ import annotations
-from fit3077engine.Events.events import Event
 from fit3077engine.Events.handlers import EventHandler
+
+from ..Components.components import AnimalType
+from .events import ChitEvent, TurnEvent
 
 
 class TurnEventHandler(EventHandler):
@@ -19,8 +21,8 @@ class TurnEventHandler(EventHandler):
             cls.instance = TurnEventHandler()
         return cls.instance
 
-    def _emit(self, event: Event) -> None:
-        pass
+    def emit(self) -> None:
+        self._emit(TurnEvent())
 
 
 class ChitFlipHandler(EventHandler):
@@ -39,5 +41,5 @@ class ChitFlipHandler(EventHandler):
             cls.instance = ChitFlipHandler()
         return cls.instance
 
-    def _emit(self, event: Event) -> None:
-        pass
+    def emit(self, animal_type: AnimalType, count: int) -> None:
+        self._emit(ChitEvent(animal_type, count))

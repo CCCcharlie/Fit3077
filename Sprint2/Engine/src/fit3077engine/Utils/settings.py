@@ -1,5 +1,6 @@
 from __future__ import annotations
 import pygame
+from pygame.color import Color
 
 from ..ECS.scene import Scene
 
@@ -15,6 +16,7 @@ class Settings:
         screen_width: int = 1280,
         screen_height: int = 760,
         fps: int = 60,
+        background_colour: Color = Color(255, 255, 255),
     ) -> None:
         if self.instance is not None:
             raise ValueError(
@@ -24,6 +26,7 @@ class Settings:
         self.screen = pygame.display.set_mode((screen_width, screen_height))
         self.fps = fps
         self.clock = pygame.time.Clock()
+        self.background_colour = background_colour
         Settings.instance = self
 
     @classmethod

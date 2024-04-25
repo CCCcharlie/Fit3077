@@ -1,7 +1,9 @@
+from collections.abc import Sequence
 from enum import Enum
 from abc import ABC, abstractmethod
 import pygame
 from pygame import Rect, Surface
+from pygame.color import Color
 from ..Utils.settings import Settings
 from .entity import Entity
 
@@ -18,16 +20,37 @@ class Component(ABC):
         raise NotImplementedError()
 
 
-class ImageComponent(Component):
+class SurfaceComponent(Component):
 
-    def __init__(self, image_path: str) -> None:
+    def __init__(self, surface: Surface) -> None:
         super().__init__()
-        self.surface: Surface = pygame.image.load(image_path).convert()
+        self.surface: Surface = surface
 
     def update(self) -> None:
-        pos_component: PositionComponent = self.parent.get_component(PositionComponent)
+        pos_component: PositionComponent = self.parent.get_components(
+            PositionComponent
+        )[0]
         pos = (pos_component.x, pos_component.y)
         Settings.get_instance().screen.blit(self.surface, pos)
+
+
+class ImageComponent(SurfaceComponent):
+
+    def __init__(self, image_path: str) -> None:
+        super().__init__(pygame.image.load(image_path).convert())
+
+
+class ToggleableComponent(Component):
+
+    def __init__(self, component: Component) -> None:
+        super().__init__()
+        self.component = component
+        self.active = True
+
+    def update(self) -> None:
+        if self.active:
+            self.component.parent = self.parent
+            self.component.update()
 
 
 class RectangleComponent(Component):
@@ -46,9 +69,29 @@ class RectangleComponent(Component):
             x is not None and y is not None and width is not None and height is not None
         ):
             self.rect: Rect = Rect(x, y, width, height)
+        else:
+            raise ValueError("Provide dimensions or Rect object.")
 
     def update(self) -> None:
         pass
+
+
+class ColouredRectangleComponent(RectangleComponent):
+
+    def __init__(
+        self,
+        colour: Color,
+        x: int | None = None,
+        y: int | None = None,
+        width: int | None = None,
+        height: int | None = None,
+        rect: Rect | None = None,
+    ) -> None:
+        super().__init__(x, y, width, height, rect)
+        self.colour = colour
+
+    def update(self) -> None:
+        pygame.draw.rect(Settings.get_instance().screen, self.colour, self.rect)
 
 
 class PositionComponent(Component):
@@ -69,7 +112,8 @@ class SingleEntityComponent(Component):
         self.type = relation_type
 
     def update(self) -> None:
-        self.entity.update()
+        if self.type is RelationType.CHILD:
+            self.entity.update()
 
 
 class MultiEntityComponent(Component):
@@ -79,8 +123,9 @@ class MultiEntityComponent(Component):
         self.type = relation_type
 
     def update(self) -> None:
-        for entity in self.entities:
-            entity.update()
+        if self.type is RelationType.CHILD:
+            for entity in self.entities:
+                entity.update()
 
 
 class RelationType(Enum):

@@ -12,10 +12,15 @@ class Scene:
         for entity in self.entities:
             entity.update()
 
-    def add_entity(self, entity: Entity) -> "Scene":
+    def add_entity(self, entity: Entity) -> Scene:
         self.entities.append(entity)
         return self
 
-    def remove_entity(self, entity: Entity) -> "Scene":
+    def add_entities(self, *entities: Entity) -> Scene:
+        for entity in entities:
+            self.entities.append(entity)
+        return self
+
+    def remove_entity(self, entity: Entity) -> Scene:
         self.entities.remove(entity)
         return self

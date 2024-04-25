@@ -1,6 +1,6 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING, Type, TypeVar
-from collections.abc import MutableSequence
+from collections.abc import MutableSequence, Sequence
 
 if TYPE_CHECKING:
     from .components import Component
@@ -22,8 +22,9 @@ class Entity:
         self.components.append(component)
         return self
 
-    def get_component(self, component_type: Type[C]) -> C:
+    def get_components(self, component_type: Type[C]) -> Sequence[C]:
+        components = []
         for component in self.components:
             if isinstance(component, component_type):
-                return component
-        raise ValueError("No such component on this Entity")
+                components.append(component)
+        return components
