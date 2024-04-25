@@ -18,7 +18,7 @@ class Entity:
             component.update()
 
     def add_component(self, component: Component) -> "Entity":
-        component.parent = self
+        component.set_parent(self)
         self.components.append(component)
         return self
 

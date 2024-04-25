@@ -83,7 +83,7 @@ class GameBoardBuilder(EntityBuilder):
         vc_width, vc_height = pos_size * self._segments, pos_size
         for card_no in range(self._volcano_cards):
             ### Caves
-            if card_no % self._players == 0:
+            if card_no % (self._volcano_cards // self._players) == 0:
                 cave_type = AnimalType(len(cave_list) % len(AnimalType))
                 match direction:
                     case Direction.UP:
@@ -103,9 +103,7 @@ class GameBoardBuilder(EntityBuilder):
             ### Volcano Card Building
             vc = (
                 VolcanoCardBuilder()
-                .segment_types(
-                    *(AnimalType.get_random_any() for _ in range(self._segments))
-                )
+                .segments(self._segments)
                 .position(vc_x, vc_y)
                 .dimensions(vc_width, vc_height)
                 .cave(cave_type, cave_direction)
@@ -152,7 +150,7 @@ class GameBoardBuilder(EntityBuilder):
         ## Players
         player_list: MutableSequence[Entity] = []
         for player_no in range(self._players):
-            player = PlayerBuilder().player_id(player_no).build()
+            player = PlayerBuilder().cave(cave_list[player_no]).build()
             player_list.append(player)
 
         game_board.add_component(PlayersHandlerComponent(*player_list))
@@ -249,15 +247,18 @@ class PlayerBuilder(EntityBuilder):
     def build(self) -> Entity:
         if self._start is None:
             raise ValueError("All builder fields must be provided with a value.")
-        player = Entity().add_component(PlayerPositionComponent(self._start))
+        player = (
+            Entity()
+            .add_component(PlayerPositionComponent(self._start))
+            .add_component(PlayerMoveComponent())
+        )
         return player
 
 
 class VolcanoCardBuilder(EntityBuilder):
 
     def __init__(self) -> None:
-        self._animal_types: Sequence[AnimalType] | None = None
-        self._cave_id: int | None = None
+        self._segments: int = 3
         self._cave_type: AnimalType | None = None
         self._cave_direction: Direction | None = None
         self._x: int | None = None
@@ -265,8 +266,8 @@ class VolcanoCardBuilder(EntityBuilder):
         self._width: int | None = None
         self._height: int | None = None
 
-    def segment_types(self, *animal_types: AnimalType) -> VolcanoCardBuilder:
-        self._animal_types = [animal_type for animal_type in animal_types]
+    def segments(self, segments: int) -> VolcanoCardBuilder:
+        self._segments = segments
         return self
 
     def cave(
@@ -289,15 +290,94 @@ class VolcanoCardBuilder(EntityBuilder):
         return self
 
     def build(self) -> Entity:
-        volcano_card = Entity().add_component(
-            ColouredRectangleComponent(
-                Color(255, randint(0, 255), randint(0, 255)),
-                x=self._x,
-                y=self._y,
-                width=self._width,
-                height=self._height,
+        if (
+            self._x is None
+            or self._y is None
+            or self._width is None
+            or self._height is None
+        ):
+            raise ValueError("All builder fields must be provided with a value.")
+
+        border = int(0.30 * min(self._width, self._height))
+
+        pos_size = min(self._height, self._width) - border
+
+        volcano_card = (
+            Entity()
+            .add_component(
+                ColouredRectangleComponent(
+                    Color(0, 0, 0),
+                    x=self._x,
+                    y=self._y,
+                    width=self._width,
+                    height=self._height,
+                )
             )
+            .add_component(PositionComponent(self._x, self._y))
         )
+
+        # Place Segments
+        segments_list: MutableSequence[Entity] = []
+        seg_x, seg_y = self._x + (border // 2), self._y + (border // 2)
+        for segment_no in range(self._segments):
+            segment = (
+                SegmentBuilder()
+                .dimensions(pos_size, pos_size)
+                .animal_type(AnimalType.get_random_animal())
+                .position(seg_x, seg_y)
+                .build()
+            )
+
+            segments_list.append(segment)
+
+            ## Coords Update
+            seg_x += pos_size + border
+            seg_y += pos_size + border
+
+        volcano_card.add_component(
+            MultiEntityComponent(RelationType.CHILD, *segments_list)
+        )
+
+        # Place Cave
+        if self._cave_type is not None and self._cave_direction is not None:
+            cave_builder = (
+                CaveBuilder()
+                .dimensions(pos_size, pos_size)
+                .animal_type(self._cave_type)
+            )
+
+            cave_segment_pos = segments_list[len(segments_list) // 2].get_components(
+                PositionComponent
+            )[0]
+
+            match self._cave_direction:
+                case Direction.UP:
+                    cave_x, cave_y = (
+                        cave_segment_pos.x,
+                        cave_segment_pos.y - pos_size - border,
+                    )
+                case Direction.DOWN:
+                    cave_x, cave_y = (
+                        cave_segment_pos.x,
+                        cave_segment_pos.y + pos_size + border,
+                    )
+                case Direction.LEFT:
+                    cave_x, cave_y = (
+                        cave_segment_pos.x - pos_size - border,
+                        cave_segment_pos.y,
+                    )
+                case Direction.RIGHT:
+                    cave_x, cave_y = (
+                        cave_segment_pos.x + pos_size + border,
+                        cave_segment_pos.y,
+                    )
+
+            cave_builder.position(cave_x, cave_y)
+
+            volcano_card.add_component(
+                SingleEntityComponent(RelationType.CHILD, cave_builder.build())
+            )
+
         return volcano_card
 
 
@@ -325,7 +405,19 @@ class PositionBuilder(EntityBuilder):
         return self
 
     def build(self) -> Entity:
-        position = Entity()
+        if (
+            self._animal_type is None
+            or self._x is None
+            or self._y is None
+            or self._width is None
+            or self._height is None
+        ):
+            raise ValueError("All builder fields must be provided with a value.")
+        position = (
+            Entity()
+            .add_component(AnimalTypeComponent(self._animal_type))
+            .add_component(PositionComponent(self._x, self._y))
+        )
         return position
 
 

@@ -80,9 +80,9 @@ class ChitRendererComponent(ColouredRectangleComponent):
         )
 
     def update(self) -> None:
-        flipped = self.parent.get_components(ChitComponent)[0].flipped
+        flipped = self._parent.get_components(ChitComponent)[0].flipped
         if flipped:
-            self.colour = self.parent.get_components(AnimalTypeComponent)[
+            self.colour = self._parent.get_components(AnimalTypeComponent)[
                 0
             ].animal_type.get_colour()
         else:
@@ -129,7 +129,7 @@ class ChitComponent(Component, ObserverInterface):
     def notify(self, event: Event) -> None:
         match event:
             case ClickEvent():
-                rectangle_components = self.parent.get_components(RectangleComponent)
+                rectangle_components = self._parent.get_components(RectangleComponent)
                 for rectangle_component in rectangle_components:
                     rect = rectangle_component.rect
                     if rect.collidepoint(event.x, event.y):

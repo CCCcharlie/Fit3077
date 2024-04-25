@@ -10,7 +10,7 @@ from .entity import Entity
 
 class Component(ABC):
 
-    parent: Entity
+    _parent: Entity
 
     def __init__(self) -> None:
         pass
@@ -18,6 +18,9 @@ class Component(ABC):
     @abstractmethod
     def update(self) -> None:
         raise NotImplementedError()
+
+    def set_parent(self, parent) -> None:
+        self._parent = parent
 
 
 class SurfaceComponent(Component):
@@ -27,7 +30,7 @@ class SurfaceComponent(Component):
         self.surface: Surface = surface
 
     def update(self) -> None:
-        pos_component: PositionComponent = self.parent.get_components(
+        pos_component: PositionComponent = self._parent.get_components(
             PositionComponent
         )[0]
         pos = (pos_component.x, pos_component.y)
@@ -49,7 +52,7 @@ class ToggleableComponent(Component):
 
     def update(self) -> None:
         if self.active:
-            self.component.parent = self.parent
+            self.component._parent = self._parent
             self.component.update()
 
 
