@@ -56,7 +56,7 @@ class ChitRendererComponent(ColouredRectangleComponent):
     def update(self) -> None:
         chit_component = self._parent.get_components(ChitComponent)[0]
         flipped = chit_component.flipped
-        if flipped or True:
+        if flipped:
             self.colour = self._parent.get_components(AnimalTypeComponent)[
                 0
             ].animal_type.get_colour()

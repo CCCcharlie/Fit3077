@@ -8,6 +8,7 @@ from .settings import Settings
 
 def initialize(
     scene: Scene,
+    title: str,
     screen_width: int = 1280,
     screen_height: int = 760,
     fps: int = 60,
@@ -16,6 +17,7 @@ def initialize(
     pygame.init()
     return Settings(
         scene,
+        title,
         screen_width=screen_width,
         screen_height=screen_height,
         fps=fps,
@@ -25,6 +27,7 @@ def initialize(
 
 def game_loop():
     settings = Settings.get_instance()
+    pygame.display.set_caption(settings.title)
 
     while True:
         # Handle all Pygame Events

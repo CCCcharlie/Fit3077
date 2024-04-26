@@ -12,6 +12,7 @@ class Settings:
     def __init__(
         self,
         scene: Scene,
+        title: str,
         *,
         screen_width: int = 1280,
         screen_height: int = 760,
@@ -23,6 +24,7 @@ class Settings:
                 f"Cannot instantiate singleton {Settings.__name__} more than once. Use get_instance()"
             )
         self.scene = scene
+        self.title = title
         self.screen = pygame.display.set_mode((screen_width, screen_height))
         self.fps = fps
         self.clock = pygame.time.Clock()
@@ -32,5 +34,5 @@ class Settings:
     @classmethod
     def get_instance(cls) -> Settings:
         if cls.instance is None:
-            cls.instance = Settings(Scene())
+            cls.instance = Settings(Scene(), "Pygame")
         return cls.instance
