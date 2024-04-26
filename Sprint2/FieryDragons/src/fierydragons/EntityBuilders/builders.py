@@ -108,6 +108,7 @@ class GameBoardBuilder(EntityBuilder):
             ### Volcano Card Building
             vc = (
                 VolcanoCardBuilder()
+                .direction(direction)
                 .segments(self._segments)
                 .position(vc_x, vc_y)
                 .dimensions(vc_width, vc_height)
@@ -272,6 +273,7 @@ class VolcanoCardBuilder(EntityBuilder):
         self._segments: int = 3
         self._cave_type: AnimalType | None = None
         self._cave_direction: Direction | None = None
+        self._direction: Direction | None = None
         self._x: int | None = None
         self._y: int | None = None
         self._width: int | None = None
@@ -279,6 +281,10 @@ class VolcanoCardBuilder(EntityBuilder):
 
     def segments(self, segments: int) -> VolcanoCardBuilder:
         self._segments = segments
+        return self
+
+    def direction(self, direction: Direction) -> VolcanoCardBuilder:
+        self._direction = direction
         return self
 
     def cave(
@@ -302,7 +308,8 @@ class VolcanoCardBuilder(EntityBuilder):
 
     def build(self) -> Entity:
         if (
-            self._x is None
+            self._direction is None
+            or self._x is None
             or self._y is None
             or self._width is None
             or self._height is None
@@ -339,7 +346,10 @@ class VolcanoCardBuilder(EntityBuilder):
                 .add_component(SingleEntityComponent(RelationType.PARENT, volcano_card))
             )
 
-            segments_list.append(segment)
+            if self._direction is Direction.UP or self._direction is Direction.LEFT:
+                segments_list.insert(0, segment)
+            else:
+                segments_list.append(segment)
 
             ## Coords Update
             if self._width > self._height:
