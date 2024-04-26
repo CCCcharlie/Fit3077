@@ -1,7 +1,7 @@
 from __future__ import annotations
 from fit3077engine.Events.handlers import EventHandler
 
-from ..Components.components import AnimalType
+from fierydragons.Utils.enums import AnimalType
 from .events import ChitEvent, TurnEvent
 
 

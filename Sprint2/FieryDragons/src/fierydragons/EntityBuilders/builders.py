@@ -15,17 +15,18 @@ from fit3077engine.ECS.entity import Entity
 from fit3077engine.Utils.settings import Settings
 from pygame.color import Color
 
-from ..Utils.enums import Direction
+from ..Utils.enums import AnimalType, Direction
 
 from ..Components.components import (
-    AnimalType,
     AnimalTypeComponent,
     ChitComponent,
     ChitRendererComponent,
+    GameOverComponent,
     PlayerMoveComponent,
     PlayerPositionComponent,
     PlayerRenderComponent,
     PlayersHandlerComponent,
+    PositionLinkComponent,
     VolcanoLinkComponent,
 )
 
@@ -71,7 +72,9 @@ class GameBoardBuilder(EntityBuilder):
             0,
         )  # Board as a square in the middle of the screen
         width, height = (settings.screen.get_height(), settings.screen.get_height())
-        game_board.add_component(PositionComponent(x, y))
+        game_board.add_component(PositionComponent(x, y)).add_component(
+            GameOverComponent()
+        )
 
         # Relational Components
         ## Volcano Cards
@@ -333,6 +336,7 @@ class VolcanoCardBuilder(EntityBuilder):
                 .dimensions(pos_size, pos_size)
                 .position(seg_x, seg_y)
                 .build()
+                .add_component(SingleEntityComponent(RelationType.PARENT, volcano_card))
             )
 
             segments_list.append(segment)
@@ -348,6 +352,7 @@ class VolcanoCardBuilder(EntityBuilder):
         )
 
         # Place Cave
+        cave = None
         if self._cave_type is not None and self._cave_direction is not None:
             cave_builder = (
                 CaveBuilder()
@@ -382,10 +387,35 @@ class VolcanoCardBuilder(EntityBuilder):
                     )
 
             cave_builder.position(cave_x, cave_y)
-
-            volcano_card.add_component(
-                SingleEntityComponent(RelationType.CHILD, cave_builder.build())
+            cave = cave_builder.build().add_component(
+                SingleEntityComponent(RelationType.PARENT, volcano_card)
             )
+
+            volcano_card.add_component(SingleEntityComponent(RelationType.CHILD, cave))
+
+        # Perform Links
+        for i, segment in enumerate(segments_list):
+            prevs = []
+            nexts = []
+            if cave is not None and i == len(segments_list) // 2:
+                prevs.append((cave, True))
+            if cave is not None and i == (len(segments_list) // 2) - 1:
+                nexts.append((cave, True))
+
+            if i > 0:
+                prevs.append((segments_list[i - 1], False))
+            if i + 1 < len(segments_list):
+                nexts.append((segments_list[i + 1], False))
+
+            segment.add_component(
+                PositionLinkComponent(
+                    previous=prevs if len(prevs) > 0 else None,
+                    next=nexts if len(nexts) > 0 else None,
+                )
+            )
+        if cave is not None:
+            next = segments_list[len(segments_list) // 2]
+            cave.add_component(PositionLinkComponent(previous=[], next=[(next, False)]))
 
         return volcano_card
 

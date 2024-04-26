@@ -1,7 +1,6 @@
 from dataclasses import dataclass
 from fit3077engine.Events.events import Event
-
-from ..Components.components import AnimalType
+from fierydragons.Utils.enums import AnimalType
 
 
 @dataclass(frozen=True)
