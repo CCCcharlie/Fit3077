@@ -14,13 +14,13 @@ class AnimalType(Enum):
     def get_colour(self) -> Color:
         match self:
             case AnimalType.SALAMANDER:
-                return Color(255, 100, 0)
+                return Color(255, 200, 125)
             case AnimalType.SPIDER:
-                return Color(0, 0, 255)
+                return Color(130, 190, 255)
             case AnimalType.BABY_DRAGON:
-                return Color(0, 255, 0)
+                return Color(150, 255, 140)
             case AnimalType.BAT:
-                return Color(100, 20, 130)
+                return Color(180, 130, 255)
             case AnimalType.PIRATE_DRAGON:
                 return Color(150, 150, 150)
             case _:

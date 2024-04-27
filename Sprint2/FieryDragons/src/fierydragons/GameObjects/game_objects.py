@@ -148,7 +148,7 @@ class Player(GameObject, RenderableInterface, ObserverInterface):
         )  # Outline
         # ID Number
         font = pygame.font.Font(None, RADIUS * 2)
-        id_text = font.render(str(id), True, Color(0, 0, 0))
+        id_text = font.render(str(id + 1), True, Color(0, 0, 0))
         id_text_rect = id_text.get_rect(center=(x, y))
         screen.blit(id_text, id_text_rect)
 
