@@ -267,18 +267,22 @@ class ChitCard(GameObject, RenderableInterface, ObserverInterface):
     def render(self) -> None:
         screen = Settings.get_instance().screen
         OUTLINE_RATIO = 8
+        BACK_COLOUR = Color(100, 80, 55)
 
         # Card
-        pygame.draw.rect(screen, self.animal_type.get_colour(), self.rect)  # Colour
+        if self.flipped:
+            pygame.draw.rect(screen, self.animal_type.get_colour(), self.rect)  # Colour
+            # Count
+            font = pygame.font.Font(None, self.rect.width)
+            count_text = font.render(str(self.count), True, Color(0, 0, 0))
+            count_text_rect = count_text.get_rect(center=self.rect.center)
+            screen.blit(count_text, count_text_rect)
+        else:
+            pygame.draw.rect(screen, BACK_COLOUR, self.rect)  # Colour
+
         pygame.draw.rect(
             screen, Color(0, 0, 0), self.rect, self.rect.width // OUTLINE_RATIO
         )  # Outline
-
-        # Count
-        font = pygame.font.Font(None, self.rect.width)
-        count_text = font.render(str(self.count), True, Color(0, 0, 0))
-        count_text_rect = count_text.get_rect(center=self.rect.center)
-        screen.blit(count_text, count_text_rect)
 
     def notify(self, event: Event) -> None:
         pass
