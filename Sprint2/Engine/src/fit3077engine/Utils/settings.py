@@ -19,7 +19,7 @@ class Settings:
         fps: int = 60,
         background_colour: Color = Color(255, 255, 255),
     ) -> None:
-        if self.instance is not None:
+        if Settings.instance is not None:
             raise ValueError(
                 f"Cannot instantiate singleton {Settings.__name__} more than once. Use get_instance()"
             )

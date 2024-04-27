@@ -3,6 +3,7 @@ from abc import abstractmethod
 from collections.abc import MutableSequence, Sequence
 from random import randint
 from typing import Tuple
+from fit3077engine.Events.handlers import PygameClickHandler
 import pygame
 from pygame.color import Color
 from pygame.rect import Rect
@@ -10,10 +11,12 @@ from pygame.rect import Rect
 from fit3077engine.GameObjects.game_objects import GameObject
 from fit3077engine.GameObjects.interfaces import RenderableInterface
 from fit3077engine.Events.observer import ObserverInterface
-from fit3077engine.Events.events import Event
+from fit3077engine.Events.events import ClickEvent, Event
 from fit3077engine.Utils.settings import Settings
 
 from .enums import AnimalType
+from ..Events.event import ChitEvent
+from ..Events.handlers import ChitFlipHandler
 from ..Utils.enums import Side
 from ..Utils.helper_classes import RectangleGridIterator, SegmentedSquareIterator
 
@@ -36,6 +39,7 @@ class GameBoard(GameObject, ObserverInterface):
         self.segments, caves, pos_size = self._place_segments(segments, players)
         self.players = self._create_players(caves)
         self._current_turn = 0
+        self.turns_passed = 0
         self.chit_cards = self._create_chit_cards(chit_cards, int(pos_size * 2.5))
 
         GameBoard.current_instance = self
@@ -260,6 +264,10 @@ class ChitCard(GameObject, RenderableInterface, ObserverInterface):
         self.count = randint(ChitCard.MIN_COUNT, ChitCard.MAX_COUNT)
         self.animal_type = AnimalType.get_random_any()
         self.flipped = False
+        self.frozen = False
+
+        # Listeners
+        PygameClickHandler.get_instance().add_subscriber(self)
 
     def update(self) -> None:
         self.render()
@@ -284,5 +292,13 @@ class ChitCard(GameObject, RenderableInterface, ObserverInterface):
             screen, Color(0, 0, 0), self.rect, self.rect.width // OUTLINE_RATIO
         )  # Outline
 
+    def _try_flip(self) -> None:
+        if not self.flipped and not self.frozen:
+            self.flipped = True
+            ChitFlipHandler.get_instance().emit(self.animal_type, self.count)
+
     def notify(self, event: Event) -> None:
-        pass
+        match event:
+            case ClickEvent():
+                if self.rect.collidepoint(event.x, event.y):
+                    self._try_flip()

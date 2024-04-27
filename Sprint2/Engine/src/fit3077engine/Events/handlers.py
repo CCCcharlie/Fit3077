@@ -59,6 +59,7 @@ class PygameQuitHandler(PygameEventHandler):
                 f"Cannot instantiate singleton {PygameQuitHandler.__name__} more than once. Use get_instance()"
             )
         super().__init__(pygame.QUIT)
+        PygameQuitHandler.instance = self
 
     @classmethod
     def get_instance(cls) -> PygameQuitHandler:
@@ -87,6 +88,7 @@ class PygameClickHandler(PygameEventHandler):
                 f"Cannot instantiate singleton {PygameClickHandler.__name__} more than once. Use get_instance()"
             )
         super().__init__(pygame.MOUSEBUTTONDOWN)
+        PygameClickHandler.instance = self
 
     @classmethod
     def get_instance(cls) -> PygameClickHandler:
