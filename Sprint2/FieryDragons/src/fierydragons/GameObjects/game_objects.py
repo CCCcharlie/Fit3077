@@ -112,6 +112,12 @@ class GameBoard(GameObject, ObserverInterface):
     def is_player_turn(self, player: Player) -> bool:
         return self.player_id(player) == self._current_turn
 
+    def is_position_populated(self, position: GamePosition) -> bool:
+        for player in self.players:
+            if player.position is position:
+                return True
+        return False
+
     def update(self) -> None:
         for segment in self.segments:
             segment.update()
@@ -130,6 +136,10 @@ class Player(GameObject, RenderableInterface, ObserverInterface):
         super().__init__()
         self.position: GamePosition = cave
         self.cave = cave
+        self.steps_taken = 0
+
+        # EventHandlers
+        ChitFlipHandler.get_instance().add_subscriber(self)
 
     def update(self) -> None:
         self.render()
@@ -156,8 +166,57 @@ class Player(GameObject, RenderableInterface, ObserverInterface):
         id_text_rect = id_text.get_rect(center=(x, y))
         screen.blit(id_text, id_text_rect)
 
+    def _try_move(self, animal_type: AnimalType, count: int) -> None:
+        if GameBoard.get_instance().is_player_turn(self):
+            if animal_type is AnimalType.PIRATE_DRAGON:
+                # Backward
+                end_turn = True
+                steps = -count
+            elif animal_type is self.position.animal_type:
+                # Forward
+                end_turn = False
+                steps = count
+            else:
+                # End turn early, different animal type
+                end_turn = True
+                steps = 0
+
+            # Traverse
+            delta_steps = steps
+            current = self.position
+            while steps != 0:
+                if steps > 0:
+                    steps -= 1
+                    next_pos = current.next(self)
+                    if next_pos is None:
+                        # End turn without moving
+                        end_turn = True
+                        steps = 0
+                        delta_steps = 0
+                        current = self.position
+                    else:
+                        current = next_pos
+                else:
+                    steps += 1
+                    next_pos = current.previous(self)
+                    if next_pos is None:
+                        # End turn and move to last valid position
+                        delta_steps -= steps - 1
+                        steps = 0
+                    else:
+                        current = next_pos
+
+            self.steps_taken += delta_steps
+            self.position = current
+
+            if end_turn:
+                pass
+
     def notify(self, event: Event) -> None:
-        pass
+        match event:
+            case ChitEvent():
+                if GameBoard.get_instance().turns_passed == event.turn:
+                    self._try_move(event.animal_type, event.count)
 
 
 class GamePosition(GameObject, RenderableInterface):
@@ -208,6 +267,7 @@ class SegmentPosition(GamePosition):
                     cave_x = self.rect.x - self.rect.width
                     cave_y = self.rect.y
             self.cave = CavePosition(cave_x, cave_y, self.rect.width, cave_type)
+            self.cave.link(self)
 
     def update(self) -> None:
         if self.cave is not None:
@@ -219,10 +279,26 @@ class SegmentPosition(GamePosition):
         self._next = next
 
     def next(self, player: Player) -> GamePosition | None:
-        return super().next(player)
+        if self._next.cave is not None and self._next.cave is player.cave:
+            next_pos = self._next.cave
+        else:
+            next_pos = self._next
+
+        if GameBoard.get_instance().is_position_populated(next_pos):
+            return None
+        else:
+            return next_pos
 
     def previous(self, player: Player) -> GamePosition | None:
-        return super().previous(player)
+        if self.cave is not None and self.cave is player.cave:
+            prev_pos = self.cave
+        else:
+            prev_pos = self._previous
+
+        if GameBoard.get_instance().is_position_populated(prev_pos):
+            return None
+        else:
+            return prev_pos
 
 
 class CavePosition(GamePosition):
@@ -238,10 +314,14 @@ class CavePosition(GamePosition):
         self._next = next
 
     def next(self, player: Player) -> GamePosition | None:
-        return super().next(player)
+        if player.steps_taken > 0:
+            return None
+        else:
+            print(self._next)
+            return self._next
 
     def previous(self, player: Player) -> GamePosition | None:
-        return super().previous(player)
+        return None
 
     def render(self) -> None:
         return super().render()
@@ -266,7 +346,7 @@ class ChitCard(GameObject, RenderableInterface, ObserverInterface):
         self.flipped = False
         self.frozen = False
 
-        # Listeners
+        # EventHandlers
         PygameClickHandler.get_instance().add_subscriber(self)
 
     def update(self) -> None:
