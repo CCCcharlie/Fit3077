@@ -62,18 +62,28 @@ class RectangleGridIterator(Iterator[Tuple[int, int]]):
         tiles: int,
         gap_ratio: int,
     ) -> None:
-        self.x = x
-        self._x_start = x
-        self.y = y
+        self._cols_rows = ceil(sqrt(tiles))
+        effective_cols_rows = self._cols_rows + ceil((self._cols_rows - 1) / gap_ratio)
 
-        self._cols = ceil(sqrt((tiles * ratio[1]) / ratio[0]))
-        effective_cols = self._cols + ceil((self._cols - 1) / gap_ratio)
+        # Size Handling
+        if ratio[0] > ratio[1]:
+            self.width = ceil(size / effective_cols_rows)
+            self.height = ceil((self.width * ratio[1]) / ratio[0])
+        else:
+            self.height = ceil(size / effective_cols_rows)
+            self.width = ceil((self.height * ratio[0]) / ratio[1])
 
-        self.width = size // effective_cols
-        self.height = (self.width * ratio[1]) // ratio[0]
         self.w_gap = self.width // gap_ratio
         self.h_gap = self.height // gap_ratio
 
+        # Recentering
+        width_diff = size - (self.width * effective_cols_rows)
+        height_diff = size - (self.height * effective_cols_rows)
+        self.x = x + (width_diff // 2)
+        self._x_start = x + (width_diff // 2)
+        self.y = y + height_diff // 2
+
+        # Iteration
         self.tiles = tiles
         self._tiles_placed = 0
         self._tile = 0
@@ -88,7 +98,7 @@ class RectangleGridIterator(Iterator[Tuple[int, int]]):
         result = (self.x, self.y)
 
         # Update Values
-        if self._tile < self._cols - 1:
+        if self._tile < self._cols_rows - 1:
             self._tile += 1
             self.x += self.width + self.w_gap
         else:
