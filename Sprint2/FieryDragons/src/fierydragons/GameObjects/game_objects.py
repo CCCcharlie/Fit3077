@@ -3,7 +3,7 @@ from abc import abstractmethod
 from collections.abc import MutableSequence, Sequence
 from random import randint
 from typing import Tuple
-from fit3077engine.Events.handlers import PygameClickHandler
+from fit3077engine.Events.handlers import PygameClickHandler, PygameQuitHandler
 import pygame
 from pygame.color import Color
 from pygame.rect import Rect
@@ -15,8 +15,8 @@ from fit3077engine.Events.events import ClickEvent, Event
 from fit3077engine.Utils.settings import Settings
 
 from .enums import AnimalType
-from ..Events.event import ChitEvent, TurnEndEvent
-from ..Events.handlers import ChitFlipHandler, TurnEndHandler
+from ..Events.event import ChitEvent, GameOverEvent, TurnEndEvent
+from ..Events.handlers import ChitFlipHandler, GameOverHandler, TurnEndHandler
 from ..Utils.enums import Side
 from ..Utils.helper_classes import RectangleGridIterator, SegmentedSquareIterator, Timer
 
@@ -24,6 +24,7 @@ from ..Utils.helper_classes import RectangleGridIterator, SegmentedSquareIterato
 class GameBoard(GameObject, ObserverInterface):
 
     current_instance: GameBoard | None = None
+    SHUTDOWN_TIME = 2
 
     def __init__(
         self, segments: int = 24, players: int = 4, chit_cards: int = 16
@@ -42,8 +43,11 @@ class GameBoard(GameObject, ObserverInterface):
         self.turns_passed = 0
         self.chit_cards = self._create_chit_cards(chit_cards, int(pos_size * 2.5))
 
+        self.shutdown_timer = Timer(GameBoard.SHUTDOWN_TIME)
+
         # Event Handlers
         TurnEndHandler.get_instance().add_subscriber(self)
+        GameOverHandler.get_instance().add_subscriber(self)
 
         # Singleton Behaviour
         GameBoard.current_instance = self
@@ -129,12 +133,17 @@ class GameBoard(GameObject, ObserverInterface):
             player.update()
         for chit_card in self.chit_cards:
             chit_card.update()
+        self.shutdown_timer.update()
+        if self.shutdown_timer.check():
+            PygameQuitHandler.get_instance().emit()
 
     def notify(self, event: Event) -> None:
         match event:
             case TurnEndEvent():
                 self.turns_passed += 1
                 self._current_turn = (self._current_turn + 1) % len(self.players)
+            case GameOverEvent():
+                self.shutdown_timer.start()
 
 
 class Player(GameObject, RenderableInterface, ObserverInterface):
@@ -218,6 +227,12 @@ class Player(GameObject, RenderableInterface, ObserverInterface):
 
             if end_turn:
                 TurnEndHandler.get_instance().emit()
+
+            if self._has_won():
+                GameOverHandler.get_instance().emit(self)
+
+    def _has_won(self) -> bool:
+        return self.position is self.cave and self.steps_taken > 0
 
     def notify(self, event: Event) -> None:
         match event:
@@ -356,6 +371,7 @@ class ChitCard(GameObject, RenderableInterface, ObserverInterface):
         # EventHandlers
         PygameClickHandler.get_instance().add_subscriber(self)
         TurnEndHandler.get_instance().add_subscriber(self)
+        GameOverHandler.get_instance().add_subscriber(self)
 
     def update(self) -> None:
         self.render()
@@ -394,4 +410,6 @@ class ChitCard(GameObject, RenderableInterface, ObserverInterface):
                 if self.rect.collidepoint(event.x, event.y):
                     self._try_flip()
             case TurnEndEvent():
+                self.freeze_timer.start()
+            case GameOverEvent():
                 self.freeze_timer.start()

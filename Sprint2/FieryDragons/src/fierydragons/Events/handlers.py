@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from fit3077engine.Events.handlers import EventHandler
 
-from .event import ChitEvent, TurnEndEvent
+from .event import ChitEvent, GameOverEvent, TurnEndEvent
 from ..GameObjects.enums import AnimalType
 from ..GameObjects import game_objects
 
@@ -50,3 +50,25 @@ class TurnEndHandler(EventHandler):
 
     def emit(self) -> None:
         self._emit(TurnEndEvent())
+
+
+class GameOverHandler(EventHandler):
+
+    instance: GameOverHandler | None = None
+
+    def __init__(self) -> None:
+        super().__init__()
+        if GameOverHandler.instance is not None:
+            raise ValueError(
+                f"Cannot instantiate singleton {GameOverHandler.__name__} more than once. Use get_instance()"
+            )
+        GameOverHandler.instance = self
+
+    @classmethod
+    def get_instance(cls) -> GameOverHandler:
+        if cls.instance is None:
+            cls.instance = GameOverHandler()
+        return cls.instance
+
+    def emit(self, player: game_objects.Player) -> None:
+        self._emit(GameOverEvent(player))

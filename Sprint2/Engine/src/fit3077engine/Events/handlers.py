@@ -77,6 +77,11 @@ class PygameQuitHandler(PygameEventHandler):
     def process_event(self, event: pygame.event.Event) -> Event:
         return Event()
 
+    def emit(self):
+        self._emit(Event())
+        pygame.quit()
+        sys.exit(0)
+
 
 class PygameClickHandler(PygameEventHandler):
 
