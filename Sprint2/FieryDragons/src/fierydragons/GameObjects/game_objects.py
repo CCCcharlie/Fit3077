@@ -1,6 +1,7 @@
 from __future__ import annotations
 from abc import abstractmethod
 from collections.abc import MutableSequence, Sequence
+from random import randint
 from typing import Tuple
 import pygame
 from pygame.color import Color
@@ -14,7 +15,7 @@ from fit3077engine.Utils.settings import Settings
 
 from .enums import AnimalType
 from ..Utils.enums import Side
-from ..Utils.helper_classes import SegmentedSquareIterator
+from ..Utils.helper_classes import RectangleGridIterator, SegmentedSquareIterator
 
 
 class GameBoard(GameObject, ObserverInterface):
@@ -25,27 +26,29 @@ class GameBoard(GameObject, ObserverInterface):
         self, segments: int = 24, players: int = 4, chit_cards: int = 16
     ) -> None:
         super().__init__()
+        settings = Settings.get_instance()
+        self.x, self.y = (
+            (settings.screen.get_width() // 2) - (settings.screen.get_height() // 2),
+            0,
+        )
+        self.size = settings.screen.get_height()
 
-        self.segments, caves = GameBoard._place_segments(segments, players)
-        self.players = GameBoard._create_players(caves)
+        self.segments, caves, pos_size = self._place_segments(segments, players)
+        self.players = self._create_players(caves)
         self._current_turn = 0
+        self.chit_cards = self._create_chit_cards(chit_cards, int(pos_size * 2.5))
 
         GameBoard.current_instance = self
 
-    @classmethod
     def _place_segments(
-        cls, segments: int, players: int
-    ) -> Tuple[Sequence[SegmentPosition], Sequence[CavePosition]]:
+        self, segments: int, players: int
+    ) -> Tuple[Sequence[SegmentPosition], Sequence[CavePosition], int]:
         settings = Settings.get_instance()
 
         segments_list: MutableSequence[SegmentPosition] = []
         caves_list: MutableSequence[CavePosition] = []
-        top_left_x, top_left_y = (
-            (settings.screen.get_width() // 2) - (settings.screen.get_height() // 2),
-            0,
-        )
         board_iter = SegmentedSquareIterator(
-            top_left_x, top_left_y, settings.screen.get_height(), segments, offset=1
+            self.x, self.y, self.size, segments, offset=1
         )
         for seg_idx, (x, y, side) in zip(range(segments), board_iter):
 
@@ -67,16 +70,28 @@ class GameBoard(GameObject, ObserverInterface):
             next_seg = segments_list[(seg_idx + 1) % len(segments_list)]
             seg.link(prev_seg, next_seg)
 
-        return segments_list, caves_list
+        return segments_list, caves_list, board_iter.size
 
-    @classmethod
-    def _create_players(cls, caves: Sequence[CavePosition]) -> Sequence[Player]:
+    def _create_players(self, caves: Sequence[CavePosition]) -> Sequence[Player]:
         players: MutableSequence[Player] = []
 
         for cave in caves:
             players.append(Player(cave))
 
         return players
+
+    def _create_chit_cards(self, amount: int, gap: int) -> Sequence[ChitCard]:
+        chit_cards: MutableSequence[ChitCard] = []
+
+        x_start, y_start = self.x + gap, self.y + gap
+        chit_iterator = RectangleGridIterator(
+            x_start, y_start, self.size - (2 * gap), (5, 7), amount, 2
+        )
+        for x, y in chit_iterator:
+            new_chit = ChitCard(x, y, chit_iterator.width, chit_iterator.height)
+            chit_cards.append(new_chit)
+
+        return chit_cards
 
     @classmethod
     def get_instance(cls) -> GameBoard:
@@ -98,6 +113,8 @@ class GameBoard(GameObject, ObserverInterface):
             segment.update()
         for player in self.players:
             player.update()
+        for chit_card in self.chit_cards:
+            chit_card.update()
 
     def notify(self, event: Event) -> None:
         pass
@@ -228,11 +245,34 @@ class CavePosition(GamePosition):
 
 class ChitCard(GameObject, RenderableInterface, ObserverInterface):
 
-    def __init__(self) -> None:
+    MIN_COUNT = 1
+    MAX_COUNT = 3
+
+    def __init__(
+        self,
+        x: int,
+        y: int,
+        width: int,
+        height: int,
+    ) -> None:
         super().__init__()
+        self.rect = Rect(x, y, width, height)
+        self.count = randint(ChitCard.MIN_COUNT, ChitCard.MAX_COUNT)
+        self.animal_type = AnimalType.get_random_any()
+        self.flipped = False
+
+    def update(self) -> None:
+        self.render()
 
     def render(self) -> None:
-        pass
+        screen = Settings.get_instance().screen
+        OUTLINE_RATIO = 8
+
+        # Card
+        pygame.draw.rect(screen, self.animal_type.get_colour(), self.rect)  # Colour
+        pygame.draw.rect(
+            screen, Color(0, 0, 0), self.rect, self.rect.width // OUTLINE_RATIO
+        )  # Outline
 
     def notify(self, event: Event) -> None:
         pass
