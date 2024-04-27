@@ -10,7 +10,7 @@ class Scene(UpdateableInterface):
     def __init__(self) -> None:
         self._objects: Mapping[int, MutableSet[GameObject]] = defaultdict(set)
 
-    def add_object(self, obj: GameObject, layer: int) -> None:
+    def add_object(self, obj: GameObject, layer: int = 0) -> None:
         self._objects[layer].add(obj)
 
     def remove_object(self, obj, layer: int | None = None) -> None:

@@ -34,5 +34,5 @@ class Settings:
     @classmethod
     def get_instance(cls) -> Settings:
         if cls.instance is None:
-            cls.instance = Settings(Scene(), "Pygame")
+            raise ValueError("Instantiate once using constructor first.")
         return cls.instance

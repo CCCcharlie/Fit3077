@@ -5,17 +5,20 @@ from .enums import Side
 
 class SegmentedSquareIterator(Iterator[Tuple[int, int, Side]]):
 
-    def __init__(self, x: int, y: int, size: int, segments: int) -> None:
-        self.x = x
-        self.y = y
-        self._size = size
+    def __init__(
+        self, x: int, y: int, size: int, segments: int, offset: int = 0
+    ) -> None:
         self.segments = segments
         self._segment = 0
         self._segments_placed = 0
 
         self._segments_per_side = ((segments - 2) // 4) + 2
-        self.size = size // self._segments_per_side
+        self.size = size // (self._segments_per_side + 2 * offset)
         self.side = Side.TOP
+
+        self._size = size - (2 * offset * self.size)
+        self.x = x + offset * self.size
+        self.y = y + offset * self.size
 
     def __iter__(self) -> Iterator[Tuple[int, int, Side]]:
         return self
