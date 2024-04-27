@@ -1,0 +1,10 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+[project]
+name = "fit3077engine"
+version = "1.0.dev1"
+dependencies = ["pygame"]
+authors = [ 
+    { name = "Daniel Gower-Hall", email = "dgow0002@student.monash.edu" },
+]
