@@ -1,14 +1,16 @@
 from __future__ import annotations
 from abc import abstractmethod
 from collections.abc import MutableSequence, Sequence
+from typing import Tuple
+import pygame
+from pygame.color import Color
+from pygame.rect import Rect
 
 from fit3077engine.GameObjects.game_objects import GameObject
 from fit3077engine.GameObjects.interfaces import RenderableInterface
 from fit3077engine.Events.observer import ObserverInterface
 from fit3077engine.Events.events import Event
 from fit3077engine.Utils.settings import Settings
-import pygame
-from pygame.rect import Rect
 
 from .enums import AnimalType
 from ..Utils.enums import Side
@@ -24,15 +26,20 @@ class GameBoard(GameObject, ObserverInterface):
     ) -> None:
         super().__init__()
 
-        self.segments = self._place_segments(segments, players)
+        self.segments, caves = GameBoard._place_segments(segments, players)
+        self.players = GameBoard._create_players(caves)
+        self._current_turn = 0
 
-        self.current_instance = self
+        GameBoard.current_instance = self
 
-    def _place_segments(self, segments: int, players: int) -> Sequence[SegmentPosition]:
+    @classmethod
+    def _place_segments(
+        cls, segments: int, players: int
+    ) -> Tuple[Sequence[SegmentPosition], Sequence[CavePosition]]:
         settings = Settings.get_instance()
 
         segments_list: MutableSequence[SegmentPosition] = []
-        caves = 0
+        caves_list: MutableSequence[CavePosition] = []
         top_left_x, top_left_y = (
             (settings.screen.get_width() // 2) - (settings.screen.get_height() // 2),
             0,
@@ -41,31 +48,35 @@ class GameBoard(GameObject, ObserverInterface):
             top_left_x, top_left_y, settings.screen.get_height(), segments, offset=1
         )
         for seg_idx, (x, y, side) in zip(range(segments), board_iter):
-            if seg_idx % (segments // players) == 0:
+
+            if (seg_idx - 1) % (segments // players) == 0:
                 # Segment should have a cave
-                segments_list.append(
-                    SegmentPosition(
-                        x, y, board_iter.size, side, AnimalType(caves % len(AnimalType))
-                    )
-                )
-                caves += 1
+                cave_type = AnimalType(len(caves_list) % len(AnimalType))
             else:
                 # No Cave
-                segments_list.append(
-                    SegmentPosition(
-                        x,
-                        y,
-                        board_iter.size,
-                        side,
-                    )
-                )
+                cave_type = None
+
+            new_segment = SegmentPosition(x, y, board_iter.size, side, cave_type)
+            segments_list.append(new_segment)
+            if new_segment.cave is not None:
+                caves_list.append(new_segment.cave)
+
         # Link Segments
         for seg_idx, seg in enumerate(segments_list):
             prev_seg = segments_list[(seg_idx - 1) % len(segments_list)]
             next_seg = segments_list[(seg_idx + 1) % len(segments_list)]
             seg.link(prev_seg, next_seg)
 
-        return segments_list
+        return segments_list, caves_list
+
+    @classmethod
+    def _create_players(cls, caves: Sequence[CavePosition]) -> Sequence[Player]:
+        players: MutableSequence[Player] = []
+
+        for cave in caves:
+            players.append(Player(cave))
+
+        return players
 
     @classmethod
     def get_instance(cls) -> GameBoard:
@@ -73,9 +84,20 @@ class GameBoard(GameObject, ObserverInterface):
             raise ValueError(f"{GameBoard.__name__} not instantiated.")
         return cls.current_instance
 
+    def player_id(self, player: Player) -> int:
+        for id, list_player in enumerate(self.players):
+            if player is list_player:
+                return id
+        raise ValueError("That Player is not active on this board.")
+
+    def is_player_turn(self, player: Player) -> bool:
+        return self.player_id(player) == self._current_turn
+
     def update(self) -> None:
         for segment in self.segments:
             segment.update()
+        for player in self.players:
+            player.update()
 
     def notify(self, event: Event) -> None:
         pass
@@ -83,14 +105,35 @@ class GameBoard(GameObject, ObserverInterface):
 
 class Player(GameObject, RenderableInterface, ObserverInterface):
 
-    def __init__(self) -> None:
+    def __init__(self, cave: CavePosition) -> None:
         super().__init__()
+        self.position: GamePosition = cave
+        self.cave = cave
 
     def update(self) -> None:
-        pass
+        self.render()
 
     def render(self) -> None:
-        pass
+        id = GameBoard.get_instance().player_id(self)
+        screen = Settings.get_instance().screen
+        x, y = self.position.rect.center
+        RADIUS = 16
+
+        if GameBoard.get_instance().is_player_turn(self):
+            colour = Color(255, 0, 0)
+        else:
+            colour = Color(255, 255, 255)
+
+        # Circle
+        pygame.draw.circle(screen, colour, (x, y), RADIUS)  # Colour
+        pygame.draw.circle(
+            screen, Color(0, 0, 0), (x, y), RADIUS, RADIUS // 4
+        )  # Outline
+        # ID Number
+        font = pygame.font.Font(None, RADIUS * 2)
+        id_text = font.render(str(id), True, Color(0, 0, 0))
+        id_text_rect = id_text.get_rect(center=(x, y))
+        screen.blit(id_text, id_text_rect)
 
     def notify(self, event: Event) -> None:
         pass
@@ -168,7 +211,7 @@ class CavePosition(GamePosition):
         self._next: GamePosition = None
 
     def update(self) -> None:
-        pass
+        self.render()
 
     def link(self, next: GamePosition) -> None:
         self._next = next
