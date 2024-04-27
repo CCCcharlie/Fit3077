@@ -9,3 +9,8 @@ class ChitEvent(Event):
     animal_type: AnimalType
     count: int
     turn: int
+
+
+@dataclass(frozen=True)
+class TurnEndEvent(Event):
+    pass

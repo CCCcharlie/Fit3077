@@ -15,10 +15,10 @@ from fit3077engine.Events.events import ClickEvent, Event
 from fit3077engine.Utils.settings import Settings
 
 from .enums import AnimalType
-from ..Events.event import ChitEvent
-from ..Events.handlers import ChitFlipHandler
+from ..Events.event import ChitEvent, TurnEndEvent
+from ..Events.handlers import ChitFlipHandler, TurnEndHandler
 from ..Utils.enums import Side
-from ..Utils.helper_classes import RectangleGridIterator, SegmentedSquareIterator
+from ..Utils.helper_classes import RectangleGridIterator, SegmentedSquareIterator, Timer
 
 
 class GameBoard(GameObject, ObserverInterface):
@@ -42,6 +42,10 @@ class GameBoard(GameObject, ObserverInterface):
         self.turns_passed = 0
         self.chit_cards = self._create_chit_cards(chit_cards, int(pos_size * 2.5))
 
+        # Event Handlers
+        TurnEndHandler.get_instance().add_subscriber(self)
+
+        # Singleton Behaviour
         GameBoard.current_instance = self
 
     def _place_segments(
@@ -127,7 +131,10 @@ class GameBoard(GameObject, ObserverInterface):
             chit_card.update()
 
     def notify(self, event: Event) -> None:
-        pass
+        match event:
+            case TurnEndEvent():
+                self.turns_passed += 1
+                self._current_turn = (self._current_turn + 1) % len(self.players)
 
 
 class Player(GameObject, RenderableInterface, ObserverInterface):
@@ -210,7 +217,7 @@ class Player(GameObject, RenderableInterface, ObserverInterface):
             self.position = current
 
             if end_turn:
-                pass
+                TurnEndHandler.get_instance().emit()
 
     def notify(self, event: Event) -> None:
         match event:
@@ -317,7 +324,6 @@ class CavePosition(GamePosition):
         if player.steps_taken > 0:
             return None
         else:
-            print(self._next)
             return self._next
 
     def previous(self, player: Player) -> GamePosition | None:
@@ -331,6 +337,7 @@ class ChitCard(GameObject, RenderableInterface, ObserverInterface):
 
     MIN_COUNT = 1
     MAX_COUNT = 3
+    FREEZE_TIMER = 1.5
 
     def __init__(
         self,
@@ -344,13 +351,17 @@ class ChitCard(GameObject, RenderableInterface, ObserverInterface):
         self.count = randint(ChitCard.MIN_COUNT, ChitCard.MAX_COUNT)
         self.animal_type = AnimalType.get_random_any()
         self.flipped = False
-        self.frozen = False
+        self.freeze_timer = Timer(ChitCard.FREEZE_TIMER)
 
         # EventHandlers
         PygameClickHandler.get_instance().add_subscriber(self)
+        TurnEndHandler.get_instance().add_subscriber(self)
 
     def update(self) -> None:
         self.render()
+        self.freeze_timer.update()
+        if self.freeze_timer.check():
+            self.flipped = False
 
     def render(self) -> None:
         screen = Settings.get_instance().screen
@@ -358,7 +369,7 @@ class ChitCard(GameObject, RenderableInterface, ObserverInterface):
         BACK_COLOUR = Color(100, 80, 55)
 
         # Card
-        if self.flipped:
+        if self.flipped or True:
             pygame.draw.rect(screen, self.animal_type.get_colour(), self.rect)  # Colour
             # Count
             font = pygame.font.Font(None, self.rect.width)
@@ -373,7 +384,7 @@ class ChitCard(GameObject, RenderableInterface, ObserverInterface):
         )  # Outline
 
     def _try_flip(self) -> None:
-        if not self.flipped and not self.frozen:
+        if not self.flipped and not self.freeze_timer.timing:
             self.flipped = True
             ChitFlipHandler.get_instance().emit(self.animal_type, self.count)
 
@@ -382,3 +393,5 @@ class ChitCard(GameObject, RenderableInterface, ObserverInterface):
             case ClickEvent():
                 if self.rect.collidepoint(event.x, event.y):
                     self._try_flip()
+            case TurnEndEvent():
+                self.freeze_timer.start()

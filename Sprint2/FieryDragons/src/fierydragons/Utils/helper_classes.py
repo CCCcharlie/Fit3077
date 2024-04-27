@@ -1,6 +1,9 @@
 from typing import Iterator, Tuple
 from math import ceil, sqrt
 
+from fit3077engine.GameObjects.interfaces import UpdateableInterface
+from fit3077engine.Utils.settings import Settings
+
 from .enums import Side
 
 
@@ -108,3 +111,25 @@ class RectangleGridIterator(Iterator[Tuple[int, int]]):
 
         self._tiles_placed += 1
         return result
+
+
+class Timer(UpdateableInterface):
+
+    def __init__(self, seconds: float) -> None:
+        self.timing = False
+        self._start_frames = int(seconds * Settings.get_instance().fps)
+        self._frames = 0
+
+    def start(self) -> None:
+        self.timing = True
+        self._frames = self._start_frames
+
+    def check(self) -> bool:
+        if self.timing and self._frames <= 0:
+            self.timing = False
+            return True
+        return False
+
+    def update(self) -> None:
+        if self.timing:
+            self._frames = max(0, self._frames - 1)
