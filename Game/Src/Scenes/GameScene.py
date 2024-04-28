@@ -1,6 +1,7 @@
 from Engine import *
 from Game.Src.Components.PlayerPositionComponent import PlayerPositionComponent
 from Game.Src.Enums.AnimalType import AnimalType
+from Game.Src.Enums.ChitCardType import ChitCardType
 from Game.Src.Objects.Cave import Cave
 from Game.Src.Objects.ChitCard import ChitCard
 from Game.Src.Objects.Player import Player
@@ -132,7 +133,27 @@ class GameScene(Scene):
 
     firstElementCreated.addPlayer(player)
 
-    # add the 16 chid cards in the centre
+    chitCards = [
+      (1, ChitCardType.SALAMANDER),
+      (2, ChitCardType.SALAMANDER),
+      (3, ChitCardType.SALAMANDER),
+      (1, ChitCardType.BAT),
+      (2, ChitCardType.BAT),
+      (3, ChitCardType.BAT),
+      (1, ChitCardType.SPIDER),
+      (2, ChitCardType.SPIDER),
+      (3, ChitCardType.SPIDER),
+      (1, ChitCardType.BABY_DRAGON),
+      (2, ChitCardType.BABY_DRAGON),
+      (3, ChitCardType.BABY_DRAGON),
+      (1, ChitCardType.PIRATE_DRAGON),
+      (1, ChitCardType.PIRATE_DRAGON),
+      (2, ChitCardType.PIRATE_DRAGON),
+      (2, ChitCardType.PIRATE_DRAGON)
+    ]
+
+    random.shuffle(chitCards)
+
     #this is a square chit card generator
     start_pos_x = 3 * World().SCREEN_WIDTH/8
     end_pos_x = 5 * World().SCREEN_WIDTH/8
@@ -146,7 +167,6 @@ class GameScene(Scene):
     end_pos_x = end_pos_x - chit_card_radius
     end_pos_y = end_pos_y - chit_card_radius
 
-
     num_chit_x = 4
     num_chit_y = 4
 
@@ -159,5 +179,6 @@ class GameScene(Scene):
         y_pos = start_pos_y + j * y_interval
 
         # create chit card at x and y position
-        chit_card = ChitCard(x_pos, y_pos, chit_card_radius)
+        count, type = chitCards.pop()
+        chit_card = ChitCard(x_pos, y_pos, chit_card_radius, type, count)
         self.addEntity(chit_card)
