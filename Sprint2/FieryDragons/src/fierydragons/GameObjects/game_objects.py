@@ -385,7 +385,7 @@ class ChitCard(GameObject, RenderableInterface, ObserverInterface):
         BACK_COLOUR = Color(100, 80, 55)
 
         # Card
-        if self.flipped or True:
+        if self.flipped:
             pygame.draw.rect(screen, self.animal_type.get_colour(), self.rect)  # Colour
             # Count
             font = pygame.font.Font(None, self.rect.width)
