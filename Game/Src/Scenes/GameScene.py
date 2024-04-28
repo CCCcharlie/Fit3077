@@ -8,20 +8,22 @@ from Game.Src.Objects.Segment import Segment
 from Game.Src.Objects.TurnManager import TurnManager
 from Game.Src.Objects.VolcanoCard import VolcanoCard 
 
+import random
+
 class RectangleCoordinateGenerator():
   def __init__(self):
     # setup generator variables
     self.startX = 40
-    self.startY = 40
-    self.rectWidth = World.SCREEN_WIDTH - 40
-    self.rectHeight = World.SCREEN_HEIGHT - 40
+    self.startY = 20
+    self.rectWidth = World.SCREEN_WIDTH - 80
+    self.rectHeight = World.SCREEN_HEIGHT - 4
 
     self.numRows = 9
     self.numColumns = 9
 
   def generateCoordinates(self, row, column):
-    x = self.startX + self.rectWidth * row / self.numRows
-    y = self.startY + self.rectHeight * column/ self.numRows
+    x = self.startX + self.rectWidth * row / (self.numRows + 1)
+    y = self.startY + self.rectHeight * column/ (self.numRows + 1)
     return (x,y)
 
 class GridPositionGenerator():
@@ -53,35 +55,34 @@ class GameScene(Scene):
     self.addEntity(player)
     TurnManager.PLAYER = player
 
-    ## add the 8 volcano cards in the right position
-    volcanoCardAnimals = [
-      [AnimalType.BABY_DRAGON, AnimalType.BAT, AnimalType.SPIDER],
-      [AnimalType.SALAMANDER, AnimalType.SPIDER, AnimalType.BAT],
-      [AnimalType.SPIDER, AnimalType.SALAMANDER, AnimalType.BABY_DRAGON],
-      [AnimalType.BAT, AnimalType.SPIDER, AnimalType.BABY_DRAGON],
-      [AnimalType.SPIDER, AnimalType.BAT, AnimalType.SALAMANDER],
-      [AnimalType.BABY_DRAGON, AnimalType.SALAMANDER, AnimalType.BAT],
-      [AnimalType.BAT, AnimalType.BABY_DRAGON, AnimalType.SALAMANDER],
-      [AnimalType.SALAMANDER, AnimalType.BABY_DRAGON, AnimalType.SPIDER]
+    ## define volcano cards
+    volcanoCardSpecifications = [
+      ([AnimalType.BABY_DRAGON, AnimalType.BAT, AnimalType.SPIDER],True),
+      ([AnimalType.SALAMANDER, AnimalType.SPIDER, AnimalType.BAT],True),
+      ([AnimalType.SPIDER, AnimalType.SALAMANDER, AnimalType.BABY_DRAGON],True),
+      ([AnimalType.BAT, AnimalType.SPIDER, AnimalType.BABY_DRAGON],True),
+      ([AnimalType.SPIDER, AnimalType.BAT, AnimalType.SALAMANDER],False),
+      ([AnimalType.BABY_DRAGON, AnimalType.SALAMANDER, AnimalType.BAT],False),
+      ([AnimalType.BAT, AnimalType.BABY_DRAGON, AnimalType.SALAMANDER],False),
+      ([AnimalType.SALAMANDER, AnimalType.BABY_DRAGON, AnimalType.SPIDER],False)
     ]
 
+    # define cave types
     caves = [
       AnimalType.BABY_DRAGON,
       AnimalType.SALAMANDER,
       AnimalType.BAT,
       AnimalType.SPIDER,
-      None,
-      None,
-      None,
-      None
     ]
+
+    # randomise
+    random.shuffle(volcanoCardSpecifications)
+    random.shuffle(caves)
 
     previousLastSegment: PlayerPositionComponent = None
     firstElementCreated: PlayerPositionComponent = None
 
-    for i, animals in enumerate(volcanoCardAnimals):
-      caveAnimal = caves[i]
-      
+    for i, (animals, hasCave) in enumerate(volcanoCardSpecifications):
       x, y = gpg.getCoords(i, 0)
       seg1 = Segment(x, y, animals[0])
       x, y = gpg.getCoords(i, 1)
@@ -94,7 +95,8 @@ class GameScene(Scene):
       pp_seg3: PlayerPositionComponent = seg3.get_component(PlayerPositionComponent)
                                   
       cave = None
-      if caveAnimal:
+      if hasCave:
+        caveAnimal = caves.pop()
         x, y = gpg.getCoords(i, 3)
         cave = Cave(x, y, caveAnimal)
 
@@ -113,7 +115,7 @@ class GameScene(Scene):
     
       segments = [seg1, seg2, seg3]
 
-      volcCard = VolcanoCard(segments)
+      volcCard = VolcanoCard(segments, cave)
       self.addEntity(volcCard)
 
 

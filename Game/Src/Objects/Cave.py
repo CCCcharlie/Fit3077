@@ -8,7 +8,7 @@ class Cave(Entity):
     super().__init__()
 
     trans = TransformComponent(self,x,y)
-    rect = RectComponent(self, 10,10,(255,255,255))
+    rect = RectComponent(self, 10,10,(250,0,0))
     playerPositionComponent = PlayerPositionComponent(self, animalType)
 
     self.add_component(trans)
