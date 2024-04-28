@@ -13,6 +13,16 @@ class PlayerPositionComponent(Component):
     self.previous: PlayerPositionComponent = None
     self.cave: PlayerPositionComponent = None
 
+
+  def setNext(self, ppc: 'PlayerPositionComponent'):
+    self.next = ppc
+
+  def setPrevious(self, ppc: 'PlayerPositionComponent'):
+    self.previous = ppc
+
+  def setCave(self, ppc: 'PlayerPositionComponent'):
+    self.cave = ppc
+
   def movePlayer(self, player: Entity, moveDistance):
     #try to move forward
     if moveDistance > 0:
@@ -54,6 +64,8 @@ class PlayerPositionComponent(Component):
     self.playerOnSquare = player
 
     TurnManager.CURRENT_POSITION = self
+
+    return True
     
 
 
