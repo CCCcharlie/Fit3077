@@ -13,8 +13,10 @@ class Button(Entity):
     super().__init__()
 
     trans = TransformComponent(self, x, y)
-    rect = RectComponent(self, width, height, (0,0,250))
-    text = TextComponent(self, textContent, pygame.font.SysFont("Corbel", 30), (250,250,250))
+    rect = RectComponent(self, width, height)
+    rect.setColour(pygame.Color(0,0,250))
+    text = TextComponent(self, textContent, pygame.font.SysFont("Corbel", 30))
+    text.setColour(pygame.Color(255,255,255))
     clickable = ClickableComponent(self, width, height)
     button = ButtonComponent(self, command)
     command = CommandComponent(self)

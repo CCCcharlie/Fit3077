@@ -4,7 +4,7 @@ from .Component import Component
 
 from enum import Enum 
 from Engine.Component.ClickableComponent import ClickableComponent
-from Engine.Component.RectComponent import RectComponent
+from Engine.Component.RenderableComponent.RectComponent import RectComponent
 from Engine.Component.CommandComponent import CommandComponent
 from Engine.Command.Command import Command
 

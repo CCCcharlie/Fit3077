@@ -15,7 +15,8 @@ class Player(Entity):
 
 
     trans = TransformComponent(self, -100,-100) # spawn this guy off the screen
-    rect = RectComponent(self, 20, 20, self.colour)
+    rect = RectComponent(self, 20, 20)
+    rect.setColour(self.colour)
 
     self.add_component(trans)
     self.add_component(rect)

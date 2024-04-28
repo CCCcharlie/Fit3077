@@ -11,7 +11,7 @@ class ChitCardClickedCommand(Command):
         self.chitCard = ccComponent
         
     def run(self):
-        print("chit card clicked")
+        #print("chit card clicked")
         self.chitCard.onClick()
 
 

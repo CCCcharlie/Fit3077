@@ -1,3 +1,4 @@
+from pygame import Color
 from Engine import *
 
 from Game.Src.Commands.ChitCardClickedCommand import ChitCardClickedCommand
@@ -9,27 +10,28 @@ class ChitCard(Entity):
   def __init__(self, x, y, radius, type: ChitCardType, count: int):
     super().__init__()
 
-    colour = (0,0,0)
-    if type == ChitCardType.BABY_DRAGON:
-      colour = (255,0,255)
-    elif type == ChitCardType.BAT:
-      colour = (0,0,255)
-    elif type == ChitCardType.SALAMANDER:
-      colour = (0,255,0)
-    elif type == ChitCardType.SPIDER:
-     colour = (255,0,0)
-    elif type == ChitCardType.PIRATE_DRAGON:
-      colour = (0,255,255)
 
     trans = TransformComponent(self,x,y)
     clickable = ClickableComponent(self,radius*2,radius*2)
-    front = CircleComponent(self, radius, colour)
-    back = CircleComponent(self, radius, (255,255,255))
+    front = CircleComponent(self, radius)
+    back = CircleComponent(self, radius)
+    back.setColour(Color(255,255,255))
     circleHitbox = CircleHitboxComponent(self, radius)
     ccComponent = ChitCardComponent(self,front,back)
     chitCardClickCommand = ChitCardClickedCommand(ccComponent)
     button = ButtonComponent(self, chitCardClickCommand)
     commandComponent = CommandComponent(self)
+
+    if type == ChitCardType.BABY_DRAGON:
+      front.setColour(Color(255,0,255))
+    elif type == ChitCardType.BAT:
+      front.setColour(Color(0,0,255))
+    elif type == ChitCardType.SALAMANDER:
+      front.setColour(Color(0,255,0))
+    elif type == ChitCardType.SPIDER:
+     front.setColour(Color(255,0,0))
+    elif type == ChitCardType.PIRATE_DRAGON:
+      front.setColour(Color(0,255,255))
 
     self.add_component(trans)
     self.add_component(clickable)
