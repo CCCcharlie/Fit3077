@@ -2,6 +2,7 @@ from Engine import Component, Entity, CircleComponent
 from enum import Enum
 
 from Engine.Component.CommandComponent import CommandComponent
+from Engine.Component.RenderableComponent.RenderableComponent import RenderableComponent
 from Game.Src.Commands.MovePlayerCommand import MovePlayerCommand
 from Game.Src.Objects.TurnManager import TurnManager
 
@@ -10,7 +11,7 @@ class State(Enum):
   VISIBLE = 2
 
 class ChitCardComponent(Component):
-  def __init__(self, owner: Entity, front: CircleComponent, back: CircleComponent):
+  def __init__(self, owner: Entity, front: RenderableComponent, back: RenderableComponent):
     super().__init__(owner)
     self.front = front
     self.back = back
@@ -28,3 +29,8 @@ class ChitCardComponent(Component):
       cc: CommandComponent = self.owner.get_component(CommandComponent)
       if cc != None:
         cc.addCommand(MovePlayerCommand(TurnManager.PLAYER, 1))
+
+  def onHide(self):
+    self.state = State.HIDDEN
+    self.front.hide()
+    self.back.show()

@@ -1,4 +1,5 @@
 from pygame import Color
+import pygame
 from Engine import *
 
 from Game.Src.Commands.ChitCardClickedCommand import ChitCardClickedCommand
@@ -13,13 +14,20 @@ class ChitCard(Entity):
 
     trans = TransformComponent(self,x,y)
     clickable = ClickableComponent(self,radius*2,radius*2)
-    front = CircleComponent(self, radius)
+
+    circle = CircleComponent(self, radius)
+    text = TextComponent(self, str(count), pygame.font.SysFont("Corbel", 15))
+    front = ComplexSpriteComponent(self, [circle,text])
+
     back = CircleComponent(self, radius)
     back.setColour(Color(255,255,255))
+
     circleHitbox = CircleHitboxComponent(self, radius)
     ccComponent = ChitCardComponent(self,front,back)
+
     chitCardClickCommand = ChitCardClickedCommand(ccComponent)
     button = ButtonComponent(self, chitCardClickCommand)
+
     commandComponent = CommandComponent(self)
 
     if type == ChitCardType.BABY_DRAGON:

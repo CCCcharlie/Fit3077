@@ -41,6 +41,7 @@ class RenderableComponent(Component):
     tc: TransformComponent = self.owner.get_component(TransformComponent)
 
     if tc is None:
+      print("Component requires a tc to render")
       return
     
     if self.showing is False:
