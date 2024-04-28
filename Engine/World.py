@@ -26,7 +26,7 @@ class World:
 
     self.background: pygame.Surface = pygame.Surface(self.display_surf.get_size())
     self.background = self.background.convert()
-    self.background.fill((0, 0, 0))
+    self.background.fill((220, 209, 235))
 
     #self.scene: List[Scene] = []
     self.activeScene: Scene = None
@@ -45,7 +45,7 @@ class World:
     return time.time() * 1000  # Convert seconds to milliseconds
 
   def render(self):
-    # draw black backgorund 
+    # draw backgorund 
     self.display_surf.blit(self.background, (0,0))
 
     if self.activeScene != None:

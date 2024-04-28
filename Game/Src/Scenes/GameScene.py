@@ -53,7 +53,6 @@ class GameScene(Scene):
 
     #create player in scene
     player = Player()
-    self.addEntity(player)
     TurnManager.PLAYER = player
 
     ## define volcano cards
@@ -119,6 +118,8 @@ class GameScene(Scene):
       volcCard = VolcanoCard(segments, cave)
       self.addEntity(volcCard)
 
+      
+
 
       #grab the first element created 
       if i == 0:
@@ -126,11 +127,16 @@ class GameScene(Scene):
 
       #set the previous last element 
       previousLastSegment = pp_seg3
+    
+    # add player to scene
+    self.addEntity(player)
 
     # link the front and back
     firstElementCreated.setPrevious(previousLastSegment)
     previousLastSegment.setPrevious(firstElementCreated)
 
+    print("adding player to")
+    print(firstElementCreated)
     firstElementCreated.addPlayer(player)
 
     chitCards = [
@@ -182,3 +188,5 @@ class GameScene(Scene):
         count, type = chitCards.pop()
         chit_card = ChitCard(x_pos, y_pos, chit_card_radius, type, count)
         self.addEntity(chit_card)
+
+  

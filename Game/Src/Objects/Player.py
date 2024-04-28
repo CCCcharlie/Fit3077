@@ -5,7 +5,7 @@ class Player(Entity):
   def __init__(self, index=0):
     super().__init__()
     self.colours = [
-      (255,102,204), #pink
+      (0,0,0), #pink
       (0,255,0), # lime
       (255,255,0), # yellow
       (0,102,255) # blue
@@ -15,7 +15,7 @@ class Player(Entity):
 
 
     trans = TransformComponent(self, -100,-100) # spawn this guy off the screen
-    rect = RectComponent(self, 20, 20)
+    rect = RectComponent(self, 10, 10)
     rect.setColour(self.colour)
 
     self.add_component(trans)
