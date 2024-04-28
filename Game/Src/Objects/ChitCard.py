@@ -30,7 +30,6 @@ class ChitCard(Entity):
      front_circle.setColour(Color(255,0,0))
     elif type == ChitCardType.PIRATE_DRAGON:
       front_circle.setColour(Color(0,255,255))
-    
 
     back = CircleComponent(self, radius)
     back.setColour(Color(255,255,255))
