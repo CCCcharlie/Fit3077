@@ -15,9 +15,22 @@ class ChitCard(Entity):
     trans = TransformComponent(self,x,y)
     clickable = ClickableComponent(self,radius*2,radius*2)
 
-    circle = CircleComponent(self, radius)
-    text = TextComponent(self, str(count), pygame.font.SysFont("Corbel", 15))
-    front = ComplexSpriteComponent(self, [circle,text])
+    front_circle = CircleComponent(self, radius)
+    front_text = TextComponent(self, str(count), pygame.font.SysFont("Corbel", 25))
+    front_text.setColour(Color(0,0,0))
+    front = ComplexSpriteComponent(self, [front_circle,front_text])
+
+    if type == ChitCardType.BABY_DRAGON:
+      front_circle.setColour(Color(255,0,255))
+    elif type == ChitCardType.BAT:
+      front_circle.setColour(Color(0,0,255))
+    elif type == ChitCardType.SALAMANDER:
+      front_circle.setColour(Color(0,255,0))
+    elif type == ChitCardType.SPIDER:
+     front_circle.setColour(Color(255,0,0))
+    elif type == ChitCardType.PIRATE_DRAGON:
+      front_circle.setColour(Color(0,255,255))
+    
 
     back = CircleComponent(self, radius)
     back.setColour(Color(255,255,255))
@@ -29,17 +42,6 @@ class ChitCard(Entity):
     button = ButtonComponent(self, chitCardClickCommand)
 
     commandComponent = CommandComponent(self)
-
-    if type == ChitCardType.BABY_DRAGON:
-      front.setColour(Color(255,0,255))
-    elif type == ChitCardType.BAT:
-      front.setColour(Color(0,0,255))
-    elif type == ChitCardType.SALAMANDER:
-      front.setColour(Color(0,255,0))
-    elif type == ChitCardType.SPIDER:
-     front.setColour(Color(255,0,0))
-    elif type == ChitCardType.PIRATE_DRAGON:
-      front.setColour(Color(0,255,255))
 
     self.add_component(trans)
     self.add_component(clickable)
