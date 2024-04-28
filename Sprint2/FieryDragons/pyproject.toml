@@ -1,0 +1,10 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+[project]
+name = "fierydragons"
+version = "1.0.dev1"
+dependencies = ["fit3077engine"]
+authors = [ 
+    { name = "Daniel Gower-Hall", email = "dgow0002@student.monash.edu" },
+]
