@@ -152,7 +152,7 @@ class GameScene(Scene):
 
     # link the front and back
     firstElementCreated.setPrevious(previousLastSegment)
-    previousLastSegment.setPrevious(firstElementCreated)
+    previousLastSegment.setNext(firstElementCreated)
 
     chitCards = [
       (1, ChitCardType.SALAMANDER),
