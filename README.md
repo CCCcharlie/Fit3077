@@ -37,7 +37,7 @@ To build this executable (on Windows) navigate to the /Sprint2 directory and exe
 $ pip install pyinstaller
 $ pyinstaller -F ./FieryDragons/src/fierydragons/__main__.py
 ```
-Which should create a directory /Sprint2/dist with __main__.exe inside which can be run to play the game on Windows systems.
+Which should create a directory /Sprint2/dist with \_\_main\_\_.exe inside which can be run to play the game on Windows systems.
 
 # Demo Content
 
