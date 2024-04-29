@@ -33,6 +33,7 @@ class PygameEventHandler(EventHandler):
         self.event_type = event_type
 
     def handle_events(self) -> int:
+        # Processes pygame events based on set event_type
         i = 0
         for event in pygame.event.get(self.event_type):
             i += 1

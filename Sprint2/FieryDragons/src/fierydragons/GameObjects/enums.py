@@ -32,6 +32,7 @@ class AnimalType(Enum):
 
     @classmethod
     def get_random_animal(cls) -> AnimalType:
+        # For avoiding PIRATE_DRAGON
         return random.choice(
             [t for t in AnimalType if t is not AnimalType.PIRATE_DRAGON]
         )

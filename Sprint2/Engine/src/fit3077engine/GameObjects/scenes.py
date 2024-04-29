@@ -27,6 +27,8 @@ class Scene(UpdateableInterface):
                 pass
 
     def update(self) -> None:
+        # Layers are used for update precedence, lower layer Updatables are updated first
+        # Meaning if render() occurs in update() then higher layer objects will be rendered ontop
         sorted_layers = sorted(self._objects.items(), key=lambda x: x[0])
         for _, layer_set in sorted_layers:
             for layer_obj in layer_set:

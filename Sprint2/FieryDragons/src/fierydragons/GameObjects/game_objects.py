@@ -31,16 +31,18 @@ class GameBoard(GameObject, ObserverInterface):
     ) -> None:
         super().__init__()
         settings = Settings.get_instance()
+        # Attributes
         self.x, self.y = (
             (settings.screen.get_width() // 2) - (settings.screen.get_height() // 2),
             0,
         )
         self.size = settings.screen.get_height()
+        self.turns_passed = 0
+        self._current_turn = 0
 
+        # Build
         self.segments, caves, pos_size = self._place_segments(segments, players)
         self.players = self._create_players(caves)
-        self._current_turn = 0
-        self.turns_passed = 0
         self.chit_cards = self._create_chit_cards(chit_cards, int(pos_size * 2.5))
 
         self.shutdown_timer = Timer(GameBoard.SHUTDOWN_TIME)
@@ -55,13 +57,12 @@ class GameBoard(GameObject, ObserverInterface):
     def _place_segments(
         self, segments: int, players: int
     ) -> Tuple[Sequence[SegmentPosition], Sequence[CavePosition], int]:
-        settings = Settings.get_instance()
-
         segments_list: MutableSequence[SegmentPosition] = []
         caves_list: MutableSequence[CavePosition] = []
         board_iter = SegmentedSquareIterator(
             self.x, self.y, self.size, segments, offset=1
         )
+        # Iterate through top left coordinates in a ring
         for seg_idx, (x, y, side) in zip(range(segments), board_iter):
 
             if (seg_idx - 1) % (segments // players) == 0:
@@ -99,6 +100,7 @@ class GameBoard(GameObject, ObserverInterface):
         chit_iterator = RectangleGridIterator(
             x_start, y_start, self.size - (2 * gap), (5, 7), amount, 2
         )
+        # Iterate through top left coordinates in a grid 
         for x, y in chit_iterator:
             new_chit = ChitCard(x, y, chit_iterator.width, chit_iterator.height)
             chit_cards.append(new_chit)
@@ -150,6 +152,7 @@ class Player(GameObject, RenderableInterface, ObserverInterface):
 
     def __init__(self, cave: CavePosition) -> None:
         super().__init__()
+        # Attributes
         self.position: GamePosition = cave
         self.cave = cave
         self.steps_taken = 0
@@ -166,6 +169,7 @@ class Player(GameObject, RenderableInterface, ObserverInterface):
         x, y = self.position.rect.center
         RADIUS = 16
 
+        # Turn indicator
         if GameBoard.get_instance().is_player_turn(self):
             colour = Color(255, 0, 0)
         else:
@@ -225,6 +229,7 @@ class Player(GameObject, RenderableInterface, ObserverInterface):
             self.steps_taken += delta_steps
             self.position = current
 
+            # Special Conditions
             if end_turn:
                 TurnEndHandler.get_instance().emit()
 
@@ -274,6 +279,7 @@ class SegmentPosition(GamePosition):
 
     def _create_cave(self, side: Side, cave_type: AnimalType | None) -> None:
         self.cave: CavePosition | None = None
+        # Determine coordinates of cave based on which side of the ring the segment is on
         if cave_type is not None:
             match side:
                 case Side.TOP:
@@ -301,22 +307,26 @@ class SegmentPosition(GamePosition):
         self._next = next
 
     def next(self, player: Player) -> GamePosition | None:
+        # Go to cave if conditions are met
         if self._next.cave is not None and self._next.cave is player.cave:
             next_pos = self._next.cave
         else:
             next_pos = self._next
 
+        # Consider if the position already has a player on it
         if GameBoard.get_instance().is_position_populated(next_pos):
             return None
         else:
             return next_pos
 
     def previous(self, player: Player) -> GamePosition | None:
+        # Move back to cave if conditions are met
         if self.cave is not None and self.cave is player.cave:
             prev_pos = self.cave
         else:
             prev_pos = self._previous
 
+        # Consider if the position already has a player on it
         if GameBoard.get_instance().is_position_populated(prev_pos):
             return None
         else:
@@ -336,12 +346,14 @@ class CavePosition(GamePosition):
         self._next = next
 
     def next(self, player: Player) -> GamePosition | None:
+        # You cannot move past your cave after you have already moved out of it
         if player.steps_taken > 0:
             return None
         else:
             return self._next
 
     def previous(self, player: Player) -> GamePosition | None:
+        # Caves are not linked bidirectionally, the furthest back you can move is to your home
         return None
 
     def render(self) -> None:

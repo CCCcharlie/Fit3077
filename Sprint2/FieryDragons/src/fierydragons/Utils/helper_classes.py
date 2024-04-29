@@ -8,6 +8,8 @@ from .enums import Side
 
 
 class SegmentedSquareIterator(Iterator[Tuple[int, int, Side]]):
+    """Iterates through top left coordinate points of squares aligned around
+    a square ring."""
 
     def __init__(
         self, x: int, y: int, size: int, segments: int, offset: int = 0
@@ -16,10 +18,13 @@ class SegmentedSquareIterator(Iterator[Tuple[int, int, Side]]):
         self._segment = 0
         self._segments_placed = 0
 
+        # Calculate size parameters based on the size of the larger square
         self._segments_per_side = ((segments - 2) // 4) + 2
         self.size = size // (self._segments_per_side + 2 * offset)
         self.side = Side.TOP
 
+        # Offset to inner ring by some size value, this is used in FieryDragons to ensure
+        # That there is space for caves by setting offset=1
         self._size = size - (2 * offset * self.size)
         self.x = x + offset * self.size
         self.y = y + offset * self.size
@@ -55,6 +60,8 @@ class SegmentedSquareIterator(Iterator[Tuple[int, int, Side]]):
 
 
 class RectangleGridIterator(Iterator[Tuple[int, int]]):
+    """Iterates over top left coordinates of rectangles aligned in a square grid
+    with some gap between them."""
 
     def __init__(
         self,
