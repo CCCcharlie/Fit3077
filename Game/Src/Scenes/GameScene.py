@@ -51,9 +51,16 @@ class GameScene(Scene):
     #create gridPositionGenerator
     gpg = GridPositionGenerator()
 
-    #create player in scene
-    player = Player()
-    TurnManager.PLAYER = player
+    #create number of players
+    numPlayers = 4
+    players = []
+    addedPlayers = []
+    for i in range(numPlayers):
+      player = Player(i)
+      players.append(player)
+      TurnManager.PLAYERS.append(player)
+
+    
 
     ## define volcano cards
     volcanoCardSpecifications = [
@@ -99,6 +106,17 @@ class GameScene(Scene):
         caveAnimal = caves.pop()
         x, y = gpg.getCoords(i, 3)
         cave = Cave(x, y, caveAnimal)
+        ppc: PlayerPositionComponent = cave.get_component(PlayerPositionComponent)
+
+        #setup next and previous
+        ppc.setNext(pp_seg2)
+        ppc.setPrevious(ppc) 
+        
+        # add player to cave 
+        p = players.pop()
+        ppc.addPlayer(p)
+        addedPlayers.append(p)
+
 
       # link components
       if previousLastSegment is not None:
@@ -118,9 +136,6 @@ class GameScene(Scene):
       volcCard = VolcanoCard(segments, cave)
       self.addEntity(volcCard)
 
-      
-
-
       #grab the first element created 
       if i == 0:
         firstElementCreated = pp_seg1
@@ -129,15 +144,15 @@ class GameScene(Scene):
       previousLastSegment = pp_seg3
     
     # add player to scene
-    self.addEntity(player)
+    for player in addedPlayers:
+      self.addEntity(player)
+
+    # set active player
+    TurnManager.ACTIVE_PLAYER = addedPlayers[3]
 
     # link the front and back
     firstElementCreated.setPrevious(previousLastSegment)
     previousLastSegment.setPrevious(firstElementCreated)
-
-    print("adding player to")
-    print(firstElementCreated)
-    firstElementCreated.addPlayer(player)
 
     chitCards = [
       (1, ChitCardType.SALAMANDER),

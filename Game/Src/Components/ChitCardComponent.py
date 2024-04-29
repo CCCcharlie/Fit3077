@@ -28,7 +28,7 @@ class ChitCardComponent(Component):
       #create and run the command
       cc: CommandComponent = self.owner.get_component(CommandComponent)
       if cc != None:
-        cc.addCommand(MovePlayerCommand(TurnManager.PLAYER, 1))
+        cc.addCommand(MovePlayerCommand(TurnManager.ACTIVE_PLAYER, 1))
 
   def onHide(self):
     self.state = State.HIDDEN

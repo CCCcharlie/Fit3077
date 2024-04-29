@@ -6,7 +6,7 @@ class Player(Entity):
     super().__init__()
     self.colours = [
       (0,0,0), #pink
-      (0,255,0), # lime
+      (255,165,0), # lime
       (255,255,0), # yellow
       (0,102,255) # blue
     ]
