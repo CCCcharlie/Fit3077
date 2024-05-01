@@ -76,9 +76,12 @@ class VolcanoCard:
         pygame.draw.rect(screen, BLACK, (self.x, self.y, self.width, self.height), 2)
 
         if self.has_cave:
+            # Adjust the position to draw the cave image above the volcano card
+            cave_x = self.x - self.cave_image.get_width() // 2 + self.width // 2
+            cave_y = self.y - self.cave_image.get_height() - 10  # Adjust this value as needed
             # Draw cave segment image
             cave_image_rotated = pygame.transform.rotate(self.cave_image, tilt_angle)  # Rotate the image
-            screen.blit(cave_image_rotated, (self.x, self.y))  # Draw the image
+            screen.blit(cave_image_rotated, (cave_x, cave_y))  # Draw the image
         else:
             # Draw outline for empty segment
             pygame.draw.rect(screen, BLACK, (self.x + 2, self.y + 2, self.width - 4, self.height - 4), 2)
