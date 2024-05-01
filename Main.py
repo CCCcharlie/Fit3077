@@ -5,6 +5,7 @@ import math
 # Define constants for colors
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
+BLACK = (0, 0, 0)
 
 # Define constants for screen dimensions and other parameters
 SCREEN_WIDTH = 800
@@ -21,6 +22,7 @@ class ChitCard:
 
     def draw(self, screen):
         # Draw chit card
+        pygame.draw.rect(screen, BLACK, (self.x, self.y, self.width, self.height), 2)
         pygame.draw.rect(screen, BLACK, (self.x, self.y, self.width, self.height), 2)
 
 # Define class for Volcano Card
@@ -134,10 +136,15 @@ class GameBoard:
 
     def draw_board(self, screen):
         # Fill the screen with white color
+        # Fill the screen with white color
         screen.fill(WHITE)
         # Draw chit cards on the screen
         for chit_card in self.chit_cards:
             chit_card.draw(screen)
+
+        # Draw volcano cards on the screen
+        for volcano_card in self.volcano_cards:
+            volcano_card.draw(screen)
 
         # Draw volcano cards on the screen
         for volcano_card in self.volcano_cards:
