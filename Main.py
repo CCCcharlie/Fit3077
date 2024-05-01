@@ -20,9 +20,22 @@ class ChitCard:
         self.width = width
         self.height = height
 
+        self.flipped = False  # Initially, the card is not flipped
+
+
     def draw(self, screen):
         # Draw chit card
         pygame.draw.rect(screen, BLACK, (self.x, self.y, self.width, self.height), 2)
+                # Draw the card based on its current state (flipped or not)
+        if self.flipped:
+            # Draw the back of the card
+            pygame.draw.rect(screen, WHITE, (self.x, self.y, self.width, self.height))
+        else:
+            # Draw the front of the card
+            pygame.draw.rect(screen, BLACK, (self.x, self.y, self.width, self.height))
+    def flip(self):
+        # Toggle the flipped state of the card
+        self.flipped = not self.flipped    
 
 # Define class for Volcano Card
 class VolcanoCard:
@@ -147,6 +160,14 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+        elif event.type == pygame.MOUSEBUTTONDOWN:
+            # Check if the mouse click is within the boundaries of any chit card
+            mouse_x, mouse_y = pygame.mouse.get_pos()
+            for chit_card in game_board.chit_cards:
+                if chit_card.x <= mouse_x <= chit_card.x + chit_card.width and \
+                   chit_card.y <= mouse_y <= chit_card.y + chit_card.height:
+                    # Flip the clicked chit card
+                    chit_card.flip()
 
     # Draw the game board
     game_board.draw_board(screen)
@@ -156,6 +177,7 @@ while running:
 
     # Cap the frame rate
     clock.tick(FPS)
+
 
 # Quit Pygame
 pygame.quit()
