@@ -1,10 +1,10 @@
+
 import pygame
 import random
 import math
 
 # Define constants for colors
 WHITE = (255, 255, 255)
-BLACK = (0, 0, 0)
 BLACK = (0, 0, 0)
 
 # Define constants for screen dimensions and other parameters
@@ -22,7 +22,6 @@ class ChitCard:
 
     def draw(self, screen):
         # Draw chit card
-        pygame.draw.rect(screen, BLACK, (self.x, self.y, self.width, self.height), 2)
         pygame.draw.rect(screen, BLACK, (self.x, self.y, self.width, self.height), 2)
 
 # Define class for Volcano Card
@@ -119,23 +118,9 @@ class GameBoard:
                 y = start_y + (i // 4) * (chit_card_height + chit_card_spacing)
                 chit_card = ChitCard(x, y, chit_card_width, chit_card_height)
                 self.chit_cards.append(chit_card)
-                        # Calculate the total width and height of all VolcanoCards
-            total_width_volcano = max([card.width for card in self.volcano_cards])
-            total_height_volcano = max([card.height for card in self.volcano_cards]) * len(self.volcano_cards)
-
-            # Calculate the top left corner coordinates to center the VolcanoCards
-            start_x_volcano = (SCREEN_WIDTH - total_width_volcano) // 2
-            start_y_volcano = (SCREEN_HEIGHT - total_height_volcano) // 2
-
-            for volcano_card in self.volcano_cards:
-                volcano_card.x = start_x_volcano
-                volcano_card.y = start_y_volcano
-                start_y_volcano += volcano_card.height
-
 
 
     def draw_board(self, screen):
-        # Fill the screen with white color
         # Fill the screen with white color
         screen.fill(WHITE)
         # Draw chit cards on the screen
@@ -146,12 +131,31 @@ class GameBoard:
         for volcano_card in self.volcano_cards:
             volcano_card.draw(screen)
 
-        # Draw volcano cards on the screen
-        for volcano_card in self.volcano_cards:
-            volcano_card.draw(screen)
-
 # Initialize Pygame
 pygame.init()
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption("Fiery Dragons Game")
-clock = pygame.time
+clock = pygame.time.Clock()
+
+# Create game board
+game_board = GameBoard()
+game_board.initialize_board()
+
+# Main game loop
+running = True
+while running:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+
+    # Draw the game board
+    game_board.draw_board(screen)
+
+    # Update display
+    pygame.display.flip()
+
+    # Cap the frame rate
+    clock.tick(FPS)
+
+# Quit Pygame
+pygame.quit()
