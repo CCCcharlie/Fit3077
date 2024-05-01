@@ -1,4 +1,3 @@
-
 import pygame
 import random
 import math
@@ -22,30 +21,46 @@ class ChitCard:
 
         self.flipped = False  # Initially, the card is not flipped
 
-
     def draw(self, screen):
         # Draw chit card
         pygame.draw.rect(screen, BLACK, (self.x, self.y, self.width, self.height), 2)
-                # Draw the card based on its current state (flipped or not)
+        # Draw the card based on its current state (flipped or not)
         if self.flipped:
             # Draw the back of the card
             pygame.draw.rect(screen, WHITE, (self.x, self.y, self.width, self.height))
         else:
             # Draw the front of the card
             pygame.draw.rect(screen, BLACK, (self.x, self.y, self.width, self.height))
+
     def flip(self):
         # Toggle the flipped state of the card
-        self.flipped = not self.flipped    
+        self.flipped = not self.flipped
 
 # Define class for Volcano Card
 class VolcanoCard:
-    def __init__(self, x, y, width, height, has_cave, angle):
+    def __init__(self, x, y, width, height, has_cave, angle, cave_image_path):
         self.x = x
         self.y = y
         self.width = width
         self.height = height
         self.has_cave = has_cave
         self.angle = angle  # Angle relative to the center of the circle
+        # Load and scale cave segment image
+        cave_image = pygame.image.load(cave_image_path).convert_alpha()
+        scaled_width = 40  # Adjust this value as needed
+        scaled_height = 40  # Adjust this value as needed
+        self.cave_image = pygame.transform.scale(cave_image, (scaled_width, scaled_height))
+
+    def rotate(self):
+        # Calculate tilt angle based on position along the circle
+        tilt_angle = math.degrees(math.atan2(SCREEN_HEIGHT // 2 - self.y, SCREEN_WIDTH // 2 - self.x))
+        # Create a surface for the card
+        card_surface = pygame.Surface((self.width, self.height))
+        card_surface.fill(WHITE)  # Fill with white color
+        # Rotate the card surface
+        rotated_card = pygame.transform.rotate(card_surface, tilt_angle)
+        # Get the new rectangle after rotation
+        self.rect = rotated_card.get_rect(center=(self.x, self.y))
 
     def draw(self, screen):
         # Calculate position based on angle
@@ -54,18 +69,16 @@ class VolcanoCard:
         center_y = SCREEN_HEIGHT // 2
         self.x = center_x + int(radius * math.cos(self.angle))
         self.y = center_y - int(radius * math.sin(self.angle))
+        # Calculate tilt angle based on position along the circle
+        tilt_angle = math.degrees(math.atan2(center_y - self.y, center_x - self.x))
 
         # Draw volcano card
         pygame.draw.rect(screen, BLACK, (self.x, self.y, self.width, self.height), 2)
+
         if self.has_cave:
-            # Draw cave segment with outline
-            # Adjusting position to place the cave segment at the volcano card's top center
-            cave_x = self.x + self.width // 2 - min(self.width, self.height) // 4
-            cave_y = self.y - min(self.width, self.height) // 4
-            # pygame.draw.rect(screen, BLACK, (cave_x + 2, cave_y + 2, self.width - 4, self.height - 4), 2)
-            circle_x = self.x + self.width // 2
-            circle_y = self.y - min(self.width, self.height) // 2
-            pygame.draw.circle(screen, BLACK, (circle_x, circle_y), min(self.width, self.height) // 4, 2)
+            # Draw cave segment image
+            cave_image_rotated = pygame.transform.rotate(self.cave_image, tilt_angle)  # Rotate the image
+            screen.blit(cave_image_rotated, (self.x, self.y))  # Draw the image
         else:
             # Draw outline for empty segment
             pygame.draw.rect(screen, BLACK, (self.x + 2, self.y + 2, self.width - 4, self.height - 4), 2)
@@ -93,6 +106,10 @@ class GameBoard:
         # Distribute cave segments across volcano cards
         cave_indices = random.sample(range(self.num_volcano_cards), self.num_caves)
 
+        # Paths to the custom cave images
+        cave_images_paths = [r"Game\Assets\bat.jpg", r"Game\Assets\Spider.PNG", r"Game\Assets\pngtree.png", r"Game\Assets\dragon.jpg"]
+
+
         # Create volcano cards around the chit cards forming a ring
         for i in range(self.num_volcano_cards):
             # Determine if the volcano card has a cave segment
@@ -101,37 +118,31 @@ class GameBoard:
             # Calculate the angle for the current volcano card
             angle = i * angle_increment
 
-            # Create the volcano card
-            volcano_card = VolcanoCard(0, 0, 80, 20, has_cave, angle)
+            # Create the volcano card with a custom cave image
+            volcano_card = VolcanoCard(0, 0, 80, 20, has_cave, angle, cave_images_paths[i % len(cave_images_paths)])
             self.volcano_cards.append(volcano_card)
 
-            # # Adjusting position to place chit cards at the center of volcano cards
-            # chit_card_x = volcano_card.x + volcano_card.width // 2 - self.chit_card_width // 2
-            # chit_card_y = volcano_card.y + volcano_card.height // 2 - self.chit_card_height // 2
-            # chit_card = ChitCard(chit_card_x, chit_card_y, self.chit_card_width, self.chit_card_height)
-            # self.chit_cards.append(chit_card)
-            # Create chit cards in the center
-            center_x = SCREEN_WIDTH // 2
-            center_y = SCREEN_HEIGHT // 2
-            num_chit_cards = 16
-            chit_card_width = 40
-            chit_card_height = 60
-            chit_card_spacing = 10
-            # Calculate the total width and height of all chit cards
-            total_width = (chit_card_width + chit_card_spacing) * 4 - chit_card_spacing
-            total_height = (chit_card_height + chit_card_spacing) * (num_chit_cards // 4) - chit_card_spacing
+        # Create chit cards in the center
+        center_x = SCREEN_WIDTH // 2
+        center_y = SCREEN_HEIGHT // 2
+        num_chit_cards = 16
+        chit_card_width = 40
+        chit_card_height = 60
+        chit_card_spacing = 10
+        # Calculate the total width and height of all chit cards
+        total_width = (chit_card_width + chit_card_spacing) * 4 - chit_card_spacing
+        total_height = (chit_card_height + chit_card_spacing) * (num_chit_cards // 4) - chit_card_spacing
 
-            # Calculate the top left corner coordinates to center the chit cards
-            start_x = (SCREEN_WIDTH - total_width) // 2
-            start_y = (SCREEN_HEIGHT - total_height) // 2
+        # Calculate the top left corner coordinates to center the chit cards
+        start_x = (SCREEN_WIDTH - total_width) // 2
+        start_y = (SCREEN_HEIGHT - total_height) // 2
 
-            for i in range(num_chit_cards):
-                # Calculate the x and y coordinates based on the index
-                x = start_x + (i % 4) * (chit_card_width + chit_card_spacing)
-                y = start_y + (i // 4) * (chit_card_height + chit_card_spacing)
-                chit_card = ChitCard(x, y, chit_card_width, chit_card_height)
-                self.chit_cards.append(chit_card)
-
+        for i in range(num_chit_cards):
+            # Calculate the x and y coordinates based on the index
+            x = start_x + (i % 4) * (chit_card_width + chit_card_spacing)
+            y = start_y + (i // 4) * (chit_card_height + chit_card_spacing)
+            chit_card = ChitCard(x, y, chit_card_width, chit_card_height)
+            self.chit_cards.append(chit_card)
 
     def draw_board(self, screen):
         # Fill the screen with white color
@@ -139,9 +150,9 @@ class GameBoard:
         # Draw chit cards on the screen
         for chit_card in self.chit_cards:
             chit_card.draw(screen)
-
-        # Draw volcano cards on the screen
+        # Rotate and draw volcano cards on the screen
         for volcano_card in self.volcano_cards:
+            volcano_card.rotate()  # Rotate the volcano card
             volcano_card.draw(screen)
 
 # Initialize Pygame
@@ -177,7 +188,6 @@ while running:
 
     # Cap the frame rate
     clock.tick(FPS)
-
 
 # Quit Pygame
 pygame.quit()
