@@ -154,27 +154,4 @@ class GameBoard:
 pygame.init()
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption("Fiery Dragons Game")
-clock = pygame.time.Clock()
-
-# Create game board
-game_board = GameBoard()
-game_board.initialize_board()
-
-# Main game loop
-running = True
-while running:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
-
-    # Draw the game board
-    game_board.draw_board(screen)
-
-    # Update display
-    pygame.display.flip()
-
-    # Cap the frame rate
-    clock.tick(FPS)
-
-# Quit Pygame
-pygame.quit()
+clock = pygame.time
