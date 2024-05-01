@@ -4,7 +4,7 @@ import math
 
 # Define constants for colors
 WHITE = (255, 255, 255)
-BLACK = (0, 0, 0) 
+BLACK = (0, 0, 0)
 
 # Define constants for screen dimensions and other parameters
 SCREEN_WIDTH = 800
@@ -21,156 +21,127 @@ class ChitCard:
 
     def draw(self, screen):
         # Draw chit card
-        pygame.draw.rect(screen, WHITE, (self.x, self.y, self.width, self.height), 2)
-
+        pygame.draw.rect(screen, BLACK, (self.x, self.y, self.width, self.height), 2)
 
 # Define class for Volcano Card
 class VolcanoCard:
-    def __init__(self, x, y, radius, num_segments):
+    def __init__(self, x, y, width, height, has_cave, angle):
         self.x = x
         self.y = y
-        self.radius = radius
-        self.num_segments = num_segments
+        self.width = width
+        self.height = height
+        self.has_cave = has_cave
+        self.angle = angle  # Angle relative to the center of the circle
 
     def draw(self, screen):
-        # Calculate the angle between each segment
-        segment_angle = 2 * math.pi / self.num_segments
-        
-        # Draw volcano card segments
-        for i in range(self.num_segments):
-            start_angle = i * segment_angle
-            end_angle = (i + 1) * segment_angle
-            
-            # Calculate the start and end points of each segment
-            start_x = self.x + int(self.radius * math.cos(start_angle))
-            start_y = self.y + int(self.radius * math.sin(start_angle))
-            end_x = self.x + int(self.radius * math.cos(end_angle))
-            end_y = self.y + int(self.radius * math.sin(end_angle))
-            
-            # Draw a line segment between the start and end points
-            pygame.draw.line(screen, BLACK, (start_x, start_y), (end_x, end_y), 2)
-    def __init__(self, x, y, radius, num_segments):
-        self.x = x
-        self.y = y
-        self.radius = radius
-        self.num_segments = num_segments
+        # Calculate position based on angle
+        radius = 250  # Radius of the circle
+        center_x = SCREEN_WIDTH // 2
+        center_y = SCREEN_HEIGHT // 2
+        self.x = center_x + int(radius * math.cos(self.angle))
+        self.y = center_y - int(radius * math.sin(self.angle))
 
-    def draw(self, screen):
-        # Draw volcano card segments
-        segment_angle = 2 * math.pi / self.num_segments  # 每个段落的角度
-        for i in range(self.num_segments):
-            angle = i * segment_angle
-            start_x = self.x + int(self.radius * math.cos(angle))
-            start_y = self.y + int(self.radius * math.sin(angle))
-            end_x = self.x + int(self.radius * math.cos(angle + segment_angle))
-            end_y = self.y + int(self.radius * math.sin(angle + segment_angle))
-            pygame.draw.line(screen, BLACK, (start_x, start_y), (end_x, end_y), 2)
-    def __init__(self, x, y, radius, num_segments):
-        self.x = x
-        self.y = y
-        self.radius = radius
-        self.num_segments = num_segments
+        # Draw volcano card
+        pygame.draw.rect(screen, BLACK, (self.x, self.y, self.width, self.height), 2)
+        if self.has_cave:
+            # Draw cave segment with outline
+            # Adjusting position to place the cave segment at the volcano card's top center
+            cave_x = self.x + self.width // 2 - min(self.width, self.height) // 4
+            cave_y = self.y - min(self.width, self.height) // 4
+            # pygame.draw.rect(screen, BLACK, (cave_x + 2, cave_y + 2, self.width - 4, self.height - 4), 2)
+            circle_x = self.x + self.width // 2
+            circle_y = self.y - min(self.width, self.height) // 2
+            pygame.draw.circle(screen, BLACK, (circle_x, circle_y), min(self.width, self.height) // 4, 2)
+        else:
+            # Draw outline for empty segment
+            pygame.draw.rect(screen, BLACK, (self.x + 2, self.y + 2, self.width - 4, self.height - 4), 2)
 
-    def draw(self, screen):
-        # Draw volcano card segments
-        segment_angle = 360 / self.num_segments
-        for i in range(self.num_segments):
-            start_angle = i * segment_angle
-            end_angle = (i + 1) * segment_angle
-            pygame.draw.arc(screen, BLACK, (self.x - self.radius, self.y - self.radius, self.radius * 2, self.radius * 2), math.radians(start_angle), math.radians(end_angle), 3)
-    def __init__(self, x, y, radius, segments):
-        self.x = x
-        self.y = y
-        self.radius = radius
-        self.segments = segments
-
-    def draw(self, screen):
-        # Draw volcano card segments
-        segment_angle = 360 / len(self.segments)
-        for i, has_cave in enumerate(self.segments):
-            if has_cave:
-                color = BLACK  # Segment with cave
-            else:
-                color = WHITE  # Empty segment
-            # Calculate segment start angle
-            start_angle = i * segment_angle
-            # Calculate segment end angle
-            end_angle = start_angle + segment_angle
-            # Draw segment arc
-            pygame.draw.arc(screen, color, (self.x - self.radius, self.y - self.radius, 2*self.radius, 2*self.radius),
-                            math.radians(start_angle), math.radians(end_angle), 3)
+        # Draw dividing lines between segments
+        num_segments = 4
+        segment_width = self.width // num_segments
+        for i in range(1, num_segments):
+            pygame.draw.line(screen, BLACK, (self.x + i * segment_width, self.y), (self.x + i * segment_width, self.y + self.height), 2)
 
 # Define class for GameBoard
 class GameBoard:
     def __init__(self):
         self.volcano_cards = []
-        self.num_volcano_cards = 8  # 火山卡数量
-
-    def initialize_board(self):
-        # Create volcano cards around the center forming a ring
-        center_x = SCREEN_WIDTH // 2
-        center_y = SCREEN_HEIGHT // 2
-        radius = 200
-        for i in range(self.num_volcano_cards):
-            angle = i * (2 * math.pi / self.num_volcano_cards)
-            x = center_x + int(radius * math.cos(angle))
-            y = center_y + int(radius * math.sin(angle))
-            segments = 3  # 每个火山卡有三个段落
-            volcano_card = VolcanoCard(x, y, 40, segments)
-            self.volcano_cards.append(volcano_card)
-    def __init__(self):
-        self.volcano_cards = []
-
-    def initialize_board(self):
-        # Create volcano cards around the center
-        num_volcano_cards = 8
-        center_x = SCREEN_WIDTH // 2
-        center_y = SCREEN_HEIGHT // 2
-        radius = 200
-        for i in range(num_volcano_cards):
-            angle = i * (2 * math.pi / num_volcano_cards)
-            x = center_x + int(radius * math.cos(angle))
-            y = center_y + int(radius * math.sin(angle))
-            segments = 3  # 每个火山卡有三个段落
-            volcano_card = VolcanoCard(x, y, 40, segments)
-            self.volcano_cards.append(volcano_card)
-    def __init__(self):
-        self.volcano_cards = []
         self.chit_cards = []
+        self.num_volcano_cards = 8  # Number of volcano cards
+        self.num_caves = 4  # Number of cave segments across all volcano cards
+        self.chit_card_width = 40  # Width of chit card
+        self.chit_card_height = 60  # Height of chit card
 
     def initialize_board(self):
-        # Create volcano cards around the center
-        num_volcano_cards = 8
-        center_x = SCREEN_WIDTH // 2
-        center_y = SCREEN_HEIGHT // 2
-        radius = 200
-        for i in range(num_volcano_cards):
-            angle = i * (2 * math.pi / num_volcano_cards)  # 计算当前火山卡所在的角度
-            x = center_x + int(radius * math.cos(angle))  # 根据角度计算 x 坐标
-            y = center_y + int(radius * math.sin(angle))  # 根据角度计算 y 坐标
-            segments = [random.choice([True, False]) for _ in range(3)]  # 随机生成火山卡的洞的分布情况
-            volcano_card = VolcanoCard(x, y, radius, segments)  # 创建火山卡对象
-            self.volcano_cards.append(volcano_card)  # 将火山卡添加到列表中
+        # Calculate the angle increment for each volcano card
+        angle_increment = 2 * math.pi / self.num_volcano_cards
 
-        # Create chit cards in the center
-        num_chit_cards = 16
-        chit_card_width = 40
-        chit_card_height = 60
-        chit_card_spacing = 10
-        for i in range(num_chit_cards):
-            x = center_x - chit_card_width // 2 + (i % 4) * (chit_card_width + chit_card_spacing)
-            y = center_y - chit_card_height // 2 + (i // 4) * (chit_card_height + chit_card_spacing)
-            chit_card = ChitCard(x, y, chit_card_width, chit_card_height)
-            self.chit_cards.append(chit_card)
+        # Distribute cave segments across volcano cards
+        cave_indices = random.sample(range(self.num_volcano_cards), self.num_caves)
+
+        # Create volcano cards around the chit cards forming a ring
+        for i in range(self.num_volcano_cards):
+            # Determine if the volcano card has a cave segment
+            has_cave = i in cave_indices
+
+            # Calculate the angle for the current volcano card
+            angle = i * angle_increment
+
+            # Create the volcano card
+            volcano_card = VolcanoCard(0, 0, 80, 20, has_cave, angle)
+            self.volcano_cards.append(volcano_card)
+
+            # # Adjusting position to place chit cards at the center of volcano cards
+            # chit_card_x = volcano_card.x + volcano_card.width // 2 - self.chit_card_width // 2
+            # chit_card_y = volcano_card.y + volcano_card.height // 2 - self.chit_card_height // 2
+            # chit_card = ChitCard(chit_card_x, chit_card_y, self.chit_card_width, self.chit_card_height)
+            # self.chit_cards.append(chit_card)
+            # Create chit cards in the center
+            center_x = SCREEN_WIDTH // 2
+            center_y = SCREEN_HEIGHT // 2
+            num_chit_cards = 16
+            chit_card_width = 40
+            chit_card_height = 60
+            chit_card_spacing = 10
+            # Calculate the total width and height of all chit cards
+            total_width = (chit_card_width + chit_card_spacing) * 4 - chit_card_spacing
+            total_height = (chit_card_height + chit_card_spacing) * (num_chit_cards // 4) - chit_card_spacing
+
+            # Calculate the top left corner coordinates to center the chit cards
+            start_x = (SCREEN_WIDTH - total_width) // 2
+            start_y = (SCREEN_HEIGHT - total_height) // 2
+
+            for i in range(num_chit_cards):
+                # Calculate the x and y coordinates based on the index
+                x = start_x + (i % 4) * (chit_card_width + chit_card_spacing)
+                y = start_y + (i // 4) * (chit_card_height + chit_card_spacing)
+                chit_card = ChitCard(x, y, chit_card_width, chit_card_height)
+                self.chit_cards.append(chit_card)
+                        # Calculate the total width and height of all VolcanoCards
+            total_width_volcano = max([card.width for card in self.volcano_cards])
+            total_height_volcano = max([card.height for card in self.volcano_cards]) * len(self.volcano_cards)
+
+            # Calculate the top left corner coordinates to center the VolcanoCards
+            start_x_volcano = (SCREEN_WIDTH - total_width_volcano) // 2
+            start_y_volcano = (SCREEN_HEIGHT - total_height_volcano) // 2
+
+            for volcano_card in self.volcano_cards:
+                volcano_card.x = start_x_volcano
+                volcano_card.y = start_y_volcano
+                start_y_volcano += volcano_card.height
+
+
 
     def draw_board(self, screen):
-        # Draw volcano cards on the screen
+        # Fill the screen with white color
         screen.fill(WHITE)
-        for volcano_card in self.volcano_cards:
-            volcano_card.draw(screen)
         # Draw chit cards on the screen
         for chit_card in self.chit_cards:
             chit_card.draw(screen)
+
+        # Draw volcano cards on the screen
+        for volcano_card in self.volcano_cards:
+            volcano_card.draw(screen)
 
 # Initialize Pygame
 pygame.init()
