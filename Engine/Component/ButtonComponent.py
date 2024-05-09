@@ -66,10 +66,6 @@ class ButtonComponent(Component):
       # get colour from state 
       colour = self.colour_switcher.get(self.state, self.default)
 
-      # update renderer 
-      # ideally we want render component not rect ....
-      rc: RectComponent = self.owner.get_component(RectComponent)
-      if rc != None:
-        rc.setColour(colour)
+
 
     
