@@ -1,6 +1,6 @@
 # README
 ## Project Structure
-    ├── assets 
+    ├── asset
         ├── sprite
         └── audio  
     ├── doc      
