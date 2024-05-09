@@ -1,4 +1,4 @@
-from main.engine.utils.InterfaceMeta import InterfaceMeta
+from src.main.engine.utils.InterfaceMeta import InterfaceMeta
 
 ##todo make test class
 class MyInterface(metaclass=InterfaceMeta):

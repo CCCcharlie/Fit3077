@@ -1,6 +1,6 @@
-from main.Input import Input
-from main.engine.Scene import Scene
-from main.engine.utils.SingletonMeta import SingletonMeta
+from src.main.engine.Input import Input
+from src.main.engine.Scene import Scene
+from src.main.engine.utils.SingletonMeta import SingletonMeta
 import pygame
 import time
 import sys
@@ -65,14 +65,14 @@ class World(metaclass=SingletonMeta):
 
   # much smarter game loop https://gameprogrammingpatterns.com/game-loop.html
   def _gameLoop(self):            
-    previous = self.getCurrentTime()
+    previous = self._getCurrentTime()
     lag = 0.0
 
     while not Input.quitflag:
       
       Input.update()
    
-      current = self.getCurrentTime()
+      current = self._getCurrentTime()
       elapsed = current - previous
       previous = current
       lag += elapsed
@@ -83,8 +83,8 @@ class World(metaclass=SingletonMeta):
         lag -= self.MS_PER_UPDATE
 
       # render when we can :)
-      self.render()
-    self.on_cleanup()
+      self._render()
+    self._on_cleanup()
 
     sys.exit()
 

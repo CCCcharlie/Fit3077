@@ -1,7 +1,7 @@
 from pygame import Surface, Color, SRCALPHA, draw
 
-from main.engine.component.RenderableComponent.RenderableComponent import RenderableComponent
-from main.engine.component.TransformComponent import TransformComponent
+from src.main.engine.component.renderableComponent.RenderableComponent import RenderableComponent
+from src.main.engine.component.TransformComponent import TransformComponent
 
 class CircleComponent(RenderableComponent):
   def __init__(self, transformComponent: TransformComponent, radius: int, colour: Color):

@@ -1,9 +1,9 @@
 from typing import List
 
 import pygame
-from main.engine.Entity import Entity
-from main.engine.Renderable import Renderable
-from main.engine.Updateable import Updateable
+from src.main.engine.Entity import Entity
+from src.main.engine.Renderable import Renderable
+from src.main.engine.Updateable import Updateable
 
 
 class Scene(Renderable, Updateable):

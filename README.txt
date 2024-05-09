@@ -1,4 +1,10 @@
 # README
+## Setup 
+first time install run setup.bat
+
+##Build instructions
+top build run build.bat
+
 ## Project Structure
     ├── asset
         ├── sprite

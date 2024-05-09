@@ -1,4 +1,4 @@
-from main.engine.utils.Vec2 import Vec2
+from src.main.engine.utils.Vec2 import Vec2
 
 class TransformComponent():
   def __init__(self):

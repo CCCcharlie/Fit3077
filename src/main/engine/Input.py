@@ -1,7 +1,7 @@
 import pygame 
 from typing import Dict
 
-from main.engine.utils.SingletonMeta import SingletonMeta
+from src.main.engine.utils.SingletonMeta import SingletonMeta
 
 class Input(metaclass=SingletonMeta):
   """

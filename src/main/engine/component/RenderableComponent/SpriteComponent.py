@@ -1,7 +1,7 @@
 from pygame import image, transform
 
-from main.engine.component.RenderableComponent.RenderableComponent import RenderableComponent
-from main.engine.component.TransformComponent import TransformComponent
+from src.main.engine.component.renderableComponent.RenderableComponent import RenderableComponent
+from src.main.engine.component.TransformComponent import TransformComponent
 
 
 

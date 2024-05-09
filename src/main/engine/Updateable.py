@@ -1,9 +1,10 @@
-from main.engine.utils.InterfaceMeta import InterfaceMeta
+from abc import ABC, abstractmethod
 
-class Updateable(metaclass=InterfaceMeta):
+class Updateable(ABC):
   """
   Interface for objects that can be updated
   """
+  @abstractmethod
   def update(self, dt: float):
     """
     Update the object by the provided delta time increment

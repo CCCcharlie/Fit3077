@@ -1,13 +1,13 @@
 from abc import ABC, abstractmethod
 
 import pygame
-from main.engine.Renderable import Renderable
+from src.main.engine.Renderable import Renderable
 from pygame import Surface
 
-from main.engine.component.TransformComponent import TransformComponent
-from main.engine.utils.Vec2 import Vec2
+from src.main.engine.component.TransformComponent import TransformComponent
+from src.main.engine.utils.Vec2 import Vec2
 
-class RenderableComponent(ABC, Renderable):
+class RenderableComponent(Renderable):
   """
   Renderable component for use with common renderables including squares, circles etc
   give it an image surface and it will handle rendering to a specific position
