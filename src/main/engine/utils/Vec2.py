@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from typing import Tuple
+import math
 
 @dataclass
 class Vec2:
@@ -23,5 +24,8 @@ class Vec2:
   
   def __eq__(self, other):
     return self.x == other.x and self.y == other.y
+  
+  def distance(self, other: 'Vec2') -> float:
+    return math.sqrt((self.x - other.x) ** 2 + (self.y - other.y) ** 2)
   
   

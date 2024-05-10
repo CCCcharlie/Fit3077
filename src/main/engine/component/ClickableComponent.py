@@ -38,10 +38,16 @@ class ClickableComponent(Updateable):
 
   @property
   def clicked(self) -> bool:
+    """
+    Is the clickable currently clicked
+    """
     return self.__clicked
   
   @property 
   def hover(self) -> bool:
+    """
+    Is the clickable currently hovered
+    """
     return self.__hover
     
     
