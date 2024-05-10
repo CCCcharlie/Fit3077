@@ -1,4 +1,4 @@
-from abc import ABC, abstractmethod
+from abc import abstractmethod
 
 import pygame
 from src.main.engine.Renderable import Renderable
