@@ -5,20 +5,21 @@ from src.main.engine.component.TransformComponent import TransformComponent
 
 
 class RectComponent(RenderableComponent):
-  def __init__(self, transformComponent: TransformComponent, width: int, height: int, colour: Color):
+  def __init__(self, transformComponent: TransformComponent, width: int, height: int, color: Color):
     """
     Create a rectangle
+
+    Args:
+      transformComponent (TransformComponent): The transform component the rectangle is attached to 
+      width (int): The width of the rectangle
+      height (int): The height of the rectangle
+      color (Color): The color of the rectangle
     """
     self.__width: int = width
     self.__height: int = height
-    self.__colour: Color = colour
     super().__init__(transformComponent)
+    self.setColor(color)
 
-  def setColour(self, colour: Color) -> None:
-    """
-    Set the rectangle colour
-    """
-    self.__colour = colour
   
   def _generateImageSurface(self) -> None:
     """
@@ -26,6 +27,6 @@ class RectComponent(RenderableComponent):
     """
     image_surf = Surface((self.__width, self.__height))
     image_surf = image_surf.convert()
-    image_surf.fill(self.__colour)
+    image_surf.fill(self._color)
 
     self._setImageSurface(image_surf)

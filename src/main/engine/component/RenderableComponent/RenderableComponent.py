@@ -2,7 +2,7 @@ from abc import abstractmethod
 
 import pygame
 from src.main.engine.Renderable import Renderable
-from pygame import Surface
+from pygame import Surface, Color
 
 from src.main.engine.component.TransformComponent import TransformComponent
 from src.main.engine.utils.Vec2 import Vec2
@@ -22,15 +22,23 @@ class RenderableComponent(Renderable):
     self.__showing: bool = True
     self.__imageSurface: Surface = None
     self.__transformComponent: TransformComponent = transformComponent
+    self._colour: Color = Color(255,255,255)
 
     self._generateImageSurface()
 
+  def setColor(self, color: Color):
+    """
+    Set the renderables colour
+    """
+    self._color = color
+    self._generateImageSurface()
 
   @abstractmethod
   def _generateImageSurface(self) -> None:
     """
     Generate the image surface.
     """
+    raise NotImplementedError()
 
   def _setImageSurface(self, imageSurface: Surface) -> None:
     """
