@@ -10,3 +10,5 @@ from .World import World
 #folders
 from .component import * 
 from .utils import *
+from .builder import *
+from .command import *

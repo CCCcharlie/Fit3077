@@ -36,6 +36,7 @@ class ClickableComponent(Updateable):
         self.__clicked = Input().getMouseButton(1)
 
 
+
   @property
   def clicked(self) -> bool:
     """

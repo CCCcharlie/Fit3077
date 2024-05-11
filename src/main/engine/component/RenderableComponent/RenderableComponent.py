@@ -22,7 +22,7 @@ class RenderableComponent(Renderable):
     self.__showing: bool = True
     self.__imageSurface: Surface = None
     self.__transformComponent: TransformComponent = transformComponent
-    self._colour: Color = Color(255,255,255)
+    self._color: Color = Color(255,255,255)
 
     self._generateImageSurface()
 

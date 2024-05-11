@@ -1,5 +1,5 @@
 from pygame import Surface, draw
-from main.engine.utils.Vec2 import Vec2
+from src.main.engine.utils.Vec2 import Vec2
 from src.main.engine.component.TransformComponent import TransformComponent
 from src.main.engine.component.hitboxComponent.HitboxComponent import HitboxComponent
 
@@ -39,6 +39,6 @@ class CircleHitboxComponent(HitboxComponent):
 
   def _drawDebug(self, displaySurf: Surface, position: Vec2, scale: Vec2, rotation: int):
     center = position + Vec2(self.__radius , self.__radius)
-    draw.circle(displaySurf, (255,0,0), center, self.radius, width=3)
-    return super()._drawDebug(displaySurf, position, scale, rotation)
+    draw.circle(displaySurf, (255,0,0), center.toTuple(), self.radius, width=3)
+    
   

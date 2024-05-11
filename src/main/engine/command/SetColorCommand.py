@@ -1,6 +1,6 @@
 from pygame import Color
-from main.engine.command.Command import Command
-from main.engine.component.renderableComponent.RenderableComponent import RenderableComponent
+from src.main.engine.command.Command import Command
+from src.main.engine.component.renderableComponent.RenderableComponent import RenderableComponent
 
 
 class SetColorCommand(Command):

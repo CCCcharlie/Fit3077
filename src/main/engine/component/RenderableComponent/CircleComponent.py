@@ -29,5 +29,5 @@ class CircleComponent(RenderableComponent):
     Generate a circle on an image surface
     """
     image_surf = Surface((self.__radius * 2, self.__radius * 2), SRCALPHA)
-    draw.circle(image_surf, self.__colour, (self.__radius, self.__radius), self.__radius)
+    draw.circle(image_surf, self._color, (self.__radius, self.__radius), self.__radius)
     self._setImageSurface(image_surf)

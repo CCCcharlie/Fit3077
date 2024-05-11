@@ -4,3 +4,4 @@ from .TransformComponent import TransformComponent
 
 #folders
 from .renderableComponent import *
+from .hitboxComponent import *

@@ -91,5 +91,5 @@ class ButtonComponent(Updateable):
     """
     Update the button
     """
-    self.__state = self.__switcher.get(self.__state, self.__errorUpdate)
+    self.__state = self.__switcher.get(self.__state, self.__errorUpdate)()
   

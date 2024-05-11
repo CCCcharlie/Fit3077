@@ -27,7 +27,7 @@ class HitboxComponent(Renderable):
     Args:
       point (Vec2): The worldspace position of the point to check
     """
-    self._checkPointCollision(self.__transformComponent.position, self.__transformComponent.scale, self.__transformComponent.rotation, point)
+    return self._checkPointCollision(self.__transformComponent.position, self.__transformComponent.scale, self.__transformComponent.rotation, point)
 
   def render(self, displaySurf: Surface):
     """

@@ -1,13 +1,11 @@
 from pygame import Color
-from main.engine.command.SetColorCommand import SetColorCommand
+from src.main.engine.command.SetColorCommand import SetColorCommand
 from src.main.engine.command.Command import Command
 from src.main.engine.component.ButtonComponent import ButtonComponent
 from src.main.engine.component.ClickableComponent import ClickableComponent
-from src.main.engine.component.TransformComponent import TransformComponent
 from src.main.engine.component.hitboxComponent.HitboxComponent import HitboxComponent
 from src.main.engine.component.renderableComponent.RenderableComponent import RenderableComponent
 from src.main.engine.exceptions.IncompleteBuilderError import IncompleteBuilderError
-from src.main.engine.utils.Vec2 import Vec2
 from src.main.engine.Entity import Entity
 
 class ButtonBuilder:
@@ -18,7 +16,6 @@ class ButtonBuilder:
     """
     Initialise the builder
     """
-    self.__position: Vec2 = Vec2(0,0)
     self.__renderable: RenderableComponent = None
     self.__hitbox: HitboxComponent = None
   
@@ -29,14 +26,6 @@ class ButtonBuilder:
     self.__defaultColor: Color = None
 
 
-  def setPosition(self, position: Vec2):
-    """
-    Set the buttons position
-
-    Args:
-      position (Vec2): The position of the button 
-    """
-    self.__position = position
 
   def setHitbox(self, hitbox: HitboxComponent):
     """
@@ -124,9 +113,7 @@ class ButtonBuilder:
     defaultEvent = SetColorCommand(self.__defaultColor, self.__renderable)
     hoverEvent = SetColorCommand(self.__hoverColor, self.__renderable)
     pressedEvent = SetColorCommand(self.__pressedColor, self.__renderable)
-
-    trans: TransformComponent = TransformComponent()
-    trans.position = self.__position
+    
 
     clickable = ClickableComponent(self.__hitbox)
 
@@ -139,8 +126,8 @@ class ButtonBuilder:
 
     #now add to entity in the desired order 
     #renderables
-    e.add_renderable(self.__hitbox)
     e.add_renderable(self.__renderable)
+    e.add_renderable(self.__hitbox)
 
     #updateables
     e.add_updateable(clickable)
