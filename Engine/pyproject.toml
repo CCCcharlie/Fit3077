@@ -1,0 +1,13 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+[project]
+name = "engine"
+version = "1.0.0"
+dependencies = ["pygame"]
+authors = [
+    {name = "Anton Burckhardt"},
+    {name = "Liyu Chen"},
+    {name = "Daniel Gower-Hall"},
+    {name = "Xavier Younan"}
+]

@@ -1,2 +1,2 @@
-@echo off 
-pip install -e .\src\main\engine\
+pip install -e ./Engine/
+pip install -e ./FieryDragons/
