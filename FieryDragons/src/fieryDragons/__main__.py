@@ -1,4 +1,4 @@
-from .builder.scene.TestSceneBuilder import TestSceneBuilder
+from fieryDragons.builder.scene.TestSceneBuilder import TestSceneBuilder
 from engine.scene.World import World
 
 if __name__ == "__main__":
