@@ -1,6 +1,7 @@
 
 
 from typing import List
+from engine.command.PrintCommand import PrintCommand
 from engine.component.TransformComponent import TransformComponent
 from fieryDragons.Segment import Segment
 from fieryDragons.TurnManager import TurnManager
@@ -33,6 +34,12 @@ class Player:
   
     if animalType is self.path[self.position].getAnimalType():
       newLocation = self.position + amount
+
+      #check if at the end of the path 
+      if self.position >= len(self.path):
+        #this player has won
+        PrintCommand(f"Player {TurnManager().getPlayerNumber(self)} wins!")
+
       newSegment = self.path[newLocation]
 
       #check can move there 

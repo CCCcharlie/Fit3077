@@ -18,7 +18,6 @@ class TurnManager(metaclass=SingletonMeta):
   def nextTurn(self):
     self.__activePlayer = (self.__activePlayer + 1) % len(self.__players)
 
-
   def canMove(self, p: Player, position: Segment) -> bool:
      for player in self.__players:
       if (player.getPosition() == position) and (player != p):
@@ -26,5 +25,11 @@ class TurnManager(metaclass=SingletonMeta):
       
       return True
 
+  def getPlayerNumber(self, p: Player) -> int:
+    for player, i in enumerate(self.__players):
+      if p == player:
+        return i+1
+      
+    return None
 
 
