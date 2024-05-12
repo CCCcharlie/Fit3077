@@ -13,7 +13,7 @@ class Segment():
     self.__next: 'Segment' = None
     self._cave: 'Segment' = None
 
-    self._player = None
+    self._player: Player = None
 
   def setNext(self, segment: 'Segment'):
     self.__next = segment
