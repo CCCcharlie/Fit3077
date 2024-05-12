@@ -1,0 +1,54 @@
+from typing import List
+from main.fieryDragons.Player import Player
+from src.main.engine.component.TransformComponent import TransformComponent
+from src.main.engine.utils.Vec2 import Vec2
+from src.main.fieryDragons.enums.AnimalType import AnimalType
+
+class Segment():
+  def __init__(self, transformComponent: TransformComponent, animalType: AnimalType, offset: Vec2 = Vec2(0,0)):
+    self.__offset: Vec2 = offset
+    self.__transformComponent: TransformComponent = transformComponent
+    self.__animalType: AnimalType = animalType
+
+    self.__next: 'Segment' = None
+    self._cave: 'Segment' = None
+
+    self._player = None
+
+  def setNext(self, segment: 'Segment'):
+    self.__next = segment
+
+  def setCave(self, cave: 'Segment'):
+    self.__cave = cave
+
+  def getNext(self) -> 'Segment':
+    return self.__next
+  
+  def getCave(self) -> 'Segment':
+    return self.__cave
+
+  def getAnimalType(self) -> AnimalType:
+    return self.__animalType
+
+  def canMovePlayer(self) -> bool:
+    return self._player is None
+  
+  def generatePath(self, start: 'Segment') -> List['Segment']:
+    segmentList: List[Segment] = []
+    segmentList.append(start) # add cave
+    segmentList.append(start.getNext()) # add first stop
+    segmentList.append(start.getNext().getNext()) # add second stop 
+
+    searching: bool = True
+    currentSpot: 'Segment' = start.getNext().getNext()
+
+    while searching:
+      if currentSpot.getCave() == start:
+        searching = False
+        segmentList.append(currentSpot.getCave())
+      else:
+        segmentList.append(currentSpot.getNext())
+        currentSpot = currentSpot.getNext()
+    return segmentList
+
+
