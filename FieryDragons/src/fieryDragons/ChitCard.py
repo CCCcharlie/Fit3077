@@ -1,13 +1,13 @@
 
 from enum import Enum
 
-from Engine.src.engine.component.renderable.RenderableComponent import RenderableComponent
+from engine.component.renderable.RenderableComponent import RenderableComponent
 
 class State(Enum):
   HIDDEN = 1
   VISIBLE = 2
 
-class ChitCardComponent:
+class ChitCard:
   def __init__(self, front: RenderableComponent, back: RenderableComponent):
     self.__front = front
     self.__back = back
