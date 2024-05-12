@@ -1,9 +1,18 @@
-from src.main.engine.command.SetColorCommand import SetColorCommand
-from src.main.engine.exceptions.IncompleteBuilderError import IncompleteBuilderError
-from src.main.engine.command.Command import Command
+from engine.command.SetColorCommand import SetColorCommand
+from engine.component.TransformComponent import TransformComponent
+from engine.component.hitbox.CircleHitboxComponent import CircleHitboxComponent
+from engine.component.hitbox.HitboxComponent import HitboxComponent
+from engine.component.interaction.ButtonComponent import ButtonComponent
+from engine.component.interaction.ClickableComponent import ClickableComponent
+from engine.component.renderable.CircleComponent import CircleComponent
+from engine.entity.Entity import Entity
+from engine.exceptions.IncompleteBuilderError import IncompleteBuilderError
+from engine.command.Command import Command
+from engine.utils.Vec2 import Vec2
 from fieryDragons.command.ChitCardClickedCommand import ChitCardClickedCommand
-from fieryDragons.component.ChitCardComponent import ChitCardComponent
-from src.main.engine import Vec2, Entity, ButtonComponent, CircleComponent, TransformComponent, ClickableComponent, HitboxComponent, CircleHitboxComponent
+from fieryDragons.ChitCard import ChitCard
+
+
 from pygame import Color
 
 class ChitCardBuilder:
@@ -42,7 +51,7 @@ class ChitCardBuilder:
     front_circle = CircleComponent(transformComponent, self.__radius, self.__frontColor )
     back_circle = CircleComponent(transformComponent, self.__radius, self.__backColor)
 
-    ccComponent = ChitCardComponent(front_circle, back_circle)
+    ccComponent = ChitCard(front_circle, back_circle)
     
     ccClickedCommand: Command = ChitCardClickedCommand(ccComponent)
     onDefault: Command = SetColorCommand(Color(0,0,0), back_circle)
