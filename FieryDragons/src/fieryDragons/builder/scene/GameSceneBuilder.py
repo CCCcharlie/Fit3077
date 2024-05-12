@@ -7,7 +7,7 @@ from fieryDragons.builder.entity.SegmentBuilder import SegmentBuilder
 from fieryDragons.utils.AnimalType import AnimalType
 from ...utils.CircleCoordinateIterator import CircleCoordinateIterator
 
-class GameBuilder:
+class GameSceneBuilder:
 
     def __init__(self, screen_width : int, screen_height : int):
         self.__screen_width = screen_width
@@ -16,15 +16,15 @@ class GameBuilder:
         self.__chit_cards : int | None = None
         self.__segments : int | None = None
 
-    def setPlayers(self, players : int) -> GameBuilder:
+    def setPlayers(self, players : int) -> GameSceneBuilder:
         self.__players = players
         return self
 
-    def setChitCards(self, chit_cards : int) -> GameBuilder:
+    def setChitCards(self, chit_cards : int) -> GameSceneBuilder:
         self.__chit_cards = chit_cards 
         return self
 
-    def setSegments(self, segments : int) -> GameBuilder:
+    def setSegments(self, segments : int) -> GameSceneBuilder:
         self.__segments = segments
         return self
 

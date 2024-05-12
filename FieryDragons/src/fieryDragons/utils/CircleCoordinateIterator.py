@@ -6,7 +6,7 @@ from engine.utils.Vec2 import Vec2
 class CircleCoordinateIterator(Iterator[Vec2]):
 
     def __init__(self, elements : int, radius : int, center_x : int, center_y : int, offset : int = 0) -> None:
-        self.size = (radius * 2) // (elements // 2) 
+        self.size = (radius * 2) // ((elements + 4 * offset) // 2) 
         self.__center_x = center_x
         self.__center_y = center_y
         self.__elements = elements
