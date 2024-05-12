@@ -1,7 +1,17 @@
 
 from pygame import Color
 
-from src.main.engine import * 
+from src.main.engine.Scene import Scene
+from src.main.engine.builder.entity.ButtonBuilder import ButtonBuilder
+from src.main.engine.command.PrintCommand import PrintCommand
+from src.main.engine.component.TransformComponent import TransformComponent
+from src.main.engine.component.hitboxComponent.CircleHitboxComponent import CircleHitboxComponent
+from src.main.engine.component.hitboxComponent.HitboxComponent import HitboxComponent
+from src.main.engine.component.renderableComponent.RenderableComponent import RenderableComponent
+from src.main.engine.component.renderableComponent.CircleComponent import CircleComponent
+from src.main.engine.utils.Vec2 import Vec2
+
+
 
 
 
