@@ -1,9 +1,8 @@
 from typing import List
 
-from Engine.src.engine.component.TransformComponent import TransformComponent
-from Engine.src.engine.utils.Vec2 import Vec2
-from FieryDragons.src.fieryDragons.Player import Player
-from FieryDragons.src.fieryDragons.enums.AnimalType import AnimalType
+from engine.component.TransformComponent import TransformComponent
+from engine.utils.Vec2 import Vec2
+from fieryDragons.enums.AnimalType import AnimalType
 
 
 class Segment():
@@ -13,9 +12,8 @@ class Segment():
     self.__animalType: AnimalType = animalType
 
     self.__next: 'Segment' = None
-    self._cave: 'Segment' = None
+    self.__cave: 'Segment' = None
 
-    self._player: Player = None
 
   def setNext(self, segment: 'Segment'):
     self.__next = segment

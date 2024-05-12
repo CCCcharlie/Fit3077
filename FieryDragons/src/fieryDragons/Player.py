@@ -1,6 +1,6 @@
 
 
-from FieryDragons.src.fieryDragons.Segment import Segment
+from fieryDragons.Segment import Segment
 
 
 class Player:

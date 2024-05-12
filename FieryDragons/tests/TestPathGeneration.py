@@ -1,11 +1,12 @@
-## build out say segments with 4 types of caves
-from src.main.fieryDragons.Player import Player
-from src.main.engine.component.TransformComponent import TransformComponent
-from src.main.fieryDragons.Segment import Segment
-from src.main.fieryDragons.enums.AnimalType import AnimalType
-
-
 #create circle of segments
+from fieryDragons.Player import Player
+from fieryDragons.Segment import Segment
+from fieryDragons.enums.AnimalType import AnimalType
+
+
+from engine.component.TransformComponent import TransformComponent
+
+
 tc1 = TransformComponent()
 seg1= Segment(tc1, AnimalType.BAT)
 previous = seg1
@@ -26,9 +27,16 @@ c_spi = Segment(tc1, AnimalType.SPIDER)
  
 # add caves
 seg1.setCave(c_bby)
+c_bby.setNext(seg1)
+
 seg1.getNext().setCave(c_bat)
+c_bat.setNext(seg1.getNext())
+
 seg1.getNext().getNext().setCave(c_sal)
+c_sal.setNext(seg1.getNext().getNext())
+
 seg1.getNext().getNext().getNext().setCave(c_spi)
+c_spi.setNext(seg1.getNext().getNext().getNext())
 
 #make player
 p = Player(c_bby)

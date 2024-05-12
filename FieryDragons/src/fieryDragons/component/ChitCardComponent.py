@@ -1,6 +1,7 @@
 
 from enum import Enum
-from engine.component.renderable.RenderableComponent import RenderableComponent
+
+from Engine.src.engine.component.renderable.RenderableComponent import RenderableComponent
 
 class State(Enum):
   HIDDEN = 1
