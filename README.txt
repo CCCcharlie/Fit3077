@@ -1,28 +1,41 @@
 # README
 ## Setup 
-first time install run setup.bat
+First time install on Windows run `setup.bat`
 
-##Build instructions
-top build run build.bat
+## Build Instructions
+On Windows run `build.bat`
+
+## Run
+### In Development
+After setup execute `python3 -m fieryDragons`
+
+### In Production
+Run .exe file in /build directory
 
 ## Project Structure
-    ├── asset
-        ├── sprite
-        └── audio  
-    ├── doc      
-    └── src       
-        ├── main  
-            ├── engine  
-              ├── command  
-              └── component  
-            └── fiery-dragons 
-              ├── command  
-              ├── component  
-              ├── builder  
-              ├── enum 
-              └── scene 
-        └── test  
-            ├── engine  
-            └── fiery-dragons 
+├───doc
+├───Engine
+│   └───src
+│       └───engine
+│           ├───builder
+│           │   ├───entity
+│           ├───command
+│           ├───component
+│           │   ├───hitbox
+│           │   ├───interaction
+│           │   ├───renderable
+│           ├───entity
+│           ├───exceptions
+│           ├───scene
+│           └───utils
+├───FieryDragons
+│   └───src
+│       └───fieryDragons
+│           └───builder
+│               └───scene
+└───Test
+    ├───Engine
+    │   └───utils
+    └───FieryDragons
     
 
