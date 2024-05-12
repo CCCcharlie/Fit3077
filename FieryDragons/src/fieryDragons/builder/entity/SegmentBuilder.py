@@ -32,6 +32,7 @@ class SegmentBuilder:
         if self.__size is None: raise IncompleteBuilderError(self.__class__.__name__, "Size")
         if self.__animal_type is None: raise IncompleteBuilderError(self.__class__.__name__, "Animal Type")
 
+        # Creation
         tc = TransformComponent()
         tc.position = self.__position
         square = RectComponent(tc, self.__size, self.__size, self.__animal_type.get_colour()) 
