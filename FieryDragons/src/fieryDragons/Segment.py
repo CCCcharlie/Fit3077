@@ -14,7 +14,6 @@ class Segment():
     self.__next: 'Segment' = None
     self.__cave: 'Segment' = None
 
-
   def setNext(self, segment: 'Segment'):
     self.__next = segment
 
@@ -29,9 +28,13 @@ class Segment():
 
   def getAnimalType(self) -> AnimalType:
     return self.__animalType
-
-  def canMovePlayer(self) -> bool:
-    return self._player is None
+  
+  def getSnapPosition(self) -> Vec2:
+    #TODO rotate the offset based on the transform's rotation
+    return self.__transformComponent.position + self.__offset
+  
+  def getSnapRotation(self) -> Vec2:
+    return self.__transformComponent.rotation
   
   def generatePath(self, start: 'Segment') -> List['Segment']:
     segmentList: List[Segment] = []

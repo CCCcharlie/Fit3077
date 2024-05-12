@@ -8,19 +8,19 @@ class TransformComponent():
 
   @property
   def position(self) -> Vec2:
-    return self._position
+    return Vec2(self._position.x, self._position.y)
 
   @position.setter
   def position(self, value: Vec2) -> None:
-    self._position = value
+    self._position = Vec2(value.x, value.y)
 
   @property
   def scale(self) -> Vec2:
-    return self._scale
+    return Vec2(self._scale.x, self._scale.y)
 
   @scale.setter
   def scale(self, value: Vec2) -> None:
-    self._scale = value
+    self._scale = Vec2(value.x, value.y)
 
   @property
   def rotation(self) -> int:
