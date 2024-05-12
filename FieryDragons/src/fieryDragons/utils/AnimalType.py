@@ -3,6 +3,7 @@ from enum import Enum
 from pygame.color import Color
 import random
 
+
 class AnimalType(Enum):
     SALAMANDER = 0
     SPIDER = 1
