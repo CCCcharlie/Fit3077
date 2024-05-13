@@ -31,7 +31,7 @@ class SegmentBuilder:
 
     def build(self) -> Entity:
         # Error handling
-        if self.__transformChanged is None:
+        if self.__transformChanged is False:
             return IncompleteBuilderError(self.__class__.__name__, "Transform Component Unchanged")
         if self.__transform is None:
             raise IncompleteBuilderError(self.__class__.__name__, "Transform Component")

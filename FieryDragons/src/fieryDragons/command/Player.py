@@ -12,20 +12,12 @@ from fieryDragons.enums.AnimalType import AnimalType
 class Player:
   ACTIVE_PLAYER = None
 
-  def __init__(self, startingSegment: Segment, transformComponent: TransformComponent, playerNumber: int):
+  def __init__(self, startingSegment: Segment, transformComponent: TransformComponent):
     self.position: int = 0
     self.path: List[Segment] = startingSegment.generatePath(startingSegment)
     self.transformComponent = transformComponent
 
-    self.__playerNumber: int = playerNumber
-    self.__nextPlayer: Player = None 
-
-    # snap to segment
-    self._moveToSegment(startingSegment)
-
-  def _moveToSegment(self, segment: Segment):
-    self.transformComponent.position = segment.getSnapPosition()
-    self.transformComponent.rotation = segment.getSnapRotation()
+    self.__nextPlayer: Player = None
 
   def setNextPlayer(self, nextPlayer: Player):
      self.__nextPlayer = nextPlayer
@@ -55,29 +47,34 @@ class Player:
       newSegment = self.path[newLocation]
       if self._canMove(self, newSegment):
         self.position = newLocation
-        self._moveToSegment(newSegment)
+        self.transformComponent.position = newSegment.getSnapPosition()
+        self.transformComponent.rotation = newSegment.getSnapRotation()
 
       # # end turn 
       Player.ACTIVE_PLAYER = self.__nextPlayer
 
+  
     if animalType is self.path[self.position].getAnimalType():
       newLocation = self.position + amount
 
       #check if at the end of the path 
-      if self.position >= len(self.path):
+      # if self.position >= len(self.path):
         #this player has won
-        PrintCommand(f"Player {self.__playerNumber} wins!")
+        # PrintCommand(f"Player {TurnManager().getPlayerNumber(self)} wins!")
 
       newSegment = self.path[newLocation]
 
       #check can move there 
-      if self._canMove(self, newSegment):
-        self.position = newLocation
-        self._moveToSegment(newSegment)
-      else:
-         Player.ACTIVE_PLAYER = self.__nextPlayer
+      # if TurnManager().canMove(self, newSegment):
+      self.position = newLocation
+      self.transformComponent.position = newSegment.getSnapPosition()
+      self.transformComponent.rotation = newSegment.getSnapRotation()
+      # else:
+      #   TurnManager().nextTurn()
 
-    Player.ACTIVE_PLAYER = self.__nextPlayer
+
+    #end turn
+    # TurnManager().nextTurn()
 
 
 
