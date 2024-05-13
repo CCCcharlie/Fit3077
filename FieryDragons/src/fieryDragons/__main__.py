@@ -1,18 +1,8 @@
-from fieryDragons.builder.scene.GameSceneBuilder import GameSceneBuilder
 from engine.scene.World import World
+from fieryDragons.builder.scene.MainMenuSceneBuilder import MainMenuSceneBuilder
 
 if __name__ == "__main__":
     world = World()
-
-    scene = (
-        GameSceneBuilder(
-            world.size[0],
-            world.size[1],
-        )
-        .setPlayers(4)
-        .setSegments(16)
-        .setChitCards(24)
-        .build()
-    )
+    scene = MainMenuSceneBuilder().build()
     world.setActiveScene(scene)
     world.start()

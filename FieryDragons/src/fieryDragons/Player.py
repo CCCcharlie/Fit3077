@@ -2,12 +2,13 @@
 from __future__ import annotations
 
 from typing import List
+from engine.command.ChangeSceneCommand import ChangeSceneCommand
 from engine.command.PrintCommand import PrintCommand
 from engine.component.TransformComponent import TransformComponent
 from fieryDragons.Segment import Segment
 # from fieryDragons.TurnManager import TurnManager
 from fieryDragons.builder.scene.WinSceneBuilder import WinSceneBuilder
-from fieryDragons.command.ChangeSceneCommand import ChangeSceneCommand
+
 from fieryDragons.enums.AnimalType import AnimalType
 
 
