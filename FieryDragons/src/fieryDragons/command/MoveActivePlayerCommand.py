@@ -1,5 +1,5 @@
 from engine.command.Command import Command
-from fieryDragons.TurnManager import TurnManager
+from fieryDragons.Player import Player
 from fieryDragons.enums.AnimalType import AnimalType
 
 
@@ -9,4 +9,5 @@ class MoveActivePlayerCommand(Command):
     self.__amount = amount
 
   def run(self):
-    TurnManager().getActivePlayer().move(self.__animalType, self.__amount)
+    print("Moving Player")
+    Player.ACTIVE_PLAYER.move(self.__animalType, self.__amount)

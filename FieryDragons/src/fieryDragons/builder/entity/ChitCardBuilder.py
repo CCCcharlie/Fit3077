@@ -1,4 +1,6 @@
 from __future__ import annotations
+import random
+from typing import List, Tuple
 from engine.command.SetColorCommand import SetColorCommand
 from engine.component.TransformComponent import TransformComponent
 from engine.component.hitbox.CircleHitboxComponent import CircleHitboxComponent
@@ -36,25 +38,40 @@ class ChitCardBuilder:
 
     self.__positionChanged: bool = False
 
-    self.__animalType: AnimalType = None
-    self.__amount: int = None
+    self.__chitCards: List[Tuple[int, AnimalType]] = [
+      (1, AnimalType.SALAMANDER),
+      (2, AnimalType.SALAMANDER),
+      (3, AnimalType.SALAMANDER),
+      (1, AnimalType.BAT),
+      (2, AnimalType.BAT),
+      (3, AnimalType.BAT),
+      (1, AnimalType.SPIDER),
+      (2, AnimalType.SPIDER),
+      (3, AnimalType.SPIDER),
+      (1, AnimalType.BABY_DRAGON),
+      (2, AnimalType.BABY_DRAGON),
+      (3, AnimalType.BABY_DRAGON),
+      (1, AnimalType.PIRATE_DRAGON),
+      (1, AnimalType.PIRATE_DRAGON),
+      (2, AnimalType.PIRATE_DRAGON),
+      (2, AnimalType.PIRATE_DRAGON)
+    ]
+
+    random.shuffle(self.__chitCards)
+
+
 
   def setPosition(self, position: Vec2) -> ChitCardBuilder:
     self.__positionChanged = True
     self.__position = position
     return self
 
-  def setAnimalType(self, animalType: AnimalType) -> ChitCardBuilder:
-    self.__animalType = animalType
-    return self
-  
-  def setAmount(self, amount: int) -> ChitCardBuilder:
-    self.__amount = amount
-    return self
 
   def build(self) -> Entity:
     if self.__positionChanged is False:
       raise IncompleteBuilderError("ChitCard", "Position")
+    
+    amount, animalType = self.__chitCards.pop()
 
     transformComponent: TransformComponent = TransformComponent()
     transformComponent.position = self.__position
@@ -62,10 +79,10 @@ class ChitCardBuilder:
     hitbox: HitboxComponent = CircleHitboxComponent(transformComponent, self.__radius, True)
     clickable: ClickableComponent = ClickableComponent(hitbox)
 
-    front_circle = CircleComponent(transformComponent, self.__radius, self.__frontColor )
+    front_circle = CircleComponent(transformComponent, self.__radius, self.__frontColor)
     back_circle = CircleComponent(transformComponent, self.__radius, self.__backColor)
 
-    ccComponent = ChitCard(front_circle, back_circle, self.__animalType, self.__amount)
+    ccComponent = ChitCard(front_circle, back_circle, animalType, amount)
     
     ccClickedCommand: Command = ChitCardClickedCommand(ccComponent)
     onDefault: Command = SetColorCommand(Color(0,0,0), back_circle)

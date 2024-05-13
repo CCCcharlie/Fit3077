@@ -1,10 +1,14 @@
 from __future__ import annotations
+from typing import List
 
 from engine.scene.Scene import Scene
 from engine.exceptions.IncompleteBuilderError import IncompleteBuilderError
 
 from engine.utils.Vec2 import Vec2
+from fieryDragons.Segment import Segment
+from fieryDragons.builder.entity.CaveBuilder import CaveBuilder
 from fieryDragons.builder.entity.ChitCardBuilder import ChitCardBuilder
+from fieryDragons.builder.entity.PlayerBuilder import PlayerBuilder
 from fieryDragons.builder.entity.SegmentBuilder import SegmentBuilder
 from fieryDragons.enums.AnimalType import AnimalType
 from fieryDragons.utils.GridCoordinateIterator import GridCoordinateIterator
@@ -55,9 +59,12 @@ class GameSceneBuilder:
             center_y,
             offset=1,
         )
-        for t in segment_iter:
+        segmentBuilder = SegmentBuilder()
+        caveBuilder = CaveBuilder()
+
+        for index, t in enumerate(segment_iter):
             e = (
-                SegmentBuilder()
+                segmentBuilder
                 .setSize(segment_iter.size)
                 .setTransform(t)
                 .setAnimalType(AnimalType.get_random_animal())
@@ -66,6 +73,31 @@ class GameSceneBuilder:
             s.addEntity(e)
 
             # Place caves according to player count
+            if (index % (self.__segments // self.__players) == 0):
+                newTransform = t.clone()
+                newTransform.position.x += 100
+                #todo get the generator to handle the further out position
+                #todo update the cave generator to pass information to player generator
+                c = (
+                    caveBuilder
+                    .setSize(segment_iter.size)
+                    .setNext(segmentBuilder.getLastSegment())
+                    .setTransform(newTransform)
+                    .setAnimalType(AnimalType.get_random_animal())
+                    .build()
+                )
+                s.addEntity(c)
+        segmentBuilder.finish()
+
+        #place players
+        playerBuilder = PlayerBuilder()
+        
+        for cave in caveBuilder.getCaves():
+            p = playerBuilder.setStartingSegment(cave).build()
+            s.addEntity(p)
+        playerBuilder.finish()
+
+
 
         # Place chit cards
         gridIterator = GridCoordinateIterator(
@@ -76,13 +108,11 @@ class GameSceneBuilder:
             min(self.__screen_width, self.__screen_height) // 2,
         )
         chitCardBuilder = ChitCardBuilder(40)
-        chitCardBuilder.setAnimalType(AnimalType.BABY_DRAGON)
-        chitCardBuilder.setAmount(1)
 
         for v2 in gridIterator:
             e = chitCardBuilder.setPosition(v2).build()
             s.addEntity(e)
 
-        # Determine
+        
 
         return s
