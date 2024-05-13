@@ -9,4 +9,5 @@ class MoveActivePlayerCommand(Command):
     self.__amount = amount
 
   def run(self):
+    print("Moving Player")
     Player.ACTIVE_PLAYER.move(self.__animalType, self.__amount)

@@ -10,7 +10,7 @@ from fieryDragons.enums.AnimalType import AnimalType
 
 
 class Player:
-  ACTIVE_PLAYER = None
+  ACTIVE_PLAYER: Player = None
 
   def __init__(self, startingSegment: Segment, transformComponent: TransformComponent, playerNumber: int):
     self.position: int = 0
@@ -32,19 +32,22 @@ class Player:
 
   def traverse(self, caller: Player, start=False) -> List[Player]:
     if start:
-     return self.__nextPlayer.traverse()
-
+      return self.__nextPlayer.traverse(caller, False)
+     
     if self == caller:
       return []
-    return self.__nextPlayer.traverse(caller).append(self)
+
+    lst: List[Player] = self.__nextPlayer.traverse(caller, False)
+    lst.append(self)
+    return lst
    
   def getPosition(self) -> Segment:
     return self.path[self.position]
   
-  def _canMove(self, newSegment: Segment) -> bool:
+  def __canMove(self, newSegment: Segment) -> bool:
     players = self.traverse(self, True)
     for player in players:
-      if (player.getPosition() == self.position):
+      if (player.getPosition() == newSegment):
         return False
       return True
 
@@ -53,7 +56,7 @@ class Player:
     if animalType is AnimalType.PIRATE_DRAGON:
       newLocation = self.position - amount
       newSegment = self.path[newLocation]
-      if self._canMove(self, newSegment):
+      if self.__canMove(newSegment):
         self.position = newLocation
         self._moveToSegment(newSegment)
 
@@ -71,7 +74,7 @@ class Player:
       newSegment = self.path[newLocation]
 
       #check can move there 
-      if self._canMove(self, newSegment):
+      if self.__canMove(newSegment):
         self.position = newLocation
         self._moveToSegment(newSegment)
       else:

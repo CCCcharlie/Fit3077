@@ -24,9 +24,11 @@ class PlayerBuilder:
   def setStartingSegment(self, startingSegment: Segment) -> PlayerBuilder:
     self.__startingSegment = startingSegment
     self.__startingSegmentChanged = True
+    return self
 
   def finish(self):
     self.__previousPlayer.setNextPlayer(self.__firstPlayer)
+    Player.ACTIVE_PLAYER = self.__firstPlayer
 
   def build(self) -> Entity:
     #error handling
