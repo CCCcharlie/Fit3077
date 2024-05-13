@@ -10,6 +10,6 @@ class Updateable(ABC):
     Update the object by the provided delta time increment
 
     Args:
-      dt (float): number of seconds this update must process
+      dt (float): number of millisecconds this update must process
     """
     raise NotImplementedError()

@@ -55,11 +55,11 @@ class GameSceneBuilder:
             center_y,
             offset=1,
         )
-        for v2 in segment_iter:
+        for t in segment_iter:
             e = (
                 SegmentBuilder()
                 .setSize(segment_iter.size)
-                .setPosition(v2)
+                .setTransform(t)
                 .setAnimalType(AnimalType.get_random_animal())
                 .build()
             )
@@ -75,7 +75,7 @@ class GameSceneBuilder:
             min(self.__screen_width, self.__screen_height) // 2,
             min(self.__screen_width, self.__screen_height) // 2,
         )
-        chitCardBuilder = ChitCardBuilder(20)
+        chitCardBuilder = ChitCardBuilder(40)
         chitCardBuilder.setAnimalType(AnimalType.BABY_DRAGON)
         chitCardBuilder.setAmount(1)
 
