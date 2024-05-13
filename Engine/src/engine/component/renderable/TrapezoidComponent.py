@@ -29,7 +29,7 @@ class TrapezoidComponent(RenderableComponent):
     self.setColor(color)
 
   def _pivot(self) -> Vec2:
-    return Vec2(-self.__bottom/2, 0)
+    return Vec2(+self.__bottom/2, 0)
   
   def _generateImageSurface(self) -> None:
     """

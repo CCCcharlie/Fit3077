@@ -62,17 +62,24 @@ class RenderableComponent(Renderable):
     return Vec2(0,0)
   
 
-  def __rotate(self, image: Surface) -> Tuple[Surface, Rect]:
+  def __rotatePivot(self, image: Surface, rotation: int, pivot: Vec2) -> Tuple[Surface, Rect]:
     """
     rotate surface
     """
-    rotation: int = self.__transformComponent.rotation
-    pivot: Vec2 = self._pivot()
 
-    rotatedImage = pygame.transform.rotate(image, rotation)
-    rotatedPivot = pygame.Vector2(pivot.x, pivot.y).rotate(rotation)
-    rect = rotatedImage.get_rect(center=rotatedPivot)    
-    return (rotatedImage, rect)
+    originalCentre = pygame.Vector2(image.get_width()/2,image.get_height()/2)
+    pivotV = pygame.Vector2(pivot.x, pivot.y)
+    vectorOffset = pivotV - originalCentre
+
+
+    image = pygame.transform.rotate(image, rotation)
+    rotatedOffset = vectorOffset.rotate(-rotation)
+
+    rect = image.get_rect(center=-rotatedOffset)
+
+    return image, rect
+
+  
 
   def render(self, display_surf: Surface) -> None:
     """
@@ -82,28 +89,30 @@ class RenderableComponent(Renderable):
       return 
     
     image: Surface = self.__imageSurface
+    pivot: Vec2 = self._pivot()
 
     #Scale surface based on scale information
     # scale: Vec2 = self.__transformComponent.scale
     # image = pygame.transform.scale(image, scale.toTuple())
 
-    # #Rotate
-    # image, rect = self.__rotate(image)
+    #Rotate
+    rotation: int = self.__transformComponent.rotation
+    image, rect = self.__rotatePivot(image, rotation, pivot)
+
+    # apply pivot
+    # rect = image.get_rect()
+    # rect.x -= pivot.x
+    # rect.y -= pivot.y
 
     # apply position
-    rect = image.get_rect()
     position: Vec2 = self.__transformComponent.position
     rect.x += position.x
     rect.y += position.y
-
-    # apply offset
-    offset = self._pivot()
-    rect.x += offset.x
-    rect.y += offset.y
 
     #blit to screen
     display_surf.blit(image, rect)
 
     
     pygame.draw.circle(display_surf, Color(0,0,0), position.toTuple(), 2)
+
 
