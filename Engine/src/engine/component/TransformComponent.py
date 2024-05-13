@@ -32,4 +32,4 @@ class TransformComponent():
 
   def rotate(self, angle: int) -> None:
     self._rotation += angle
-    self._rotation = self.rotation % 365
+    self._rotation = self.rotation % 360

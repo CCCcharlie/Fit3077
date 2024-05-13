@@ -82,6 +82,8 @@ class World(metaclass=SingletonMeta):
         self.activeScene.update(self.MS_PER_UPDATE)
         lag -= self.MS_PER_UPDATE
 
+        
+
       # render when we can :)
       self._render()
     self._on_cleanup()

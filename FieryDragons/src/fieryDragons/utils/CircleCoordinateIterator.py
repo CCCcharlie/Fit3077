@@ -1,5 +1,5 @@
 from typing import Iterator
-from math import pi, sin, cos
+from math import atan2, pi, sin, cos
 
 from engine.component.TransformComponent import TransformComponent
 from engine.utils.Vec2 import Vec2
@@ -35,7 +35,9 @@ class CircleCoordinateIterator(Iterator[TransformComponent]):
         y = self.__radius * sin(angle)
 
         # calculate rotation
-        rot = round(angle)
+        angle_degrees = angle * 180 / pi
+        rotation_angle = (-angle_degrees - 270) % 360
+
 
         # Update counter
         self.__n += 1
@@ -45,5 +47,5 @@ class CircleCoordinateIterator(Iterator[TransformComponent]):
         t.position = Vec2(
             x - (self.size / 2) + self.__center_x, y - (self.size / 2) + self.__center_y
         )
-        t.rotation = rot
+        t.rotation = rotation_angle
         return t

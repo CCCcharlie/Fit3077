@@ -1,7 +1,8 @@
 from abc import abstractmethod
+from typing import Tuple
 
 import pygame
-from pygame import Surface, Color
+from pygame import Surface, Color, Rect
 from ...entity.Renderable import Renderable
 from ...component.TransformComponent import TransformComponent
 from ...utils.Vec2 import Vec2
@@ -57,6 +58,22 @@ class RenderableComponent(Renderable):
     """
     self.__showing = False 
 
+  def _pivot(self) -> Vec2:
+    return Vec2(0,0)
+  
+
+  def __rotate(self, image: Surface) -> Tuple[Surface, Rect]:
+    """
+    rotate surface
+    """
+    rotation: int = self.__transformComponent.rotation
+    pivot: Vec2 = self._pivot()
+
+    rotatedImage = pygame.transform.rotate(image, rotation)
+    rotatedPivot = pygame.Vector2(pivot.x, pivot.y).rotate(rotation)
+    rect = rotatedImage.get_rect(center=rotatedPivot)    
+    return (rotatedImage, rect)
+
   def render(self, display_surf: Surface) -> None:
     """
     Render the renderable component.
@@ -65,15 +82,21 @@ class RenderableComponent(Renderable):
       return 
     
     image: Surface = self.__imageSurface
-    
-    #Scale surface based on scale information
-    scale: Vec2 = self.__transformComponent.scale
-    image = pygame.transform.scale(image, scale.toTuple())
 
-    #Rotate based on rotation information
-    rotation: int = self.__transformComponent.rotation
-    image = pygame.transform.rotate(image, rotation)
-    
-    #blit to screen
+    #Scale surface based on scale information
+    # scale: Vec2 = self.__transformComponent.scale
+    # image = pygame.transform.scale(image, scale.toTuple())
+
+    # #Rotate
+    image, rect = self.__rotate(image)
+
+    # apply position
+    rect = image.get_rect()
     position: Vec2 = self.__transformComponent.position
-    display_surf.blit(self.__imageSurface, position.toTuple())
+    rect.x += position.x
+    rect.y += position.y
+
+    #blit to screen
+    display_surf.blit(image, rect)
+    pygame.draw.circle(display_surf, Color(0,0,0), (rect.x, rect.y), 2)
+
