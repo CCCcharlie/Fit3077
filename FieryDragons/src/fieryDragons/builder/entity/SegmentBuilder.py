@@ -1,10 +1,10 @@
 from __future__ import annotations
 from engine.component.TransformComponent import TransformComponent
+from engine.component.renderable.TrapezoidComponent import TrapezoidComponent
 from engine.entity.Entity import Entity
 from engine.exceptions.IncompleteBuilderError import IncompleteBuilderError
 
 from engine.utils.Vec2 import Vec2
-from engine.component.renderable.RectComponent import RectComponent
 from fieryDragons.enums.AnimalType import AnimalType
 
 
@@ -42,11 +42,12 @@ class SegmentBuilder:
 
         self.__transformChanged = False
         # Creation
-        square = RectComponent(
-            self.__transform, self.__size, self.__size, self.__animal_type.get_colour()
+
+        trap = TrapezoidComponent(
+            self.__transform, round(self.__size/2), self.__size, self.__size, self.__animal_type.get_colour()
         )
 
         e = Entity()
-        e.add_renderable(square)
+        e.add_renderable(trap)
 
         return e
