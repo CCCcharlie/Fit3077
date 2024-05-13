@@ -6,6 +6,8 @@ from engine.command.PrintCommand import PrintCommand
 from engine.component.TransformComponent import TransformComponent
 from fieryDragons.Segment import Segment
 # from fieryDragons.TurnManager import TurnManager
+from fieryDragons.builder.scene.WinSceneBuilder import WinSceneBuilder
+from fieryDragons.command.ChangeSceneCommand import ChangeSceneCommand
 from fieryDragons.enums.AnimalType import AnimalType
 
 
@@ -69,6 +71,9 @@ class Player:
       #check if at the end of the path 
       if self.position >= len(self.path):
         #this player has won
+        winScene = WinSceneBuilder().setWinningPlayer(str(self.__playerNumber)).build()
+        #ChangeSceenCommand()
+        ChangeSceneCommand(winScene).run()
         PrintCommand(f"Player {self.__playerNumber} wins!")
 
       newSegment = self.path[newLocation]
