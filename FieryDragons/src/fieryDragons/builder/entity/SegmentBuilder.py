@@ -5,7 +5,8 @@ from engine.exceptions.IncompleteBuilderError import IncompleteBuilderError
 
 from engine.utils.Vec2 import Vec2
 from engine.component.renderable.RectComponent import RectComponent
-from ...utils.AnimalType import AnimalType
+from fieryDragons.enums.AnimalType import AnimalType
+
 
 
 class SegmentBuilder:

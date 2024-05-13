@@ -3,8 +3,11 @@ from __future__ import annotations
 from engine.scene.Scene import Scene
 from engine.exceptions.IncompleteBuilderError import IncompleteBuilderError
 
+from engine.utils.Vec2 import Vec2
+from fieryDragons.builder.entity.ChitCardBuilder import ChitCardBuilder
 from fieryDragons.builder.entity.SegmentBuilder import SegmentBuilder
-from fieryDragons.utils.AnimalType import AnimalType
+from fieryDragons.enums.AnimalType import AnimalType
+from fieryDragons.utils.GridCoordinateIterator import GridCoordinateIterator
 from ...utils.CircleCoordinateIterator import CircleCoordinateIterator
 
 
@@ -47,7 +50,7 @@ class GameSceneBuilder:
         # Place segments
         segment_iter = CircleCoordinateIterator(
             self.__segments,
-            min(self.__screen_width, self.__screen_height) // 2,
+            5 * min(self.__screen_width, self.__screen_height) // 8,
             center_x,
             center_y,
             offset=1,
@@ -64,9 +67,21 @@ class GameSceneBuilder:
 
             # Place caves according to player count
 
-        # Determine chit card-related coordinates
-
         # Place chit cards
+        gridIterator = GridCoordinateIterator(
+            4,
+            4,
+            Vec2(center_x, center_y),
+            min(self.__screen_width, self.__screen_height) // 2,
+            min(self.__screen_width, self.__screen_height) // 2,
+        )
+        chitCardBuilder = ChitCardBuilder(20)
+        chitCardBuilder.setAnimalType(AnimalType.BABY_DRAGON)
+        chitCardBuilder.setAmount(1)
+
+        for v2 in gridIterator:
+            e = chitCardBuilder.setPosition(v2).build()
+            s.addEntity(e)
 
         # Determine
 
