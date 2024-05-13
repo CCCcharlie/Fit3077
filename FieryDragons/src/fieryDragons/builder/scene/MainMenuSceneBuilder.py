@@ -7,13 +7,13 @@ from fieryDragons.builder.scene.GameSceneBuilder import GameSceneBuilder
 
 
 class MainMenuSceneBuilder:
-  def build() -> Scene:
+  def build(self) -> Scene:
     s = Scene() 
 
     bb = ButtonBuilder()
 
     # add start button
-    bb.setPosition = Vec2(250,100)
+    bb.setPosition(Vec2(250,100))
     gameScene = GameSceneBuilder().build()
     bb.setOnClick(ChangeSceneCommand(gameScene))
     bb.setText("Start")
@@ -21,7 +21,7 @@ class MainMenuSceneBuilder:
 
 
      # add quit button
-    bb.setPosition = Vec2(250,200)
+    bb.setPosition(Vec2(250,200))
     bb.setOnClick(QuitCommand())
     bb.setText("Quit")
     s.addEntity(bb.build())

@@ -1,7 +1,7 @@
+from engine.component.hitbox.HitboxComponent import HitboxComponent
 from pygame import Surface, Rect, draw
 from engine.utils.Vec2 import Vec2
 from engine.component.TransformComponent import TransformComponent
-from engine.component.hitboxComponent.HitboxComponent import HitboxComponent
 
 
 class RectHitboxComponent(HitboxComponent):

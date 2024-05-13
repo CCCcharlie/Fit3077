@@ -139,13 +139,16 @@ class ButtonBuilder:
       if self.__position is None:
         raise IncompleteBuilderError("Button", "Position")
       self.__transformComponent = TransformComponent()
+      self.__transformComponent.position = self.__position
       # create rectangle and hitbox   
       self.__renderable = RectComponent(self.__transformComponent, 100, 50, Color(0,0,0))
       self.__hitbox = RectHitboxComponent(self.__transformComponent, 100, 50, True)
-  
+
+    text = None
     if self.__text is not None:
       text = TextComponent(self.__transformComponent, self.__text, SysFont("Corbel", 60))
-      e.add_renderable(text)
+
+  
       
 
     defaultEvent = SetColorCommand(self.__defaultColor, self.__renderable)
@@ -165,13 +168,14 @@ class ButtonBuilder:
     #renderables
     e.add_renderable(self.__renderable)
     e.add_renderable(self.__hitbox)
+    if text is not None:
+      e.add_renderable(text)
 
     #updateables
     e.add_updateable(clickable)
     e.add_updateable(button)
 
-    
+
+    self.__renderable = None
     return e
 
-  def getTransformComponent(self) -> TransformComponent:
-    return self.__transformComponent
