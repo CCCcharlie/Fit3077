@@ -13,10 +13,10 @@ class TextBuilder:
     self.__pos: Vec2 = Vec2(10,10)
     self.__text: str = "Empty String"
     self.__textColor: Color = Color(255,255,255)
-    self.__rectWidth: int = 100
-    self.__rectHeight: int = 200
+    self.__rectWidth: int = 500
+    self.__rectHeight: int = 60
     self.__rectColor: Color = Color(0,0,0)
-    self.__font: Font = SysFont("Corbel", 30)
+    self.__font: Font = SysFont("Corbel", 60)
 
   def setPosition(self, pos: Vec2) -> TextBuilder:
     self.__pos = pos
@@ -56,5 +56,5 @@ class TextBuilder:
     textComponent = TextComponent(transformComponent, self.__text, self.__font, self.__textColor)
 
     e.add_renderable(rect)
-    e.add_updateable(textComponent)
+    e.add_renderable(textComponent)
     return e
