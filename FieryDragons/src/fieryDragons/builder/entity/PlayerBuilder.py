@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from engine.component.TransformComponent import TransformComponent
 from engine.component.renderable.RectComponent import RectComponent
 from engine.entity.Entity import Entity
@@ -19,7 +21,7 @@ class PlayerBuilder:
     self.__previousPlayer: Player = None
 
 
-  def setStartingSegment(self, startingSegment: Segment):
+  def setStartingSegment(self, startingSegment: Segment) -> PlayerBuilder:
     self.__startingSegment = startingSegment
     self.__startingSegmentChanged = True
 
@@ -40,7 +42,7 @@ class PlayerBuilder:
       self.__firstPlayer = p
     else:
       self.__previousPlayer.setNextPlayer(p)
-      self.__previousPlayer = p
+    self.__previousPlayer = p
     
     r = RectComponent(t, 50,50,Color(255,0,0))
     self.__playerNumber += 1
