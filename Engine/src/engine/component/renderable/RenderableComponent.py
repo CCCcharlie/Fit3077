@@ -88,7 +88,7 @@ class RenderableComponent(Renderable):
     # image = pygame.transform.scale(image, scale.toTuple())
 
     # #Rotate
-    image, rect = self.__rotate(image)
+    # image, rect = self.__rotate(image)
 
     # apply position
     rect = image.get_rect()
@@ -96,7 +96,14 @@ class RenderableComponent(Renderable):
     rect.x += position.x
     rect.y += position.y
 
+    # apply offset
+    offset = self._pivot()
+    rect.x += offset.x
+    rect.y += offset.y
+
     #blit to screen
     display_surf.blit(image, rect)
-    pygame.draw.circle(display_surf, Color(0,0,0), (rect.x, rect.y), 2)
+
+    
+    pygame.draw.circle(display_surf, Color(0,0,0), position.toTuple(), 2)
 
