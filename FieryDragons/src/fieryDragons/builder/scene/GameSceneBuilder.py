@@ -81,7 +81,7 @@ class GameSceneBuilder:
 
         for v2 in gridIterator:
             e = chitCardBuilder.setPosition(v2).build()
-            # s.addEntity(e)
+            s.addEntity(e)
 
         # Determine
 

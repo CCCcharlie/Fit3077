@@ -1,3 +1,4 @@
+from engine.utils.Vec2 import Vec2
 from pygame import Surface, Color, SRCALPHA, draw
 
 from ...component.renderable.RenderableComponent import RenderableComponent
@@ -16,6 +17,10 @@ class CircleComponent(RenderableComponent):
     self.__radius: int = radius
     super().__init__(transformComponent)
     self.setColor(color)
+
+
+  def _pivot(self) -> Vec2:
+    return Vec2(self.__radius, self.__radius)
 
   def setRadius(self, radius: int) -> None:
     """
