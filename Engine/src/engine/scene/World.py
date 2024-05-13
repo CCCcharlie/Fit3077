@@ -10,8 +10,8 @@ class World(metaclass=SingletonMeta):
   The entity that manages the active scene, and the game loop 
   """
   MS_PER_UPDATE: float = 16.67 # 60 update frames per second 
-  SCREEN_WIDTH: int = 640
-  SCREEN_HEIGHT: int = 300
+  SCREEN_WIDTH: int = 1920
+  SCREEN_HEIGHT: int = 1080
 
   def __init__(self):
     """
