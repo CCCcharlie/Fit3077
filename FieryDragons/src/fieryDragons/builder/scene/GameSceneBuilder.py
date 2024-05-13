@@ -108,8 +108,6 @@ class GameSceneBuilder:
             min(self.__screen_width, self.__screen_height) // 2,
         )
         chitCardBuilder = ChitCardBuilder(40)
-        chitCardBuilder.setAnimalType(AnimalType.BABY_DRAGON)
-        chitCardBuilder.setAmount(1)
 
         for v2 in gridIterator:
             e = chitCardBuilder.setPosition(v2).build()
