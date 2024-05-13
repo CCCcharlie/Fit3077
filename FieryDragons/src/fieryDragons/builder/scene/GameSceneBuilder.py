@@ -2,10 +2,9 @@ from __future__ import annotations
 from typing import List
 
 from engine.scene.Scene import Scene
-from engine.exceptions.IncompleteBuilderError import IncompleteBuilderError
 
+from engine.scene.World import World
 from engine.utils.Vec2 import Vec2
-from fieryDragons.Segment import Segment
 from fieryDragons.builder.entity.CaveBuilder import CaveBuilder
 from fieryDragons.builder.entity.ChitCardBuilder import ChitCardBuilder
 from fieryDragons.builder.entity.PlayerBuilder import PlayerBuilder
@@ -16,34 +15,26 @@ from ...utils.CircleCoordinateIterator import CircleCoordinateIterator
 
 
 class GameSceneBuilder:
-    def __init__(self, screen_width: int, screen_height: int):
-        self.__screen_width = screen_width
-        self.__screen_height = screen_height
-        self.__players: int | None = None
-        self.__chit_cards: int | None = None
-        self.__segments: int | None = None
+    def __init__(self):
+        self.__screen_width = World().size[0]
+        self.__screen_height = World().size[1]
+        self.__players: int = 4
+        ##self.__chit_cards: int  = 24
+        self.__segments: int = 16
 
     def setPlayers(self, players: int) -> GameSceneBuilder:
         self.__players = players
         return self
 
-    def setChitCards(self, chit_cards: int) -> GameSceneBuilder:
-        self.__chit_cards = chit_cards
-        return self
+    # def setChitCards(self, chit_cards: int) -> GameSceneBuilder:
+    #     self.__chit_cards = chit_cards
+    #     return self
 
     def setSegments(self, segments: int) -> GameSceneBuilder:
         self.__segments = segments
         return self
 
     def build(self) -> Scene:
-        # Error handling
-        if self.__players is None:
-            raise IncompleteBuilderError(self.__class__.__name__, "Players")
-        if self.__chit_cards is None:
-            raise IncompleteBuilderError(self.__class__.__name__, "Chit Cards")
-        if self.__segments is None:
-            raise IncompleteBuilderError(self.__class__.__name__, "Segements")
-
         # Build
         s = Scene()
 

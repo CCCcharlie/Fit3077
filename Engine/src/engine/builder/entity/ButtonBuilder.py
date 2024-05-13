@@ -4,8 +4,12 @@ from __future__ import annotations
 from engine.component.TransformComponent import TransformComponent
 from engine.component.hitbox.RectHitboxComponent import RectHitboxComponent
 from engine.component.renderable.RectComponent import RectComponent
+from engine.component.renderable.TextComponent import TextComponent
 from engine.utils.Vec2 import Vec2
 from pygame import Color
+
+from pygame.font import SysFont
+
 
 from ...command.SetColorCommand import SetColorCommand
 from ...command.Command import Command
@@ -36,6 +40,17 @@ class ButtonBuilder:
     self.__defaultColor: Color = Color(0,48,73)
 
     self.__position: Vec2 = None
+
+    self.__text: str = None
+
+  def setText(self, text: str) -> ButtonBuilder:
+    """
+    Set the buttons text
+
+    Args:
+      text (str): The text of the button
+    """
+    self.__text = text
 
   def setHitbox(self, hitbox: HitboxComponent) -> ButtonBuilder:
     """
@@ -127,7 +142,11 @@ class ButtonBuilder:
       # create rectangle and hitbox   
       self.__renderable = RectComponent(self.__transformComponent, 100, 50, Color(0,0,0))
       self.__hitbox = RectHitboxComponent(self.__transformComponent, 100, 50, True)
-
+  
+    if self.__text is not None:
+      text = TextComponent(self.__transformComponent, self.__text, SysFont("Corbel", 60))
+      e.add_renderable(text)
+      
 
     defaultEvent = SetColorCommand(self.__defaultColor, self.__renderable)
     hoverEvent = SetColorCommand(self.__hoverColor, self.__renderable)
