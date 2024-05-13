@@ -59,7 +59,7 @@ class ChitCardBuilder:
     transformComponent: TransformComponent = TransformComponent()
     transformComponent.position = self.__position
 
-    hitbox: HitboxComponent = CircleHitboxComponent(transformComponent, self.__radius, False)
+    hitbox: HitboxComponent = CircleHitboxComponent(transformComponent, self.__radius, True)
     clickable: ClickableComponent = ClickableComponent(hitbox)
 
     front_circle = CircleComponent(transformComponent, self.__radius, self.__frontColor )
