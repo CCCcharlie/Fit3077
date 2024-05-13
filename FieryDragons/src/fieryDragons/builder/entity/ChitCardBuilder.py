@@ -1,3 +1,4 @@
+from __future__ import annotations
 from engine.command.SetColorCommand import SetColorCommand
 from engine.component.TransformComponent import TransformComponent
 from engine.component.hitbox.CircleHitboxComponent import CircleHitboxComponent
@@ -13,6 +14,7 @@ from fieryDragons.command.ChitCardClickedCommand import ChitCardClickedCommand
 from fieryDragons.ChitCard import ChitCard
 
 
+from fieryDragons.enums.AnimalType import AnimalType
 from pygame import Color
 
 class ChitCardBuilder:
@@ -27,16 +29,28 @@ class ChitCardBuilder:
       radius (int): The radius of the chit card 
     """
     self.__position: Vec2 = Vec2(0,0)
-    self.__radius = radius
+    self.__radius: int = radius
 
-    self.__frontColor = Color(255,255,255)
-    self.__backColor = Color(0,0,0)
+    self.__frontColor: Color = Color(255,255,255)
+    self.__backColor: Color = Color(0,0,0)
 
-    self.__positionChanged = False
+    self.__positionChanged: bool = False
 
-  def setPosition(self, position: Vec2):
+    self.__animalType: AnimalType = None
+    self.__amount: int = None
+
+  def setPosition(self, position: Vec2) -> ChitCardBuilder:
     self.__positionChanged = True
     self.__position = position
+    return self
+
+  def setAnimalType(self, animalType: AnimalType) -> ChitCardBuilder:
+    self.__animalType = animalType
+    return self
+  
+  def setAmount(self, amount: int) -> ChitCardBuilder:
+    self.__amount = amount
+    return self
 
   def build(self) -> Entity:
     if self.__positionChanged is False:
@@ -51,7 +65,7 @@ class ChitCardBuilder:
     front_circle = CircleComponent(transformComponent, self.__radius, self.__frontColor )
     back_circle = CircleComponent(transformComponent, self.__radius, self.__backColor)
 
-    ccComponent = ChitCard(front_circle, back_circle)
+    ccComponent = ChitCard(front_circle, back_circle, self.__animalType, self.__amount)
     
     ccClickedCommand: Command = ChitCardClickedCommand(ccComponent)
     onDefault: Command = SetColorCommand(Color(0,0,0), back_circle)

@@ -4,7 +4,7 @@ from typing import List
 from engine.command.PrintCommand import PrintCommand
 from engine.component.TransformComponent import TransformComponent
 from fieryDragons.Segment import Segment
-from fieryDragons.TurnManager import TurnManager
+# from fieryDragons.TurnManager import TurnManager
 from fieryDragons.enums.AnimalType import AnimalType
 
 
@@ -23,36 +23,36 @@ class Player:
       newLocation = self.position - amount
       newSegment = self.path[newLocation]
 
-      if TurnManager().canMove(self, newSegment):
-        self.position = newLocation
-        self.transformComponent.position = newSegment.getSnapPosition()
-        self.transformComponent.rotation = newSegment.getSnapRotation()
+      # if TurnManager().canMove(self, newSegment):
+      #   self.position = newLocation
+      #   self.transformComponent.position = newSegment.getSnapPosition()
+      #   self.transformComponent.rotation = newSegment.getSnapRotation()
 
-      # end turn 
-      TurnManager().nextTurn()
+      # # end turn 
+      # TurnManager().nextTurn()
 
   
     if animalType is self.path[self.position].getAnimalType():
       newLocation = self.position + amount
 
       #check if at the end of the path 
-      if self.position >= len(self.path):
+      # if self.position >= len(self.path):
         #this player has won
-        PrintCommand(f"Player {TurnManager().getPlayerNumber(self)} wins!")
+        # PrintCommand(f"Player {TurnManager().getPlayerNumber(self)} wins!")
 
       newSegment = self.path[newLocation]
 
       #check can move there 
-      if TurnManager().canMove(self, newSegment):
-        self.position = newLocation
-        self.transformComponent.position = newSegment.getSnapPosition()
-        self.transformComponent.rotation = newSegment.getSnapRotation()
-      else:
-        TurnManager().nextTurn()
+      # if TurnManager().canMove(self, newSegment):
+      self.position = newLocation
+      self.transformComponent.position = newSegment.getSnapPosition()
+      self.transformComponent.rotation = newSegment.getSnapRotation()
+      # else:
+      #   TurnManager().nextTurn()
 
 
     #end turn
-    TurnManager().nextTurn()
+    # TurnManager().nextTurn()
 
 
 
