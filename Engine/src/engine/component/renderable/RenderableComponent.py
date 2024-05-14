@@ -81,7 +81,6 @@ class RenderableComponent(Renderable):
     return image, rect
 
   
-
   def render(self, display_surf: Surface) -> None:
     """
     Render the renderable component.
@@ -107,8 +106,6 @@ class RenderableComponent(Renderable):
 
     #blit to screen
     display_surf.blit(image, rect)
-
-    
     #pygame.draw.circle(display_surf, Color(0,0,0), position.toTuple(), 2)
 
 

@@ -80,7 +80,7 @@ class Player:
       newLocation = self.position + amount
 
       #CASE at end of path
-      if self.position >= len(self.path):
+      if newLocation >= len(self.path):
         #this player has won
         winScene = WinSceneBuilder().setWinningPlayer(str(self.__playerNumber)).build()
         #ChangeSceenCommand()

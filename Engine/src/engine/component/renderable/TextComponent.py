@@ -1,11 +1,11 @@
 from pygame import Color
-from pygame.font import Font
+from pygame.font import Font, SysFont
 
 from ...component.renderable.RenderableComponent import RenderableComponent
 from ...component.TransformComponent import TransformComponent
 
 class TextComponent(RenderableComponent):
-  def __init__(self, transformComponent: TransformComponent, text: str, font: Font, color: Color = Color(255,255,255)):
+  def __init__(self, transformComponent: TransformComponent, text: str, font: Font = None, color: Color = Color(255,255,255)):
     """
     Text rendered
     Args:
@@ -15,7 +15,10 @@ class TextComponent(RenderableComponent):
       color (Color): The color of the circle
     """
     self.__text: str = text
-    self.__font: Font = font
+    if font is None:
+      self.__font: Font = SysFont("Corbel", 30)
+    else:
+      self.__font: Font = font
     super().__init__(transformComponent)
     self.setColor(color)
 
