@@ -94,9 +94,9 @@ class ChitCardBuilder:
     onHover: Command = SetColorCommand(Color(0,0,255), back_circle)
     onPressed: Command = SetColorCommand(Color(0,255,0), back_circle)
 
-    p: Command = PrintCommand("")
+  
 
-    button: ButtonComponent = ButtonComponent(clickable, ccClickedCommand, p,p,p)#onDefault, onHover, onPressed)
+    button: ButtonComponent = ButtonComponent(clickable, ccClickedCommand, onDefault, onHover, onPressed)
 
 
     e = Entity()

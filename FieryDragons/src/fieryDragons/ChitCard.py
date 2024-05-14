@@ -23,18 +23,24 @@ class ChitCard(Subscriber, Updateable):
         PlayerTurnEndEmitter().subscribe(self)
 
         self.__timer:float = -1
+        
+        self.__debug = False
+
+    def activateDebug(self):
+        self.__debug = True
 
     def onClick(self):
         if self.__state == State.HIDDEN:
             self.__state = State.VISIBLE
             self.__front.show()
             self.__back.hide()
-            #  move player 
-        MoveActivePlayerCommand(self.__animalType, self.__amount).run()
+  
+        if self.__debug is False:
+            # move player
+            MoveActivePlayerCommand(self.__animalType, self.__amount).run()
 
     def notify(self):
         if self.__state == State.VISIBLE:
-            self.onHide()
             self.__timer = 1000
             
 
