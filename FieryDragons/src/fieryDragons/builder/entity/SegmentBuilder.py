@@ -1,5 +1,6 @@
 from __future__ import annotations
 from engine.component.TransformComponent import TransformComponent
+from engine.component.renderable.SpriteComponent import SpriteComponent
 from engine.component.renderable.TrapezoidComponent import TrapezoidComponent
 from engine.entity.Entity import Entity
 from engine.exceptions.IncompleteBuilderError import IncompleteBuilderError
@@ -7,6 +8,7 @@ from engine.exceptions.IncompleteBuilderError import IncompleteBuilderError
 from engine.utils.Vec2 import Vec2
 from fieryDragons.Segment import Segment
 from fieryDragons.enums.AnimalType import AnimalType
+import pygame
 
 
 
@@ -69,7 +71,16 @@ class SegmentBuilder:
             self.__transform, round(self.__size/2), self.__size, self.__size, self.__animal_type.get_colour()
         )
 
+        transform = self.__transform.clone()
+        offset = pygame.Vector2(self.__size/4, 0).rotate(-transform.rotation)
+        transform.position = self.__transform.position - Vec2(offset.x, offset.y)
+
+        sprite = SpriteComponent(
+            transform, self.__size/2, self.__size/2, self.__animal_type.get_sprite()
+        )
+
         e = Entity()
         e.add_renderable(trap)
+        e.add_renderable(sprite)
 
         return e
