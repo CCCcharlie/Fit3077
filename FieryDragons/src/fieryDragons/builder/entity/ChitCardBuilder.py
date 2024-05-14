@@ -73,6 +73,9 @@ class ChitCardBuilder:
     
     amount, animalType = self.__chitCards.pop()
 
+    #set front colour based on animal type
+    self.__frontColor = animalType.get_colour()
+
     transformComponent: TransformComponent = TransformComponent()
     transformComponent.position = self.__position
 

@@ -4,7 +4,7 @@ from typing import List
 from engine.observer.subscriber import Subscriber
 from engine.utils.SingletonMeta import SingletonMeta
 
-class Emitter(ABC, metaclass=SingletonMeta):
+class Emitter(metaclass=SingletonMeta):
     """
     Emitter than handles the notification of events
     

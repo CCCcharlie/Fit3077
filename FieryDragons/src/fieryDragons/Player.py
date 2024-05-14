@@ -56,42 +56,52 @@ class Player:
       return True
     
   def endTurn(self):
+    print("Turn has ended")
     Player.ACTIVE_PLAYER = self.__nextPlayer
-    PlayerTurnEndEmitter().notify
+    #print(f"Active player is {self.__nextPlayer.__playerNumber}")
+    PlayerTurnEndEmitter().notify()
 
   def move(self, animalType: AnimalType, amount: int):
 
+    # CASE picked pirate dragon
     if animalType is AnimalType.PIRATE_DRAGON:
       newLocation = self.position - amount
       newSegment = self.path[newLocation]
       if self.__canMove(newSegment):
         self.position = newLocation
         self._moveToSegment(newSegment)
-
-      # # end turn 
       self.endTurn()
+      return
 
+    #CASE picked the right animal
     if animalType is self.path[self.position].getAnimalType():
       newLocation = self.position + amount
 
-      #check if at the end of the path 
+      #CASE at end of path
       if self.position >= len(self.path):
         #this player has won
         winScene = WinSceneBuilder().setWinningPlayer(str(self.__playerNumber)).build()
         #ChangeSceenCommand()
         ChangeSceneCommand(winScene).run()
         PrintCommand(f"Player {self.__playerNumber} wins!")
+        return
 
       newSegment = self.path[newLocation]
 
-      #check can move there 
+      
       if self.__canMove(newSegment):
+        #CASE CAN MOVE 
         self.position = newLocation
         self._moveToSegment(newSegment)
+        return
       else:
+        # CASE CANT MOVE
         self.endTurn()
+        return
 
+    # CASE picked the wrong animal
     self.endTurn()
+    return
 
 
 
