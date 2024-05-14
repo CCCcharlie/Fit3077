@@ -26,6 +26,20 @@ class AnimalType(Enum):
             case _:
                 return Color(255, 255, 255)
 
+    def get_sprite(self) -> str:
+        match self:      
+            case AnimalType.SALAMANDER:
+                return "chitcard/1Salamander.png"
+            case AnimalType.SPIDER:
+                return "chitcard/1Spider.png"
+            case AnimalType.BABY_DRAGON:
+                return "chitcard/1BabyDragon.png"
+            case AnimalType.BAT:
+                return "chitcard/1Bat.png"
+            case AnimalType.PIRATE_DRAGON:
+                return "chitcard/1PirateDragon.png"
+            case _:
+                return ""
     @classmethod
     def get_random_any(cls) -> AnimalType:
         return random.choice([t for t in AnimalType])
