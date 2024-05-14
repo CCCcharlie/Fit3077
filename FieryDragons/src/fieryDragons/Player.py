@@ -11,6 +11,7 @@ from fieryDragons.builder.scene.WinSceneBuilder import WinSceneBuilder
 
 from fieryDragons.enums.AnimalType import AnimalType
 from fieryDragons.observer.PlayerTurnEndEmitter import PlayerTurnEndEmitter
+from pygame import Color
 
 
 class Player:

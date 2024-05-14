@@ -68,6 +68,7 @@ class GameSceneBuilder:
             if (index % (self.__segments // self.__players) == 0):
                 newTransform = t.clone()
                 newTransform.position.x += 100
+                newTransform.position.y += 100
                 #todo get the generator to handle the further out position
                 #todo update the cave generator to pass information to player generator
                 c = (
