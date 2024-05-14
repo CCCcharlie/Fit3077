@@ -1,6 +1,7 @@
 from __future__ import annotations
 import random
 from typing import List, Tuple
+from engine.command.PrintCommand import PrintCommand
 from engine.command.SetColorCommand import SetColorCommand
 from engine.component.TransformComponent import TransformComponent
 from engine.component.hitbox.CircleHitboxComponent import CircleHitboxComponent
@@ -73,6 +74,9 @@ class ChitCardBuilder:
     
     amount, animalType = self.__chitCards.pop()
 
+    #set front colour based on animal type
+    self.__frontColor = animalType.get_colour()
+
     transformComponent: TransformComponent = TransformComponent()
     transformComponent.position = self.__position
 
@@ -80,6 +84,7 @@ class ChitCardBuilder:
     clickable: ClickableComponent = ClickableComponent(hitbox)
 
     front_circle = CircleComponent(transformComponent, self.__radius, self.__frontColor)
+    front_circle.hide()
     back_circle = CircleComponent(transformComponent, self.__radius, self.__backColor)
 
     ccComponent = ChitCard(front_circle, back_circle, animalType, amount)
@@ -89,17 +94,21 @@ class ChitCardBuilder:
     onHover: Command = SetColorCommand(Color(0,0,255), back_circle)
     onPressed: Command = SetColorCommand(Color(0,255,0), back_circle)
 
-    button: ButtonComponent = ButtonComponent(clickable, ccClickedCommand, onDefault, onHover, onPressed)
+    p: Command = PrintCommand("")
+
+    button: ButtonComponent = ButtonComponent(clickable, ccClickedCommand, p,p,p)#onDefault, onHover, onPressed)
 
 
     e = Entity()
 
-    e.add_renderable(front_circle)
+    
     e.add_renderable(back_circle)
+    e.add_renderable(front_circle)
     e.add_renderable(hitbox)
 
     e.add_updateable(clickable)
     e.add_updateable(button)
+    e.add_updateable(ccComponent)
 
     return e
 

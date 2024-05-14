@@ -10,6 +10,7 @@ from fieryDragons.Segment import Segment
 from fieryDragons.builder.scene.WinSceneBuilder import WinSceneBuilder
 
 from fieryDragons.enums.AnimalType import AnimalType
+from fieryDragons.observer.PlayerTurnEndEmitter import PlayerTurnEndEmitter
 
 
 class Player:
@@ -53,40 +54,52 @@ class Player:
       if (player.getPosition() == newSegment):
         return False
       return True
+    
+  def endTurn(self):
+    Player.ACTIVE_PLAYER = self.__nextPlayer
+    #print(f"Active player is {self.__nextPlayer.__playerNumber}")
+    PlayerTurnEndEmitter().notify()
 
   def move(self, animalType: AnimalType, amount: int):
-
+    # CASE picked pirate dragon
     if animalType is AnimalType.PIRATE_DRAGON:
       newLocation = self.position - amount
       newSegment = self.path[newLocation]
       if self.__canMove(newSegment):
         self.position = newLocation
         self._moveToSegment(newSegment)
+      self.endTurn()
+      return
 
-      # # end turn 
-      Player.ACTIVE_PLAYER = self.__nextPlayer
-
+    #CASE picked the right animal
     if animalType is self.path[self.position].getAnimalType():
       newLocation = self.position + amount
 
-      #check if at the end of the path 
+      #CASE at end of path
       if self.position >= len(self.path):
         #this player has won
         winScene = WinSceneBuilder().setWinningPlayer(str(self.__playerNumber)).build()
         #ChangeSceenCommand()
         ChangeSceneCommand(winScene).run()
         PrintCommand(f"Player {self.__playerNumber} wins!")
+        return
 
       newSegment = self.path[newLocation]
 
-      #check can move there 
+      
       if self.__canMove(newSegment):
+        #CASE CAN MOVE 
         self.position = newLocation
         self._moveToSegment(newSegment)
+        return
       else:
-         Player.ACTIVE_PLAYER = self.__nextPlayer
+        # CASE CANT MOVE
+        self.endTurn()
+        return
 
-    Player.ACTIVE_PLAYER = self.__nextPlayer
+    # CASE picked the wrong animal
+    self.endTurn()
+    return
 
 
 
