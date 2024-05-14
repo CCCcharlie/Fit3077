@@ -33,23 +33,24 @@ class ChitCard(Subscriber, Updateable):
         self.__debug = True
 
     def onClick(self):
+        
         if self.__state == State.HIDDEN:
             self.__state = State.VISIBLE
             for renderable in self.__front:
                 renderable.show()
             self.__back.hide()
   
-        if self.__debug is False:
-            # move player
-            MoveActivePlayerCommand(self.__animalType, self.__amount).run()
+            if self.__debug is False:
+                # move player
+                MoveActivePlayerCommand(self.__animalType, self.__amount).run()
 
     def notify(self):
         if self.__state == State.VISIBLE:
             self.__timer = 1000
+            self.__state = State.HIDDEN
             
-
     def onHide(self):
-        self.__state = State.HIDDEN
+        
         for renderable in self.__front:
             renderable.hide()
         self.__back.show()
