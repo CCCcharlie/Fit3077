@@ -20,7 +20,7 @@ class GameSceneBuilder(SceneBuilder):
     def __init__(self):
         self.__screen_width = World().size[0]
         self.__screen_height = World().size[1]
-        self.__players: int = 4
+        self.__players: int = 2
         ##self.__chit_cards: int  = 24
         self.__segments: int = 16
         self.__resetSceneBuilder: SceneBuilder | None = None
