@@ -56,8 +56,8 @@ class RenderableComponent(Renderable):
     """
     Hide the renderable component.
     """
-    print("hide")
-    self.__showing = False 
+    #self.__showing = False 
+    pass
 
   def _pivot(self) -> Vec2:
     return Vec2(0,0)
@@ -81,7 +81,6 @@ class RenderableComponent(Renderable):
     return image, rect
 
   
-
   def render(self, display_surf: Surface) -> None:
     """
     Render the renderable component.
@@ -100,11 +99,6 @@ class RenderableComponent(Renderable):
     rotation: int = self.__transformComponent.rotation
     image, rect = self.__rotatePivot(image, rotation, pivot)
 
-    # apply pivot
-    # rect = image.get_rect()
-    # rect.x -= pivot.x
-    # rect.y -= pivot.y
-
     # apply position
     position: Vec2 = self.__transformComponent.position
     rect.x += position.x
@@ -112,8 +106,6 @@ class RenderableComponent(Renderable):
 
     #blit to screen
     display_surf.blit(image, rect)
-
-    
-    pygame.draw.circle(display_surf, Color(0,0,0), position.toTuple(), 2)
+    #pygame.draw.circle(display_surf, Color(0,0,0), position.toTuple(), 2)
 
 

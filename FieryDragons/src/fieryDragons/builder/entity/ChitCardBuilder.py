@@ -9,6 +9,7 @@ from engine.component.hitbox.HitboxComponent import HitboxComponent
 from engine.component.interaction.ButtonComponent import ButtonComponent
 from engine.component.interaction.ClickableComponent import ClickableComponent
 from engine.component.renderable.CircleComponent import CircleComponent
+from engine.component.renderable.TextComponent import TextComponent
 from engine.entity.Entity import Entity
 from engine.exceptions.IncompleteBuilderError import IncompleteBuilderError
 from engine.command.Command import Command
@@ -84,26 +85,29 @@ class ChitCardBuilder:
     clickable: ClickableComponent = ClickableComponent(hitbox)
 
     front_circle = CircleComponent(transformComponent, self.__radius, self.__frontColor)
-    front_circle.hide()
+    front_text = TextComponent(transformComponent, str(amount))
+   
+
     back_circle = CircleComponent(transformComponent, self.__radius, self.__backColor)
 
-    ccComponent = ChitCard(front_circle, back_circle, animalType, amount)
+    ccComponent = ChitCard([front_circle, front_text], back_circle, animalType, amount)
     
     ccClickedCommand: Command = ChitCardClickedCommand(ccComponent)
     onDefault: Command = SetColorCommand(Color(0,0,0), back_circle)
-    onHover: Command = SetColorCommand(Color(0,0,255), back_circle)
-    onPressed: Command = SetColorCommand(Color(0,255,0), back_circle)
+    onHover: Command = SetColorCommand(Color(51,51,49), back_circle)
+    onPressed: Command = SetColorCommand(Color(69,69,67), back_circle)
 
-    p: Command = PrintCommand("")
+  
 
-    button: ButtonComponent = ButtonComponent(clickable, ccClickedCommand, p,p,p)#onDefault, onHover, onPressed)
+    button: ButtonComponent = ButtonComponent(clickable, ccClickedCommand, onDefault, onHover, onPressed)
 
 
     e = Entity()
 
-    
+
     e.add_renderable(back_circle)
     e.add_renderable(front_circle)
+    e.add_renderable(front_text)
     e.add_renderable(hitbox)
 
     e.add_updateable(clickable)

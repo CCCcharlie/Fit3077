@@ -1,5 +1,6 @@
 from enum import Enum
 import time
+from typing import List
 
 from engine.component.renderable.RenderableComponent import RenderableComponent
 from engine.entity.Updateable import Updateable
@@ -13,34 +14,45 @@ class State(Enum):
     VISIBLE = 2
 
 class ChitCard(Subscriber, Updateable):
-    def __init__(self, front: RenderableComponent, back: RenderableComponent, animalType: AnimalType, amount: int):
-        self.__front = front
-        self.__back = back
-        self.__state = State.HIDDEN
+    def __init__(self, front: List[RenderableComponent], back: RenderableComponent, animalType: AnimalType, amount: int):
+        self.__front: List[RenderableComponent] = front
+        self.__back: RenderableComponent = back
+        self.__state: State = State.HIDDEN
         self.__animalType: AnimalType = animalType
         self.__amount: int = amount
 
         PlayerTurnEndEmitter().subscribe(self)
 
         self.__timer:float = -1
+        self.__debug:bool = False
+
+        for renderable in self.__front:
+            renderable.hide()
+
+    def activateDebug(self):
+        self.__debug = True
 
     def onClick(self):
+        
         if self.__state == State.HIDDEN:
             self.__state = State.VISIBLE
-            self.__front.show()
+            for renderable in self.__front:
+                renderable.show()
             self.__back.hide()
-            #  move player 
-        MoveActivePlayerCommand(self.__animalType, self.__amount).run()
+  
+            if self.__debug is False:
+                # move player
+                MoveActivePlayerCommand(self.__animalType, self.__amount).run()
 
     def notify(self):
         if self.__state == State.VISIBLE:
-            self.onHide()
             self.__timer = 1000
+            self.__state = State.HIDDEN
             
-
     def onHide(self):
-        self.__state = State.HIDDEN
-        self.__front.hide()
+        
+        for renderable in self.__front:
+            renderable.hide()
         self.__back.show()
        
     def update(self, dt: float):

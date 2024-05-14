@@ -7,14 +7,17 @@ from engine.command.PrintCommand import PrintCommand
 from engine.component.TransformComponent import TransformComponent
 from fieryDragons.Segment import Segment
 # from fieryDragons.TurnManager import TurnManager
+from fieryDragons.builder.scene.SceneBuilder import SceneBuilder
 from fieryDragons.builder.scene.WinSceneBuilder import WinSceneBuilder
 
 from fieryDragons.enums.AnimalType import AnimalType
 from fieryDragons.observer.PlayerTurnEndEmitter import PlayerTurnEndEmitter
+from pygame import Color
 
 
 class Player:
   ACTIVE_PLAYER: Player = None
+  RESET_SCENE_BUILDER: SceneBuilder = None
 
   def __init__(self, startingSegment: Segment, transformComponent: TransformComponent, playerNumber: int):
     self.position: int = 0
@@ -26,6 +29,9 @@ class Player:
 
     # snap to segment
     self._moveToSegment(startingSegment)
+
+  def getPlayerNumber(self)-> int:
+    return self.__playerNumber
 
   def _moveToSegment(self, segment: Segment):
     self.transformComponent.position = segment.getSnapPosition()
@@ -53,7 +59,7 @@ class Player:
     for player in players:
       if (player.getPosition() == newSegment):
         return False
-      return True
+    return True
     
   def endTurn(self):
     Player.ACTIVE_PLAYER = self.__nextPlayer
@@ -76,12 +82,10 @@ class Player:
       newLocation = self.position + amount
 
       #CASE at end of path
-      if self.position >= len(self.path):
+      if newLocation >= len(self.path) - 1:
         #this player has won
-        winScene = WinSceneBuilder().setWinningPlayer(str(self.__playerNumber)).build()
-        #ChangeSceenCommand()
+        winScene = WinSceneBuilder().setResetScene(Player.RESET_SCENE_BUILDER).setWinningPlayer(str(self.__playerNumber)).build()
         ChangeSceneCommand(winScene).run()
-        PrintCommand(f"Player {self.__playerNumber} wins!")
         return
 
       newSegment = self.path[newLocation]
