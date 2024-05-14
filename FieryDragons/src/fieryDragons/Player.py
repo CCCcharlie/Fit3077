@@ -56,13 +56,11 @@ class Player:
       return True
     
   def endTurn(self):
-    print("Turn has ended")
     Player.ACTIVE_PLAYER = self.__nextPlayer
     #print(f"Active player is {self.__nextPlayer.__playerNumber}")
     PlayerTurnEndEmitter().notify()
 
   def move(self, animalType: AnimalType, amount: int):
-
     # CASE picked pirate dragon
     if animalType is AnimalType.PIRATE_DRAGON:
       newLocation = self.position - amount
