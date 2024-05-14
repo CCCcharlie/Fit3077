@@ -10,6 +10,7 @@ from fieryDragons.Segment import Segment
 from fieryDragons.builder.scene.WinSceneBuilder import WinSceneBuilder
 
 from fieryDragons.enums.AnimalType import AnimalType
+from fieryDragons.observer.PlayerTurnEndEmitter import PlayerTurnEndEmitter
 
 
 class Player:
@@ -53,6 +54,10 @@ class Player:
       if (player.getPosition() == newSegment):
         return False
       return True
+    
+  def endTurn(self):
+    Player.ACTIVE_PLAYER = self.__nextPlayer
+    PlayerTurnEndEmitter().notify
 
   def move(self, animalType: AnimalType, amount: int):
 
@@ -64,7 +69,7 @@ class Player:
         self._moveToSegment(newSegment)
 
       # # end turn 
-      Player.ACTIVE_PLAYER = self.__nextPlayer
+      self.endTurn()
 
     if animalType is self.path[self.position].getAnimalType():
       newLocation = self.position + amount
@@ -84,9 +89,9 @@ class Player:
         self.position = newLocation
         self._moveToSegment(newSegment)
       else:
-         Player.ACTIVE_PLAYER = self.__nextPlayer
+        self.endTurn()
 
-    Player.ACTIVE_PLAYER = self.__nextPlayer
+    self.endTurn()
 
 
 
