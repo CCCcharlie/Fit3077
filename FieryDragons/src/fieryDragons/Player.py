@@ -28,6 +28,9 @@ class Player:
     # snap to segment
     self._moveToSegment(startingSegment)
 
+  def getPlayerNumber(self)-> int:
+    return self.__playerNumber
+
   def _moveToSegment(self, segment: Segment):
     self.transformComponent.position = segment.getSnapPosition()
     self.transformComponent.rotation = segment.getSnapRotation()

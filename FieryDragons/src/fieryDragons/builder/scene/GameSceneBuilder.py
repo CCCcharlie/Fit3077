@@ -5,6 +5,7 @@ from engine.scene.Scene import Scene
 
 from engine.scene.World import World
 from engine.utils.Vec2 import Vec2
+from fieryDragons.builder.entity.ActivePlayerDisplayBuilder import ActivePlayerDisplayBuilder
 from fieryDragons.builder.entity.CaveBuilder import CaveBuilder
 from fieryDragons.builder.entity.ChitCardBuilder import ChitCardBuilder
 from fieryDragons.builder.entity.PlayerBuilder import PlayerBuilder
@@ -105,6 +106,9 @@ class GameSceneBuilder:
             e = chitCardBuilder.setPosition(v2).build()
             s.addEntity(e)
 
-        
+
+        #place active player render
+        apdBuilder = ActivePlayerDisplayBuilder().setPlayerColors(PlayerBuilder.playerColors)
+        s.addEntity(apdBuilder.build())
 
         return s
