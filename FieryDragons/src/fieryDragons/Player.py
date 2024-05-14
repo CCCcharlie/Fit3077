@@ -59,7 +59,7 @@ class Player:
     for player in players:
       if (player.getPosition() == newSegment):
         return False
-      return True
+    return True
     
   def endTurn(self):
     Player.ACTIVE_PLAYER = self.__nextPlayer
