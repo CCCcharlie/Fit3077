@@ -10,18 +10,24 @@ from fieryDragons.builder.entity.CaveBuilder import CaveBuilder
 from fieryDragons.builder.entity.ChitCardBuilder import ChitCardBuilder
 from fieryDragons.builder.entity.PlayerBuilder import PlayerBuilder
 from fieryDragons.builder.entity.SegmentBuilder import SegmentBuilder
+from fieryDragons.builder.scene.SceneBuilder import SceneBuilder
 from fieryDragons.enums.AnimalType import AnimalType
 from fieryDragons.utils.GridCoordinateIterator import GridCoordinateIterator
 from ...utils.CircleCoordinateIterator import CircleCoordinateIterator
 
 
-class GameSceneBuilder:
+class GameSceneBuilder(SceneBuilder):
     def __init__(self):
         self.__screen_width = World().size[0]
         self.__screen_height = World().size[1]
         self.__players: int = 4
         ##self.__chit_cards: int  = 24
         self.__segments: int = 16
+        self.__resetSceneBuilder: SceneBuilder | None = None
+
+    def setResetSceneBuilder(self, resetSceneBuilder: SceneBuilder) -> GameSceneBuilder:
+        self.__resetSceneBuilder = resetSceneBuilder
+        return self
 
     def setPlayers(self, players: int) -> GameSceneBuilder:
         self.__players = players
@@ -79,7 +85,7 @@ class GameSceneBuilder:
         segmentBuilder.finish()
 
         #place players
-        playerBuilder = PlayerBuilder()
+        playerBuilder = PlayerBuilder().setResetSceneBuilder(self.__resetSceneBuilder)
         
         for cave in caveBuilder.getCaves():
             p = playerBuilder.setStartingSegment(cave).build()

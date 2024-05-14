@@ -6,6 +6,7 @@ from engine.entity.Entity import Entity
 from engine.exceptions.IncompleteBuilderError import IncompleteBuilderError
 from fieryDragons.Player import Player
 from fieryDragons.Segment import Segment
+from fieryDragons.builder.scene.SceneBuilder import SceneBuilder
 from pygame import Color
 
 
@@ -27,8 +28,12 @@ class PlayerBuilder:
     self.__firstPlayer: Player = None
     self.__previousPlayer: Player = None
 
-  
+    self.__resetSceneBuilder: SceneBuilder | None = None
 
+  
+  def setResetSceneBuilder(self, sceneBuilder: SceneBuilder) -> PlayerBuilder:
+    Player.RESET_SCENE_BUILDER = sceneBuilder
+    return self
 
   def setStartingSegment(self, startingSegment: Segment) -> PlayerBuilder:
     self.__startingSegment = startingSegment

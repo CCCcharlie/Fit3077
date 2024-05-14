@@ -7,6 +7,7 @@ from engine.command.PrintCommand import PrintCommand
 from engine.component.TransformComponent import TransformComponent
 from fieryDragons.Segment import Segment
 # from fieryDragons.TurnManager import TurnManager
+from fieryDragons.builder.scene.SceneBuilder import SceneBuilder
 from fieryDragons.builder.scene.WinSceneBuilder import WinSceneBuilder
 
 from fieryDragons.enums.AnimalType import AnimalType
@@ -16,6 +17,7 @@ from pygame import Color
 
 class Player:
   ACTIVE_PLAYER: Player = None
+  RESET_SCENE_BUILDER: SceneBuilder = None
 
   def __init__(self, startingSegment: Segment, transformComponent: TransformComponent, playerNumber: int):
     self.position: int = 0
@@ -82,7 +84,7 @@ class Player:
       #CASE at end of path
       if newLocation >= len(self.path) - 1:
         #this player has won
-        winScene = WinSceneBuilder().setWinningPlayer(str(self.__playerNumber)).build()
+        winScene = WinSceneBuilder().setResetScene(Player.RESET_SCENE_BUILDER).setWinningPlayer(str(self.__playerNumber)).build()
         ChangeSceneCommand(winScene).run()
         return
 

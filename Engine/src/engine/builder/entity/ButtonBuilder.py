@@ -51,6 +51,7 @@ class ButtonBuilder:
       text (str): The text of the button
     """
     self.__text = text
+    return self
 
   def setHitbox(self, hitbox: HitboxComponent) -> ButtonBuilder:
     """
