@@ -44,6 +44,7 @@ class ButtonComponent(Updateable):
     }
 
     self.__state = 1
+    self.__defaultUpdate() # run the default command to set the color 
 
   def __defaultUpdate(self):
     """

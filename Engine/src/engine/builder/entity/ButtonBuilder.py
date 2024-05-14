@@ -1,4 +1,15 @@
+from __future__ import annotations
+
+
+from engine.component.TransformComponent import TransformComponent
+from engine.component.hitbox.RectHitboxComponent import RectHitboxComponent
+from engine.component.renderable.RectComponent import RectComponent
+from engine.component.renderable.TextComponent import TextComponent
+from engine.utils.Vec2 import Vec2
 from pygame import Color
+
+from pygame.font import SysFont
+
 
 from ...command.SetColorCommand import SetColorCommand
 from ...command.Command import Command
@@ -19,16 +30,29 @@ class ButtonBuilder:
     """
     self.__renderable: RenderableComponent = None
     self.__hitbox: HitboxComponent = None
+
+    self.__transformComponent = None
   
     self.__onClick: ClickableComponent = None
 
-    self.__pressedColor: Color = None
-    self.__hoverColor: Color = None
-    self.__defaultColor: Color = None
+    self.__pressedColor: Color = Color(193, 18, 31)
+    self.__hoverColor: Color = Color(102,155,188)
+    self.__defaultColor: Color = Color(0,48,73)
 
+    self.__position: Vec2 = None
 
+    self.__text: str = None
 
-  def setHitbox(self, hitbox: HitboxComponent):
+  def setText(self, text: str) -> ButtonBuilder:
+    """
+    Set the buttons text
+
+    Args:
+      text (str): The text of the button
+    """
+    self.__text = text
+
+  def setHitbox(self, hitbox: HitboxComponent) -> ButtonBuilder:
     """
     Set the buttons hitbox
 
@@ -36,8 +60,9 @@ class ButtonBuilder:
       hitbox (HitboxComponent): The hitbox of the button
     """
     self.__hitbox = hitbox
+    return self
 
-  def setRenderableComponent(self, renderable: RenderableComponent):
+  def setRenderableComponent(self, renderable: RenderableComponent) -> ButtonBuilder:
     """
     Set the buttons renderable 
 
@@ -45,9 +70,10 @@ class ButtonBuilder:
       renderable (RenderableComponent): The renderable of the button
     """
     self.__renderable = renderable
+    return self
 
       
-  def setOnClick(self, onClick: Command):
+  def setOnClick(self, onClick: Command) -> ButtonBuilder:
     """
     Set the buttons onClick
 
@@ -55,8 +81,9 @@ class ButtonBuilder:
       onClick (Command): The command for onClick
     """
     self.__onClick = onClick
+    return self
 
-  def setPressedColor(self, pressedColor: Color):
+  def setPressedColor(self, pressedColor: Color) -> ButtonBuilder:
     """
     Set buttons pressed color
     
@@ -64,8 +91,9 @@ class ButtonBuilder:
       pressedColor (Color): The color when pressed
     """
     self.__pressedColor = pressedColor
+    return self
 
-  def setHoverColor(self, hoverColor: Color):
+  def setHoverColor(self, hoverColor: Color) -> ButtonBuilder:
     """
     Set buttons hover color
     
@@ -73,8 +101,9 @@ class ButtonBuilder:
       hoverColor (Color): The color when hover
     """
     self.__hoverColor = hoverColor
+    return self
 
-  def setDefaultColor(self, defaultColor: Color):
+  def setDefaultColor(self, defaultColor: Color) -> ButtonBuilder:
     """
     Set buttons default color
     
@@ -82,40 +111,50 @@ class ButtonBuilder:
       defaultColor (Color): The color when default
     """
     self.__defaultColor = defaultColor
+    return self
+
+  def setPosition(self, position: Vec2) -> ButtonBuilder:
+    """
+    set the position of the button
+
+    Args: 
+      position (Vec2): The position of the button
     
-    
-    
+    """ 
+    self.__position = position
+    return self
   
   def build(self) -> Entity:
     #checks
-    if self.__hitbox is None:
+    if self.__hitbox is None and self.__renderable is not None:
       raise IncompleteBuilderError("Button","HitboxComponent")
-    
-    if self.__renderable is None:
-      raise IncompleteBuilderError("Button", "RenderableComponent")
     
     if self.__onClick is None:
       raise IncompleteBuilderError("Button", "OnClickCommand")
 
-
-    # todo set this to optional either pressed color or event !!
-    if self.__pressedColor is None:
-      raise IncompleteBuilderError("Button", "PressedColor")
-    
-    if self.__hoverColor is None:
-      raise IncompleteBuilderError("Button", "HoverColor")
-    
-    if self.__defaultColor is None:
-      raise IncompleteBuilderError("Button", "DefaultColor")
-
     # build
     e = Entity()
+
+    if self.__renderable is None:
+      if self.__position is None:
+        raise IncompleteBuilderError("Button", "Position")
+      self.__transformComponent = TransformComponent()
+      self.__transformComponent.position = self.__position
+      # create rectangle and hitbox   
+      self.__renderable = RectComponent(self.__transformComponent, 100, 50, Color(0,0,0))
+      self.__hitbox = RectHitboxComponent(self.__transformComponent, 100, 50, True)
+
+    text = None
+    if self.__text is not None:
+      text = TextComponent(self.__transformComponent, self.__text, SysFont("Corbel", 60))
+
+  
+      
 
     defaultEvent = SetColorCommand(self.__defaultColor, self.__renderable)
     hoverEvent = SetColorCommand(self.__hoverColor, self.__renderable)
     pressedEvent = SetColorCommand(self.__pressedColor, self.__renderable)
     
-
     clickable = ClickableComponent(self.__hitbox)
 
     button = ButtonComponent(clickable, 
@@ -129,9 +168,14 @@ class ButtonBuilder:
     #renderables
     e.add_renderable(self.__renderable)
     e.add_renderable(self.__hitbox)
+    if text is not None:
+      e.add_renderable(text)
 
     #updateables
     e.add_updateable(clickable)
     e.add_updateable(button)
-    
+
+
+    self.__renderable = None
     return e
+

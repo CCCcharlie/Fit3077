@@ -1,7 +1,9 @@
 ##todo create full test
 
 
-from src.main.engine.utils.SingletonMeta import SingletonMeta
+
+from engine.utils.SingletonMeta import SingletonMeta
+
 
 class SingletonClass(metaclass=SingletonMeta):
     def __init__(self, value):
