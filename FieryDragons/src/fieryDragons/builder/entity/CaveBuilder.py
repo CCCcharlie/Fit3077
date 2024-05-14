@@ -10,6 +10,7 @@ from typing import List
 from fieryDragons.Segment import Segment
 from fieryDragons.enums.AnimalType import AnimalType
 from pygame import Color
+import pygame
 
 
 class CaveBuilder:
@@ -19,9 +20,22 @@ class CaveBuilder:
         self.__animal_type: AnimalType | None = None
         self.__next: Segment | None = None
         self.__caves: List[Segment] = []
+        self.__segmentSize: int = 0
+
+    def setSegmentSize(self, segSize: int) -> CaveBuilder:
+        self.__segmentSize = segSize
+        return self
         
-    def setTransform(self, transform: TransformComponent) -> CaveBuilder:
-        self.__transform = transform
+    def setSegmentTransform(self, transform: TransformComponent) -> CaveBuilder:
+        newTransform = transform.clone()
+
+        moveDistance = pygame.Vector2(0,self.__segmentSize)
+        offset = moveDistance.rotate(-newTransform.rotation)
+
+        newPos = newTransform.position + Vec2(offset.x, offset.y)
+        newTransform.position = newPos
+
+        self.__transform = newTransform
         return self
 
     def setRadius(self, radius: int) -> CaveBuilder:
