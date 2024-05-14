@@ -51,7 +51,8 @@ class GameSceneBuilder:
             offset=1,
         )
         segmentBuilder = SegmentBuilder()
-        caveBuilder = CaveBuilder()
+        caveBuilder = CaveBuilder().setRadius(40)
+
 
         for index, t in enumerate(segment_iter):
             e = (
@@ -71,7 +72,6 @@ class GameSceneBuilder:
                 #todo update the cave generator to pass information to player generator
                 c = (
                     caveBuilder
-                    .setSize(segment_iter.size)
                     .setNext(segmentBuilder.getLastSegment())
                     .setTransform(newTransform)
                     .setAnimalType(AnimalType.get_random_animal())

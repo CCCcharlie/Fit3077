@@ -56,7 +56,6 @@ class RenderableComponent(Renderable):
     """
     Hide the renderable component.
     """
-    print("hide")
     self.__showing = False 
 
   def _pivot(self) -> Vec2:

@@ -91,8 +91,8 @@ class ChitCardBuilder:
     
     ccClickedCommand: Command = ChitCardClickedCommand(ccComponent)
     onDefault: Command = SetColorCommand(Color(0,0,0), back_circle)
-    onHover: Command = SetColorCommand(Color(0,0,255), back_circle)
-    onPressed: Command = SetColorCommand(Color(0,255,0), back_circle)
+    onHover: Command = SetColorCommand(Color(51,51,49), back_circle)
+    onPressed: Command = SetColorCommand(Color(69,69,67), back_circle)
 
   
 
