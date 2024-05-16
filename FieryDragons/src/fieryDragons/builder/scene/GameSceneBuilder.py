@@ -22,7 +22,7 @@ class GameSceneBuilder(SceneBuilder):
         self.__screen_height = World().size[1]
         self.__players: int = 2
         ##self.__chit_cards: int  = 24
-        self.__segments: int = 16
+        self.__segments: int = 24
         self.__resetSceneBuilder: SceneBuilder | None = None
 
     def setResetSceneBuilder(self, resetSceneBuilder: SceneBuilder) -> GameSceneBuilder:
@@ -47,12 +47,12 @@ class GameSceneBuilder(SceneBuilder):
 
         # Determine segment-related coordinates
         center_x = self.__screen_width // 2
-        center_y = self.__screen_height // 2
+        center_y = self.__screen_height // 2 + 40
 
         # Place segments
         segment_iter = CircleCoordinateIterator(
             self.__segments,
-            5 * min(self.__screen_width, self.__screen_height) // 8,
+            5 * min(self.__screen_width, self.__screen_height) // 8 - 150,
             center_x,
             center_y,
             offset=1,
@@ -64,9 +64,8 @@ class GameSceneBuilder(SceneBuilder):
         for index, t in enumerate(segment_iter):
             e = (
                 segmentBuilder
-                .setSize(segment_iter.size)
+                .setSize(segment_iter.size * 1.55)
                 .setTransform(t)
-                .setAnimalType(AnimalType.get_random_animal())
                 .build()
             )
             s.addEntity(e)
@@ -76,7 +75,7 @@ class GameSceneBuilder(SceneBuilder):
                 c = (
                     caveBuilder
                     .setNext(segmentBuilder.getLastSegment())
-                    .setSegmentSize(segment_iter.size)
+                    .setSegmentSize(segment_iter.size + 30)
                     .setSegmentTransform(t)
                     .setAnimalType(AnimalType.get_random_animal())
                     .build()
@@ -98,7 +97,7 @@ class GameSceneBuilder(SceneBuilder):
         gridIterator = GridCoordinateIterator(
             4,
             4,
-            Vec2(center_x, center_y),
+            Vec2(center_x + 20, center_y),
             min(self.__screen_width, self.__screen_height) // 2,
             min(self.__screen_width, self.__screen_height) // 2,
         )

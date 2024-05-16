@@ -29,6 +29,8 @@ class ShakeMFCommand(MultiFrameCommand):
         self.__timeElapsed: float = 0.0
         self.__original: TransformComponent = self.__transform.clone()
 
+        super().__init__()
+
     def update(self, dt: float):
         """
         Update method for the shake

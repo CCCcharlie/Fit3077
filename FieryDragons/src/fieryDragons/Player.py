@@ -3,6 +3,7 @@ from __future__ import annotations
 
 from typing import List
 from engine.command.ChangeSceneCommand import ChangeSceneCommand
+from engine.command.DelayExecuteMFCommand import DelayExecuteMFCommand
 from engine.command.LinearMoveMFCommand import LinearMoveMFCommand
 from engine.command.PrintCommand import PrintCommand
 from engine.command.ShakeMFCommand import ShakeMFCommand
@@ -67,10 +68,6 @@ class Player:
     
   def endTurn(self):
     # shake self
-    command = ShakeMFCommand(5, self.transformComponent, 500)
-    MultiFrameCommandRunner().addCommand(command)
-    command.run()
-
 
     Player.ACTIVE_PLAYER = self.__nextPlayer
     #print(f"Active player is {self.__nextPlayer.__playerNumber}")
@@ -80,6 +77,7 @@ class Player:
     # CASE picked pirate dragon
     if animalType is AnimalType.PIRATE_DRAGON:
       newLocation = self.position - amount
+      newLocation = max(0,newLocation) # prevent the play from moving too far back
       newSegment = self.path[newLocation]
       if self.__canMove(newSegment):
         self.position = newLocation
@@ -94,8 +92,14 @@ class Player:
       #CASE at end of path
       if newLocation >= len(self.path) - 1:
         #this player has won
+        newLocation = len(self.path) - 1
+        self._moveToSegment(self.path[newLocation])
+
         winScene = WinSceneBuilder().setResetScene(Player.RESET_SCENE_BUILDER).setWinningPlayer(str(self.__playerNumber)).build()
-        ChangeSceneCommand(winScene).run()
+        csc = ChangeSceneCommand(winScene)
+        command = DelayExecuteMFCommand(csc, 1000)
+        MultiFrameCommandRunner().addCommand(command)
+        command.run()
         return
 
       newSegment = self.path[newLocation]
@@ -108,10 +112,16 @@ class Player:
         return
       else:
         # CASE CANT MOVE
+        command = ShakeMFCommand(5, self.transformComponent, 500)
+        MultiFrameCommandRunner().addCommand(command)
+        command.run()
         self.endTurn()
         return
 
     # CASE picked the wrong animal
+    command = ShakeMFCommand(5, self.transformComponent, 500)
+    MultiFrameCommandRunner().addCommand(command)
+    command.run()
     self.endTurn()
     return
 

@@ -27,6 +27,7 @@ class LinearMoveMFCommand(MultiFrameCommand):
         self.__transform: TransformComponent = transform
         self.__totalTime: float = totalTime
         self.__timeElapsed: float = 0.0
+        super().__init__()
 
     def update(self, dt: float):
         """
