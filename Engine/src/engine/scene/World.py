@@ -1,3 +1,4 @@
+from engine.scene.MultiFrameCommandRunner import MultiFrameCommandRunner
 import pygame
 import time
 import sys
@@ -80,6 +81,7 @@ class World(metaclass=SingletonMeta):
       # fixed timestep
       while lag >= self.MS_PER_UPDATE:
         self.activeScene.update(self.MS_PER_UPDATE)
+        MultiFrameCommandRunner().update(self.MS_PER_UPDATE)
         lag -= self.MS_PER_UPDATE
 
         

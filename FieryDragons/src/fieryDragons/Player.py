@@ -3,8 +3,10 @@ from __future__ import annotations
 
 from typing import List
 from engine.command.ChangeSceneCommand import ChangeSceneCommand
+from engine.command.LinearMoveMFCommand import LinearMoveMFCommand
 from engine.command.PrintCommand import PrintCommand
 from engine.component.TransformComponent import TransformComponent
+from engine.scene.MultiFrameCommandRunner import MultiFrameCommandRunner
 from fieryDragons.Segment import Segment
 # from fieryDragons.TurnManager import TurnManager
 from fieryDragons.builder.scene.SceneBuilder import SceneBuilder
@@ -34,8 +36,9 @@ class Player:
     return self.__playerNumber
 
   def _moveToSegment(self, segment: Segment):
-    self.transformComponent.position = segment.getSnapPosition()
-    self.transformComponent.rotation = segment.getSnapRotation()
+    command = LinearMoveMFCommand(self.transformComponent.clone(), segment.getSnapTransform(), self.transformComponent, 1000)
+    MultiFrameCommandRunner().addCommand(command)
+    command.run()
 
   def setNextPlayer(self, nextPlayer: Player):
      self.__nextPlayer = nextPlayer

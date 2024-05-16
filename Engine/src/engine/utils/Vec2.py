@@ -28,4 +28,7 @@ class Vec2:
   def distance(self, other: 'Vec2') -> float:
     return math.sqrt((self.x - other.x) ** 2 + (self.y - other.y) ** 2)
   
+  def clone(self):
+    return Vec2(self.x, self.y)
+  
   

@@ -29,12 +29,8 @@ class Segment():
   def getAnimalType(self) -> AnimalType:
     return self.__animalType
   
-  def getSnapPosition(self) -> Vec2:
-    #TODO rotate the offset based on the transform's rotation
-    return self.__transformComponent.position + self.__offset
-  
-  def getSnapRotation(self) -> Vec2:
-    return self.__transformComponent.rotation
+  def getSnapTransform(self) -> TransformComponent:
+    return self.__transformComponent.clone()
   
   def generatePath(self, start: 'Segment') -> List['Segment']:
     segmentList: List[Segment] = []
