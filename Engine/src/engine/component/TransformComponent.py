@@ -44,3 +44,11 @@ class TransformComponent():
     t.rotation = self.rotation
     t.scale = self.scale
     return t
+  
+  def copy(self, t: TransformComponent):
+    """
+    Copy the position, rotation and scale of the other transform
+    """
+    self._position = t.position.clone()
+    self._rotation = t.rotation
+    self._scale = t.scale.clone()
