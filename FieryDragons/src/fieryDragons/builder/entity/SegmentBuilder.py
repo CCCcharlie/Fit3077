@@ -1,4 +1,6 @@
 from __future__ import annotations
+import random
+from typing import List, Tuple
 from engine.component.TransformComponent import TransformComponent
 from engine.component.renderable.SpriteComponent import SpriteComponent
 from engine.component.renderable.TrapezoidComponent import TrapezoidComponent
@@ -21,6 +23,26 @@ class SegmentBuilder:
 
         self.__previous: Segment = None
         self.__first: Segment = None
+
+        ## define volcano cards
+        volcanoCardSpecifications: List[Tuple[AnimalType, AnimalType, AnimalType]] = [
+        ([AnimalType.BABY_DRAGON, AnimalType.BAT, AnimalType.SPIDER]),
+        ([AnimalType.SALAMANDER, AnimalType.SPIDER, AnimalType.BAT]),
+        ([AnimalType.SPIDER, AnimalType.SALAMANDER, AnimalType.BABY_DRAGON]),
+        ([AnimalType.BAT, AnimalType.SPIDER, AnimalType.BABY_DRAGON]),
+        ([AnimalType.SPIDER, AnimalType.BAT, AnimalType.SALAMANDER]),
+        ([AnimalType.BABY_DRAGON, AnimalType.SALAMANDER, AnimalType.BAT]),
+        ([AnimalType.BAT, AnimalType.BABY_DRAGON, AnimalType.SALAMANDER]),
+        ([AnimalType.SALAMANDER, AnimalType.BABY_DRAGON, AnimalType.SPIDER])
+        ]
+        random.shuffle(volcanoCardSpecifications)
+        # extract order from specs 
+        self._volcanoCardTypes: List[AnimalType] = []
+        for a,b,c in volcanoCardSpecifications:
+            self._volcanoCardTypes.append(a)
+            self._volcanoCardTypes.append(b)
+            self._volcanoCardTypes.append(c)
+
         
     def setTransform(self, transform: TransformComponent) -> SegmentBuilder:
         self.__transform = transform
@@ -50,12 +72,11 @@ class SegmentBuilder:
             raise IncompleteBuilderError(self.__class__.__name__, "Transform Component")
         if self.__size is None:
             raise IncompleteBuilderError(self.__class__.__name__, "Size")
-        if self.__animal_type is None:
-            raise IncompleteBuilderError(self.__class__.__name__, "Animal Type")
 
         self.__transformChanged = False
         # Creation
         
+        self.__animal_type = self._volcanoCardTypes.pop(0)
 
         segment = Segment(self.__transform, self.__animal_type, Vec2(0,0))
         
@@ -68,7 +89,7 @@ class SegmentBuilder:
         
 
         trap = TrapezoidComponent(
-            self.__transform, round(self.__size/2), self.__size, self.__size, self.__animal_type.get_colour()
+            self.__transform, round(3 * self.__size/4 - 10), self.__size+ 10, self.__size, self.__animal_type.get_colour()
         )
 
         transform = self.__transform.clone()
