@@ -67,10 +67,6 @@ class Player:
     
   def endTurn(self):
     # shake self
-    command = ShakeMFCommand(5, self.transformComponent, 500)
-    MultiFrameCommandRunner().addCommand(command)
-    command.run()
-
 
     Player.ACTIVE_PLAYER = self.__nextPlayer
     #print(f"Active player is {self.__nextPlayer.__playerNumber}")
@@ -80,6 +76,7 @@ class Player:
     # CASE picked pirate dragon
     if animalType is AnimalType.PIRATE_DRAGON:
       newLocation = self.position - amount
+      newLocation = max(0,newLocation) # prevent the play from moving too far back
       newSegment = self.path[newLocation]
       if self.__canMove(newSegment):
         self.position = newLocation
@@ -108,10 +105,16 @@ class Player:
         return
       else:
         # CASE CANT MOVE
+        command = ShakeMFCommand(5, self.transformComponent, 500)
+        MultiFrameCommandRunner().addCommand(command)
+        command.run()
         self.endTurn()
         return
 
     # CASE picked the wrong animal
+    command = ShakeMFCommand(5, self.transformComponent, 500)
+    MultiFrameCommandRunner().addCommand(command)
+    command.run()
     self.endTurn()
     return
 

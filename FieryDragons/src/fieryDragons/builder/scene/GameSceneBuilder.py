@@ -97,7 +97,7 @@ class GameSceneBuilder(SceneBuilder):
         gridIterator = GridCoordinateIterator(
             4,
             4,
-            Vec2(center_x, center_y),
+            Vec2(center_x + 20, center_y),
             min(self.__screen_width, self.__screen_height) // 2,
             min(self.__screen_width, self.__screen_height) // 2,
         )
