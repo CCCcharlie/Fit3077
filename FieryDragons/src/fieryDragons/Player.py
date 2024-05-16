@@ -5,6 +5,7 @@ from typing import List
 from engine.command.ChangeSceneCommand import ChangeSceneCommand
 from engine.command.LinearMoveMFCommand import LinearMoveMFCommand
 from engine.command.PrintCommand import PrintCommand
+from engine.command.ShakeMFCommand import ShakeMFCommand
 from engine.component.TransformComponent import TransformComponent
 from engine.scene.MultiFrameCommandRunner import MultiFrameCommandRunner
 from fieryDragons.Segment import Segment
@@ -36,7 +37,7 @@ class Player:
     return self.__playerNumber
 
   def _moveToSegment(self, segment: Segment):
-    command = LinearMoveMFCommand(self.transformComponent.clone(), segment.getSnapTransform(), self.transformComponent, 1000)
+    command = LinearMoveMFCommand(self.transformComponent.clone(), segment.getSnapTransform(), self.transformComponent, 500)
     MultiFrameCommandRunner().addCommand(command)
     command.run()
 
@@ -65,6 +66,12 @@ class Player:
     return True
     
   def endTurn(self):
+    # shake self
+    command = ShakeMFCommand(5, self.transformComponent, 500)
+    MultiFrameCommandRunner().addCommand(command)
+    command.run()
+
+
     Player.ACTIVE_PLAYER = self.__nextPlayer
     #print(f"Active player is {self.__nextPlayer.__playerNumber}")
     PlayerTurnEndEmitter().notify()
