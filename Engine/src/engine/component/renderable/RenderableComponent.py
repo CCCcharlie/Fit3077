@@ -1,7 +1,8 @@
 from abc import abstractmethod
+from typing import Tuple
 
 import pygame
-from pygame import Surface, Color
+from pygame import Surface, Color, Rect
 from ...entity.Renderable import Renderable
 from ...component.TransformComponent import TransformComponent
 from ...utils.Vec2 import Vec2
@@ -56,7 +57,30 @@ class RenderableComponent(Renderable):
     Hide the renderable component.
     """
     self.__showing = False 
+    #pass
 
+  def _pivot(self) -> Vec2:
+    return Vec2(0,0)
+  
+
+  def __rotatePivot(self, image: Surface, rotation: int, pivot: Vec2) -> Tuple[Surface, Rect]:
+    """
+    rotate surface
+    """
+
+    originalCentre = pygame.Vector2(image.get_width()/2,image.get_height()/2)
+    pivotV = pygame.Vector2(pivot.x, pivot.y)
+    vectorOffset = pivotV - originalCentre
+
+
+    image = pygame.transform.rotate(image, rotation)
+    rotatedOffset = vectorOffset.rotate(-rotation)
+
+    rect = image.get_rect(center=-rotatedOffset)
+
+    return image, rect
+
+  
   def render(self, display_surf: Surface) -> None:
     """
     Render the renderable component.
@@ -65,15 +89,23 @@ class RenderableComponent(Renderable):
       return 
     
     image: Surface = self.__imageSurface
-    
-    #Scale surface based on scale information
-    scale: Vec2 = self.__transformComponent.scale
-    image = pygame.transform.scale(image, scale.toTuple())
+    pivot: Vec2 = self._pivot()
 
-    #Rotate based on rotation information
+    #Scale surface based on scale information
+    # scale: Vec2 = self.__transformComponent.scale
+    # image = pygame.transform.scale(image, scale.toTuple())
+
+    #Rotate
     rotation: int = self.__transformComponent.rotation
-    image = pygame.transform.rotate(image, rotation)
-    
-    #blit to screen
+    image, rect = self.__rotatePivot(image, rotation, pivot)
+
+    # apply position
     position: Vec2 = self.__transformComponent.position
-    display_surf.blit(self.__imageSurface, position.toTuple())
+    rect.x += position.x
+    rect.y += position.y
+
+    #blit to screen
+    display_surf.blit(image, rect)
+    #pygame.draw.circle(display_surf, Color(0,0,0), position.toTuple(), 2)
+
+

@@ -33,12 +33,12 @@ class CircleHitboxComponent(HitboxComponent):
 
   def _checkPointCollision(self, position: Vec2, scale: Vec2, rotation: int, point: Vec2) -> bool:
     ##ignore scale and rotation for now
-    center = position + Vec2(self.__radius , self.__radius)
+    center = position #+ Vec2(self.__radius , self.__radius)
     return center.distance(point) <= self.__radius
 
 
   def _drawDebug(self, displaySurf: Surface, position: Vec2, scale: Vec2, rotation: int):
-    center = position + Vec2(self.__radius , self.__radius)
+    center = position #+ Vec2(self.__radius , self.__radius)
     draw.circle(displaySurf, (255,0,0), center.toTuple(), self.radius, width=3)
     
   

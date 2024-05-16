@@ -21,7 +21,7 @@ class SpriteComponent(RenderableComponent):
     super().__init__(transformComponent)
 
   def _generateImageSurface(self):
-    image_surf = image.load("asset/sprite/" + self.__image).convert()
+    image_surf = image.load("asset/sprite/" + self.__image).convert_alpha()
     image_surf = transform.scale(image_surf, (self.__width, self.__height))
 
     self._setImageSurface(image_surf)

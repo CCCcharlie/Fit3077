@@ -1,4 +1,8 @@
+from __future__ import annotations
+
+
 from ..utils.Vec2 import Vec2
+
 
 class TransformComponent():
   def __init__(self):
@@ -32,4 +36,11 @@ class TransformComponent():
 
   def rotate(self, angle: int) -> None:
     self._rotation += angle
-    self._rotation = self.rotation % 365
+    self._rotation = self.rotation % 360
+
+  def clone(self) -> TransformComponent:
+    t = TransformComponent()
+    t.position = self.position
+    t.rotation = self.rotation
+    t.scale = self.scale
+    return t
