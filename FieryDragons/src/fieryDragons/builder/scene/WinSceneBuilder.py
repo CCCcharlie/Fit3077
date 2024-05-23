@@ -10,14 +10,14 @@ from engine.builder.SceneBuilder import SceneBuilder
 class WinSceneBuilder (SceneBuilder):
   def __init__(self):
     self.__winningPlayer: int | None = None
-    self.__resetScene: Scene | None = None
+    self.__resetSceneBuilder: SceneBuilder | None = None
 
   def setWinningPlayer(self, winningPlayer: int) -> WinSceneBuilder:
     self.__winningPlayer = winningPlayer
     return self
   
   def setResetScene(self, b: SceneBuilder) -> WinSceneBuilder:
-    self.__resetScene = b.build()
+    self.__resetSceneBuilder = b
     return self
   
   def build(self) -> Scene:
@@ -29,7 +29,7 @@ class WinSceneBuilder (SceneBuilder):
      
     s.addEntity(textBuilder.build())
 
-    bb = ButtonBuilder().setText("Restart").setPosition(Vec2(100,100)).setOnClick(ChangeSceneCommand(self.__resetScene))
+    bb = ButtonBuilder().setText("Restart").setPosition(Vec2(100,100)).setOnClick(ChangeSceneCommand(self.__resetSceneBuilder))
     s.addEntity(bb.build())
    
     return s

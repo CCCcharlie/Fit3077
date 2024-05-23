@@ -12,7 +12,7 @@ class SaveCommand(Command):
   def run(self):
     SaveManager().save(self.__saveIndex)
     ##go back to main menu
-    ChangeSceneCommand(self.__gotoScene.build()).run()
+    ChangeSceneCommand(self.__gotoScene).run()
 
 
    

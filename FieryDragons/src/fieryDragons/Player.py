@@ -97,8 +97,8 @@ class Player(Serializable):
         newLocation = len(self.path) - 1
         self._moveToSegment(self.path[newLocation])
 
-        winScene = WinSceneBuilder().setResetScene(Player.RESET_SCENE_BUILDER).setWinningPlayer(str(self.__playerNumber)).build()
-        csc = ChangeSceneCommand(winScene)
+        winSceneBuilder = WinSceneBuilder().setResetScene(Player.RESET_SCENE_BUILDER).setWinningPlayer(str(self.__playerNumber))
+        csc = ChangeSceneCommand(winSceneBuilder)
         command = DelayExecuteMFCommand(csc, 1000)
         MultiFrameCommandRunner().addCommand(command)
         command.run()

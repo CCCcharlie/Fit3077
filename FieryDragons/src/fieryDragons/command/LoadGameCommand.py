@@ -24,9 +24,9 @@ class LoadGameCommand(Command):
     Random().setSeed(seed)
 
     #create scene
-    gameScene = GameSceneBuilder().setResetSceneBuilder(self.__resetSceneBuilder).build()
+    gameSceneBuilder = GameSceneBuilder().setResetSceneBuilder(self.__resetSceneBuilder)
 
-    ChangeSceneCommand(gameScene).run()
+    ChangeSceneCommand(gameSceneBuilder).run()
     
     # load in data
     if self.__saveId is not None:
