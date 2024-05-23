@@ -1,4 +1,5 @@
 from __future__ import annotations
+from typing import List
 
 
 from engine.component.TransformComponent import TransformComponent
@@ -42,6 +43,14 @@ class ButtonBuilder:
     self.__position: Vec2 = None
 
     self.__text: str = None
+
+    self.__storedRenderables: List[RenderableComponent] = []
+    self.__rectDetails = None
+
+  def setRectDetails(self, width: int, height: int) -> ButtonBuilder:
+    self.__rectDetails = (width, height)
+    return self
+
 
   def setText(self, text: str) -> ButtonBuilder:
     """
@@ -132,9 +141,14 @@ class ButtonBuilder:
     
     if self.__onClick is None:
       raise IncompleteBuilderError("Button", "OnClickCommand")
+    
+    if self.__rectDetails is None:
+      self.__rectDetails = (100,50)
 
     # build
     e = Entity()
+
+
 
     if self.__renderable is None:
       if self.__position is None:
@@ -142,8 +156,8 @@ class ButtonBuilder:
       self.__transformComponent = TransformComponent()
       self.__transformComponent.position = self.__position
       # create rectangle and hitbox   
-      self.__renderable = RectComponent(self.__transformComponent, 100, 50, Color(0,0,0))
-      self.__hitbox = RectHitboxComponent(self.__transformComponent, 100, 50, True)
+      self.__renderable = RectComponent(self.__transformComponent, self.__rectDetails[0], self.__rectDetails[1], Color(0,0,0))
+      self.__hitbox = RectHitboxComponent(self.__transformComponent, self.__rectDetails[0], self.__rectDetails[1], False)
 
     text = None
     if self.__text is not None:
@@ -176,7 +190,14 @@ class ButtonBuilder:
     e.add_updateable(clickable)
     e.add_updateable(button)
 
+    self.__storedRenderables = [self.__renderable]
+    if text is not None:
+      self.__storedRenderables.append(text)  
+
 
     self.__renderable = None
     return e
 
+  def getStoredRenderables(self) -> List[RenderableComponent]:
+    return self.__storedRenderables
+    
