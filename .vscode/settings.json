@@ -3,6 +3,8 @@
     "blit",
     "caluclate",
     "chitcard",
+    "deserialise",
+    "Gamedata",
     "Hitbox",
     "pygame",
     "quitflag",

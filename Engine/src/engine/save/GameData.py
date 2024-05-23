@@ -1,0 +1,2 @@
+class Gamedata:
+  pass 
