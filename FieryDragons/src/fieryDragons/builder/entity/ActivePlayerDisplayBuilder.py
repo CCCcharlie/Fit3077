@@ -34,7 +34,7 @@ class ActivePlayerDisplayBuilder:
     t = TransformComponent()
     t.position = self.__position
 
-    rect: Renderable = RectComponent(t, 100, 30, Color(0,0,0))
+    rect: Renderable = RectComponent(t, 180, 30, Color(0,0,0))
     text: Renderable = TextComponent(t, "Active Player", SysFont("Corbel", 30), Color(0,0,0))
     apu: Updateable = ActivePlayerDisplayUpdateable(self.__playerColors, rect)
 
