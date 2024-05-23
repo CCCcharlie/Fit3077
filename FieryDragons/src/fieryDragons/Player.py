@@ -1,7 +1,7 @@
 
 from __future__ import annotations
 
-from typing import List
+from typing import Dict, List
 from engine.command.ChangeSceneCommand import ChangeSceneCommand
 from engine.command.DelayExecuteMFCommand import DelayExecuteMFCommand
 from engine.command.LinearMoveMFCommand import LinearMoveMFCommand
@@ -16,10 +16,11 @@ from fieryDragons.builder.scene.WinSceneBuilder import WinSceneBuilder
 
 from fieryDragons.enums.AnimalType import AnimalType
 from fieryDragons.observer.PlayerTurnEndEmitter import PlayerTurnEndEmitter
+from fieryDragons.save.Serializable import Serializable
 from pygame import Color
 
 
-class Player:
+class Player(Serializable):
   ACTIVE_PLAYER: Player = None
   RESET_SCENE_BUILDER: SceneBuilder = None
 
@@ -30,6 +31,7 @@ class Player:
 
     self.__playerNumber: int = playerNumber
     self.__nextPlayer: Player = None 
+    super().__init__()
 
     # snap to segment
     self._moveToSegment(startingSegment)
@@ -123,6 +125,18 @@ class Player:
     MultiFrameCommandRunner().addCommand(command)
     command.run()
     self.endTurn()
+    return
+  
+  def serialise(self) -> Dict:
+    d: dict = {}
+    d["location"] = self.position
+    d["active"] = Player.ACTIVE_PLAYER == self
+    return d
+  
+  def deserialise(self, data: Dict) -> None:
+    location = data["location"]
+    active = data["active"]
+    print(f"Location is {location}, active is {active}")
     return
 
 

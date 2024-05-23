@@ -1,6 +1,5 @@
 from enum import Enum
-import time
-from typing import List
+from typing import Dict, List
 
 from engine.component.renderable.RenderableComponent import RenderableComponent
 from engine.entity.Updateable import Updateable
@@ -8,12 +7,13 @@ from engine.observer.subscriber import Subscriber
 from fieryDragons.command.MoveActivePlayerCommand import MoveActivePlayerCommand
 from fieryDragons.enums.AnimalType import AnimalType
 from fieryDragons.observer.PlayerTurnEndEmitter import PlayerTurnEndEmitter
+from fieryDragons.save.Serializable import Serializable
 
 class State(Enum):
     HIDDEN = 1
     VISIBLE = 2
 
-class ChitCard(Subscriber, Updateable):
+class ChitCard(Subscriber, Updateable, Serializable):
     def __init__(self, front: List[RenderableComponent], back: RenderableComponent, animalType: AnimalType, amount: int):
         self.__front: List[RenderableComponent] = front
         self.__back: RenderableComponent = back
@@ -28,6 +28,8 @@ class ChitCard(Subscriber, Updateable):
 
         for renderable in self.__front:
             renderable.hide()
+
+        super().__init__()
 
     def activateDebug(self):
         self.__debug = True
@@ -62,4 +64,13 @@ class ChitCard(Subscriber, Updateable):
                 self.__timer = -1
                 self.onHide()
 
+    def serialise(self) -> Dict:
+        d: dict = {}
+        d["state"] = self.__state.value
+        return d
+    
+    
+    def deserialise(self, data: Dict) -> None:
+        print(f"State is {data["state"]}")
+        return 
 
