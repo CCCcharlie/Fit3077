@@ -4,7 +4,9 @@ import os
 
 class FileDataHandler:
   def __init__(self):
-    self.__base_filename = "./"#"/save/"
+    self.__base_filename = "./saves/"
+    if not os.path.exists(self.__base_filename):
+      os.makedirs(self.__base_filename)
 
   def __getFilename(self, saveId: int) -> str:
     return f"{self.__base_filename}save_{saveId}.json"
