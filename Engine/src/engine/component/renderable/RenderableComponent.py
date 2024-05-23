@@ -92,8 +92,9 @@ class RenderableComponent(Renderable):
     pivot: Vec2 = self._pivot()
 
     #Scale surface based on scale information
-    # scale: Vec2 = self.__transformComponent.scale
-    # image = pygame.transform.scale(image, scale.toTuple())
+    scale: Vec2 = self.__transformComponent.scale
+    image = pygame.transform.scale(image, (int(image.get_width() * scale.x), int(image.get_height() * scale.y)))
+
 
     #Rotate
     rotation: int = self.__transformComponent.rotation
