@@ -16,6 +16,7 @@ from fieryDragons.builder.entity.SegmentBuilder import SegmentBuilder
 from fieryDragons.builder.scene.SceneBuilder import SceneBuilder
 from fieryDragons.command.SaveCommand import SaveCommand
 from fieryDragons.enums.AnimalType import AnimalType
+from fieryDragons.save.SaveManager import SaveManager
 from fieryDragons.utils.GridCoordinateIterator import GridCoordinateIterator
 from ...utils.CircleCoordinateIterator import CircleCoordinateIterator
 
@@ -46,6 +47,7 @@ class GameSceneBuilder(SceneBuilder):
         return self
 
     def build(self) -> Scene:
+        SaveManager().onCleanup()
         # Build
         s = Scene()
 

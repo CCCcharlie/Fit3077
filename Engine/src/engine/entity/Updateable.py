@@ -13,3 +13,6 @@ class Updateable(ABC):
       dt (float): number of millisecconds this update must process
     """
     raise NotImplementedError()
+
+  def onCleanup(self):
+    pass

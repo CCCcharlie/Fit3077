@@ -38,6 +38,8 @@ class World(metaclass=SingletonMeta):
     Args:
       scene (Scene): THe scene object to set as the new active scene
     """
+    if self.activeScene:
+      self.activeScene.onCleanup()
     self.activeScene = scene
 
   def start(self):

@@ -56,4 +56,12 @@ class Entity(Updateable, Renderable):
       renderable.render(displaySurf)
 
 
+  def onCleanup(self):
+    for renderable in self.renderables:
+      renderable.onCleanup()
+    
+    for updateable in self.updateables:
+      updateable.onCleanup()
+
+
     

@@ -42,5 +42,9 @@ class Scene(Renderable, Updateable):
     for entity in self.entities:
       entity.render(displaySurf)
 
+  def onCleanup(self):
+    for entity in self.entities:
+      entity.onCleanup()
+
 
   

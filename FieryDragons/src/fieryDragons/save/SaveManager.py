@@ -35,4 +35,7 @@ class SaveManager(metaclass=SingletonMeta):
   def load(self, saveId: int):
     pass
     
+  def onCleanup(self):
+    self.__serializables = {}
+
   

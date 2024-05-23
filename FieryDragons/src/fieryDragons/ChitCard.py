@@ -74,4 +74,3 @@ class ChitCard(Subscriber, Updateable, Serializable):
         state = data["state"]
         print(f"State is {state}")
         return 
-
