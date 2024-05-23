@@ -1,5 +1,5 @@
 from __future__ import annotations
-import random
+
 from typing import List, Tuple
 from engine.component.TransformComponent import TransformComponent
 from engine.component.renderable.SpriteComponent import SpriteComponent
@@ -8,6 +8,7 @@ from engine.entity.Entity import Entity
 from engine.exceptions.IncompleteBuilderError import IncompleteBuilderError
 
 from engine.utils.Vec2 import Vec2
+from fieryDragons.Random import Random
 from fieryDragons.Segment import Segment
 from fieryDragons.enums.AnimalType import AnimalType
 import pygame
@@ -35,7 +36,8 @@ class SegmentBuilder:
         ([AnimalType.BAT, AnimalType.BABY_DRAGON, AnimalType.SALAMANDER]),
         ([AnimalType.SALAMANDER, AnimalType.BABY_DRAGON, AnimalType.SPIDER])
         ]
-        random.shuffle(volcanoCardSpecifications)
+        
+        Random().shuffle(volcanoCardSpecifications)
         # extract order from specs 
         self._volcanoCardTypes: List[AnimalType] = []
         for a,b,c in volcanoCardSpecifications:

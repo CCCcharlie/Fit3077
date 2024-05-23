@@ -1,6 +1,8 @@
 from __future__ import annotations
 from typing import List
 
+from engine.builder.entity.ButtonBuilder import ButtonBuilder
+from engine.entity.Entity import Entity
 from engine.scene.Scene import Scene
 
 from engine.scene.World import World
@@ -9,9 +11,12 @@ from fieryDragons.builder.entity.ActivePlayerDisplayBuilder import ActivePlayerD
 from fieryDragons.builder.entity.CaveBuilder import CaveBuilder
 from fieryDragons.builder.entity.ChitCardBuilder import ChitCardBuilder
 from fieryDragons.builder.entity.PlayerBuilder import PlayerBuilder
+from fieryDragons.builder.entity.SavePopupBuilder import SavePopupBuilder
 from fieryDragons.builder.entity.SegmentBuilder import SegmentBuilder
 from fieryDragons.builder.scene.SceneBuilder import SceneBuilder
+from fieryDragons.command.SaveCommand import SaveCommand
 from fieryDragons.enums.AnimalType import AnimalType
+from fieryDragons.save.SaveManager import SaveManager
 from fieryDragons.utils.GridCoordinateIterator import GridCoordinateIterator
 from ...utils.CircleCoordinateIterator import CircleCoordinateIterator
 
@@ -42,6 +47,7 @@ class GameSceneBuilder(SceneBuilder):
         return self
 
     def build(self) -> Scene:
+        SaveManager().onCleanup()
         # Build
         s = Scene()
 
@@ -111,5 +117,13 @@ class GameSceneBuilder(SceneBuilder):
         #place active player render
         apdBuilder = ActivePlayerDisplayBuilder().setPlayerColors(PlayerBuilder.playerColors)
         s.addEntity(apdBuilder.build())
+
+        # add save popop
+        savePopupBuilder = SavePopupBuilder().setGotoScene(self.__resetSceneBuilder)
+        es: List[Entity] = savePopupBuilder.build()
+
+        for e in es:
+            s.addEntity(e)
+
 
         return s

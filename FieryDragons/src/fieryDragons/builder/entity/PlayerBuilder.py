@@ -7,6 +7,7 @@ from engine.exceptions.IncompleteBuilderError import IncompleteBuilderError
 from fieryDragons.Player import Player
 from fieryDragons.Segment import Segment
 from fieryDragons.builder.scene.SceneBuilder import SceneBuilder
+from fieryDragons.save.SaveManager import SaveManager
 from pygame import Color
 
 
@@ -53,7 +54,8 @@ class PlayerBuilder:
 
     t = TransformComponent()
     p = Player(self.__startingSegment, t, self.__playerNumber)
-
+    SaveManager().register(p)
+    
     if (self.__playerNumber == 0):
       self.__firstPlayer = p
     else:

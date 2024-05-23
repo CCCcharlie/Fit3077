@@ -14,3 +14,6 @@ class Renderable(ABC):
       displaySurf (pygame.Surface): The pygame surface onto which the object should be rendered 
     """
     raise NotImplementedError()
+  
+  def onCleanup(self):
+    pass
