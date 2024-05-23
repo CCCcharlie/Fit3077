@@ -1,7 +1,7 @@
 from __future__ import annotations
 from enum import Enum
+from fieryDragons.Random import Random
 from pygame.color import Color
-import random
 
 
 class AnimalType(Enum):
@@ -42,10 +42,10 @@ class AnimalType(Enum):
                 return ""
     @classmethod
     def get_random_any(cls) -> AnimalType:
-        return random.choice([t for t in AnimalType])
+        return Random().choice([t for t in AnimalType])
 
     @classmethod
     def get_random_animal(cls) -> AnimalType:
-        return random.choice(
+        return Random().choice(
             [t for t in AnimalType if t is not AnimalType.PIRATE_DRAGON]
         )

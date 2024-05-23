@@ -1,5 +1,4 @@
 from __future__ import annotations
-import random
 from typing import List, Tuple
 from engine.command.PrintCommand import PrintCommand
 from engine.command.SetColorCommand import SetColorCommand
@@ -15,6 +14,7 @@ from engine.entity.Entity import Entity
 from engine.exceptions.IncompleteBuilderError import IncompleteBuilderError
 from engine.command.Command import Command
 from engine.utils.Vec2 import Vec2
+from fieryDragons.Random import Random
 from fieryDragons.command.ChitCardClickedCommand import ChitCardClickedCommand
 from fieryDragons.ChitCard import ChitCard
 
@@ -61,8 +61,7 @@ class ChitCardBuilder:
       (2, AnimalType.PIRATE_DRAGON, "chitcard/2PirateDragon.png")
     ]
 
-    random.shuffle(self.__chitCards)
-
+    Random().shuffle(self.__chitCards)
 
 
   def setPosition(self, position: Vec2) -> ChitCardBuilder:

@@ -1,13 +1,15 @@
 from abc import abstractmethod
 from typing import Dict
-import random
+
+from fieryDragons.Random import Random
 
 class Serializable():
   """
 
   """
   def __init__(self):
-     self.__uuid: str = str(random.randint(0,9999999))
+
+     self.__uuid: str = str(Random().getId())
 
   def getUUID(self) -> str:
      return self.__uuid

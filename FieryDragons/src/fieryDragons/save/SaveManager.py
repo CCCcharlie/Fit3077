@@ -1,6 +1,7 @@
 from typing import Dict, List
 
 from engine.utils import SingletonMeta
+from fieryDragons.Random import Random
 from fieryDragons.save.FileDataHandler import FileDataHandler
 from fieryDragons.save.Serializable import Serializable
 
@@ -25,7 +26,7 @@ class SaveManager(metaclass=SingletonMeta):
 
   def save(self, saveId: int):
     jsonData = {}
-    jsonData["seed"] = 0
+    jsonData["seed"] = Random().getSeed()
     for uuid, s in self.__serializables.items():
       jsonData[uuid] = s.serialise()
 
