@@ -15,13 +15,6 @@ from pygame import Color
 
 
 class SavePopupBuilder:
-  def __init__(self):
-    self.__gotoScene: SceneBuilder = None
-
-  def setGotoScene(self, s: SceneBuilder) -> SavePopupBuilder:
-    self.__gotoScene = s
-    return self
-
   def build(self) -> List[Entity]:
 
     #Add popup box
@@ -38,7 +31,7 @@ class SavePopupBuilder:
     renderables: List[RenderableComponent] = [popup_rect, popup_text]
 
     #Add 3 save buttons
-    saveCommand = SaveCommand(1, self.__gotoScene)
+    saveCommand = SaveCommand(1)
     bb1 =  (
       ButtonBuilder()
       .setText("1")
@@ -50,7 +43,7 @@ class SavePopupBuilder:
     renderables.extend(bb1.getStoredRenderables())
     
 
-    saveCommand = SaveCommand(2, self.__gotoScene)
+    saveCommand = SaveCommand(2)
     bb2 =  (
       ButtonBuilder()
       .setText("2")
@@ -62,7 +55,7 @@ class SavePopupBuilder:
     renderables.extend(bb2.getStoredRenderables())
     
 
-    saveCommand = SaveCommand(3, self.__gotoScene)
+    saveCommand = SaveCommand(3)
     bb3 = (
       ButtonBuilder()
       .setText("3")

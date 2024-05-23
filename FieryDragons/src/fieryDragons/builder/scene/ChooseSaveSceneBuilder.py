@@ -10,14 +10,7 @@ from fieryDragons.command.LoadGameCommand import LoadGameCommand
 from fieryDragons.save.FileDataHandler import FileDataHandler
 
 
-class ChooseSaveSceneBuilder(SceneBuilder):
-  def __init__(self):
-    self.__resetSceneBuilder: SceneBuilder = None
-
-  def setResetSceneBuilder(self, scene: SceneBuilder) -> ChooseSaveSceneBuilder:
-    self.__resetSceneBuilder = scene
-    return self
-  
+class ChooseSaveSceneBuilder(SceneBuilder): 
   def build(self) -> Scene:
     s  = Scene()
 
@@ -29,14 +22,14 @@ class ChooseSaveSceneBuilder(SceneBuilder):
     )
     
     #load none
-    newGame = LoadGameCommand(self.__resetSceneBuilder)
+    newGame = LoadGameCommand()
     bb.setText("New Game")
     bb.setOnClick(newGame)
     s.addEntity(bb.build())
 
     saves: List[int] = FileDataHandler().getAllSaves()
     for save in saves:
-      loadGame = LoadGameCommand(self.__resetSceneBuilder, save)
+      loadGame = LoadGameCommand(save)
 
       # calculate new position
       buttonPos: Vec2 = pos.clone()

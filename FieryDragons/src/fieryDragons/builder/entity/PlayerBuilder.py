@@ -29,12 +29,6 @@ class PlayerBuilder:
     self.__firstPlayer: Player = None
     self.__previousPlayer: Player = None
 
-    self.__resetSceneBuilder: SceneBuilder | None = None
-
-  
-  def setResetSceneBuilder(self, sceneBuilder: SceneBuilder) -> PlayerBuilder:
-    Player.RESET_SCENE_BUILDER = sceneBuilder
-    return self
 
   def setStartingSegment(self, startingSegment: Segment) -> PlayerBuilder:
     self.__startingSegment = startingSegment

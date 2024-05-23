@@ -5,24 +5,19 @@ from typing import Dict, List
 from engine.command.ChangeSceneCommand import ChangeSceneCommand
 from engine.command.DelayExecuteMFCommand import DelayExecuteMFCommand
 from engine.command.LinearMoveMFCommand import LinearMoveMFCommand
-from engine.command.PrintCommand import PrintCommand
 from engine.command.ShakeMFCommand import ShakeMFCommand
 from engine.component.TransformComponent import TransformComponent
 from engine.scene.MultiFrameCommandRunner import MultiFrameCommandRunner
 from fieryDragons.Segment import Segment
-# from fieryDragons.TurnManager import TurnManager
-from engine.builder.SceneBuilder import SceneBuilder
 from fieryDragons.builder.scene.WinSceneBuilder import WinSceneBuilder
 
 from fieryDragons.enums.AnimalType import AnimalType
 from fieryDragons.observer.PlayerTurnEndEmitter import PlayerTurnEndEmitter
 from fieryDragons.save.Serializable import Serializable
-from pygame import Color
 
 
 class Player(Serializable):
   ACTIVE_PLAYER: Player = None
-  RESET_SCENE_BUILDER: SceneBuilder = None
 
   def __init__(self, startingSegment: Segment, transformComponent: TransformComponent, playerNumber: int):
     self.position: int = 0
@@ -97,7 +92,7 @@ class Player(Serializable):
         newLocation = len(self.path) - 1
         self._moveToSegment(self.path[newLocation])
 
-        winSceneBuilder = WinSceneBuilder().setResetScene(Player.RESET_SCENE_BUILDER).setWinningPlayer(str(self.__playerNumber))
+        winSceneBuilder = WinSceneBuilder().setWinningPlayer(str(self.__playerNumber))
         csc = ChangeSceneCommand(winSceneBuilder)
         command = DelayExecuteMFCommand(csc, 1000)
         MultiFrameCommandRunner().addCommand(command)

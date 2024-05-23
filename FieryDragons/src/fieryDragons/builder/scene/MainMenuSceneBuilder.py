@@ -22,8 +22,7 @@ class MainMenuSceneBuilder(SceneBuilder):
     # add start button
     bb.setPosition(Vec2(250,100))
     
-    nextSceneBuilder = ChooseSaveSceneBuilder().setResetSceneBuilder(self)
-    
+    nextSceneBuilder = ChooseSaveSceneBuilder()
     bb.setOnClick(ChangeSceneCommand(nextSceneBuilder))
     bb.setText("Start")
     s.addEntity(bb.build())

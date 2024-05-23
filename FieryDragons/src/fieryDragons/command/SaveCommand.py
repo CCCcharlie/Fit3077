@@ -1,18 +1,22 @@
 from engine.command.ChangeSceneCommand import ChangeSceneCommand
 from engine.command.Command import Command
-from engine.builder.SceneBuilder import SceneBuilder
+
 from fieryDragons.save.SaveManager import SaveManager
 
 
 class SaveCommand(Command):
-  def __init__(self, saveIndex: int, gotoScene: SceneBuilder):
+  def __init__(self, saveIndex: int):
     self.__saveIndex = saveIndex
-    self.__gotoScene: SceneBuilder = gotoScene
 
   def run(self):
+    ## late import to prevent circular dependency
+    from fieryDragons.builder.scene.MainMenuSceneBuilder import MainMenuSceneBuilder
+    mainMenuSceneBuilder = MainMenuSceneBuilder()
+
     SaveManager().save(self.__saveIndex)
+    
     ##go back to main menu
-    ChangeSceneCommand(self.__gotoScene).run()
+    ChangeSceneCommand(mainMenuSceneBuilder).run()
 
 
    

@@ -8,9 +8,8 @@ from fieryDragons.save.SaveManager import SaveManager
 
 
 class LoadGameCommand(Command):
-  def __init__(self,resetSceneBuilder: SceneBuilder, saveId: int| None = None):
+  def __init__(self, saveId: int| None = None):
     self.__saveId = saveId
-    self.__resetSceneBuilder = resetSceneBuilder
   
 
   def run(self):
@@ -24,7 +23,7 @@ class LoadGameCommand(Command):
     Random().setSeed(seed)
 
     #create scene
-    gameSceneBuilder = GameSceneBuilder().setResetSceneBuilder(self.__resetSceneBuilder)
+    gameSceneBuilder = GameSceneBuilder()
 
     ChangeSceneCommand(gameSceneBuilder).run()
     

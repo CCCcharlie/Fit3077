@@ -1,7 +1,6 @@
 from __future__ import annotations
 from typing import List
 
-from engine.builder.entity.ButtonBuilder import ButtonBuilder
 from engine.entity.Entity import Entity
 from engine.scene.Scene import Scene
 
@@ -14,7 +13,6 @@ from fieryDragons.builder.entity.PlayerBuilder import PlayerBuilder
 from fieryDragons.builder.entity.SavePopupBuilder import SavePopupBuilder
 from fieryDragons.builder.entity.SegmentBuilder import SegmentBuilder
 from engine.builder.SceneBuilder import SceneBuilder
-from fieryDragons.command.SaveCommand import SaveCommand
 from fieryDragons.enums.AnimalType import AnimalType
 from fieryDragons.save.SaveManager import SaveManager
 from fieryDragons.utils.GridCoordinateIterator import GridCoordinateIterator
@@ -28,11 +26,6 @@ class GameSceneBuilder(SceneBuilder):
         self.__players: int = 2
         ##self.__chit_cards: int  = 24
         self.__segments: int = 24
-        self.__resetSceneBuilder: SceneBuilder | None = None
-
-    def setResetSceneBuilder(self, resetSceneBuilder: SceneBuilder) -> GameSceneBuilder:
-        self.__resetSceneBuilder = resetSceneBuilder
-        return self
 
     def setPlayers(self, players: int) -> GameSceneBuilder:
         self.__players = players
@@ -90,7 +83,7 @@ class GameSceneBuilder(SceneBuilder):
         segmentBuilder.finish()
 
         #place players
-        playerBuilder = PlayerBuilder().setResetSceneBuilder(self.__resetSceneBuilder)
+        playerBuilder = PlayerBuilder()
         
         for cave in caveBuilder.getCaves():
             p = playerBuilder.setStartingSegment(cave).build()
@@ -119,7 +112,7 @@ class GameSceneBuilder(SceneBuilder):
         s.addEntity(apdBuilder.build())
 
         # add save popop
-        savePopupBuilder = SavePopupBuilder().setGotoScene(self.__resetSceneBuilder)
+        savePopupBuilder = SavePopupBuilder()
         es: List[Entity] = savePopupBuilder.build()
 
         for e in es:
