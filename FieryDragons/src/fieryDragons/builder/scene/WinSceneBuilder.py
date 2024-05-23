@@ -4,7 +4,7 @@ from engine.builder.entity.TextBuilder import TextBuilder
 from engine.command.ChangeSceneCommand import ChangeSceneCommand
 from engine.scene.Scene import Scene
 from engine.utils.Vec2 import Vec2
-from fieryDragons.builder.scene.SceneBuilder import SceneBuilder
+from engine.builder.SceneBuilder import SceneBuilder
 
 
 class WinSceneBuilder (SceneBuilder):

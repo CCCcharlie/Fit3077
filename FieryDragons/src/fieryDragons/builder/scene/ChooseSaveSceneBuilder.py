@@ -5,7 +5,7 @@ from engine.builder.entity.ButtonBuilder import ButtonBuilder
 from engine.scene.Scene import Scene
 from engine.scene.World import World
 from engine.utils.Vec2 import Vec2
-from fieryDragons.builder.scene.SceneBuilder import SceneBuilder
+from engine.builder.SceneBuilder import SceneBuilder
 from fieryDragons.command.LoadGameCommand import LoadGameCommand
 from fieryDragons.save.FileDataHandler import FileDataHandler
 

@@ -7,7 +7,7 @@ from engine.scene.Scene import Scene
 from engine.utils.Vec2 import Vec2
 from fieryDragons.Random import Random
 from fieryDragons.builder.scene.ChooseSaveSceneBuilder import ChooseSaveSceneBuilder
-from fieryDragons.builder.scene.SceneBuilder import SceneBuilder
+from engine.builder.SceneBuilder import SceneBuilder
 
 
 class MainMenuSceneBuilder(SceneBuilder):

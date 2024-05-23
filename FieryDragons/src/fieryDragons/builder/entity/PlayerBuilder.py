@@ -6,7 +6,7 @@ from engine.entity.Entity import Entity
 from engine.exceptions.IncompleteBuilderError import IncompleteBuilderError
 from fieryDragons.Player import Player
 from fieryDragons.Segment import Segment
-from fieryDragons.builder.scene.SceneBuilder import SceneBuilder
+from engine.builder.SceneBuilder import SceneBuilder
 from fieryDragons.save.SaveManager import SaveManager
 from pygame import Color
 

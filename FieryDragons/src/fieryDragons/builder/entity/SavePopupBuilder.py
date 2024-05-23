@@ -8,7 +8,7 @@ from engine.component.renderable.RenderableComponent import RenderableComponent
 from engine.component.renderable.TextComponent import TextComponent
 from engine.entity.Entity import Entity
 from engine.utils.Vec2 import Vec2
-from fieryDragons.builder.scene.SceneBuilder import SceneBuilder
+from engine.builder.SceneBuilder import SceneBuilder
 from fieryDragons.command.SaveCommand import SaveCommand
 from fieryDragons.command.TogglePopupCommand import ShowSavePopup
 from pygame import Color

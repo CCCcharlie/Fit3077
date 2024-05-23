@@ -13,7 +13,7 @@ from fieryDragons.builder.entity.ChitCardBuilder import ChitCardBuilder
 from fieryDragons.builder.entity.PlayerBuilder import PlayerBuilder
 from fieryDragons.builder.entity.SavePopupBuilder import SavePopupBuilder
 from fieryDragons.builder.entity.SegmentBuilder import SegmentBuilder
-from fieryDragons.builder.scene.SceneBuilder import SceneBuilder
+from engine.builder.SceneBuilder import SceneBuilder
 from fieryDragons.command.SaveCommand import SaveCommand
 from fieryDragons.enums.AnimalType import AnimalType
 from fieryDragons.save.SaveManager import SaveManager

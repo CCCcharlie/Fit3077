@@ -11,7 +11,7 @@ from engine.component.TransformComponent import TransformComponent
 from engine.scene.MultiFrameCommandRunner import MultiFrameCommandRunner
 from fieryDragons.Segment import Segment
 # from fieryDragons.TurnManager import TurnManager
-from fieryDragons.builder.scene.SceneBuilder import SceneBuilder
+from engine.builder.SceneBuilder import SceneBuilder
 from fieryDragons.builder.scene.WinSceneBuilder import WinSceneBuilder
 
 from fieryDragons.enums.AnimalType import AnimalType
