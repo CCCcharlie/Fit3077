@@ -1,6 +1,7 @@
 from __future__ import annotations
 from typing import List
 
+from engine.builder.entity.ButtonBuilder import ButtonBuilder
 from engine.entity.Entity import Entity
 from engine.scene.Scene import Scene
 
@@ -90,8 +91,6 @@ class GameSceneBuilder(SceneBuilder):
             s.addEntity(p)
         playerBuilder.finish()
 
-
-
         # Place chit cards
         gridIterator = GridCoordinateIterator(
             4,
@@ -117,6 +116,19 @@ class GameSceneBuilder(SceneBuilder):
 
         for e in es:
             s.addEntity(e)
+
+        # add restartButton
+        # late import to prevent circular dep
+        from fieryDragons.command.LoadGameCommand import LoadGameCommand
+        restartButtonBuilder = (
+            ButtonBuilder()
+            .setText("Restart")
+            .setPosition(Vec2(1500, 300))
+            .setRectDetails(200,50)
+            .setOnClick(LoadGameCommand())
+        )
+
+        s.addEntity(restartButtonBuilder.build())
 
 
         return s
