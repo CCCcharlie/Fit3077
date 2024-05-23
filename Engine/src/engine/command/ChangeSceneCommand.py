@@ -1,11 +1,23 @@
+from engine.builder.SceneBuilder import SceneBuilder
 from engine.command.Command import Command
-from engine.scene.Scene import Scene
 from engine.scene.World import World
 
 
 class ChangeSceneCommand(Command):
-  def __init__(self, newScene: Scene):
-    self.__newScene= newScene
+  """
+  Command to change the current active scene
+  """
+  def __init__(self, newSceneBuilder: SceneBuilder):
+    """
+    Initialise the change scene command 
+
+    Args:
+      newSceneBuilder (SceneBuilder): the builder for the scene to change to 
+    """
+    self.__newSceneBuilder: SceneBuilder = newSceneBuilder
 
   def run(self):
-    World().setActiveScene(self.__newScene)
+    """
+    Run the change scene command
+    """
+    World().setActiveScene(self.__newSceneBuilder.build())

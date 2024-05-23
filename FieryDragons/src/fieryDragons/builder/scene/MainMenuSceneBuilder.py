@@ -7,7 +7,7 @@ from engine.scene.Scene import Scene
 from engine.utils.Vec2 import Vec2
 from fieryDragons.Random import Random
 from fieryDragons.builder.scene.ChooseSaveSceneBuilder import ChooseSaveSceneBuilder
-from fieryDragons.builder.scene.SceneBuilder import SceneBuilder
+from engine.builder.SceneBuilder import SceneBuilder
 
 
 class MainMenuSceneBuilder(SceneBuilder):
@@ -22,9 +22,8 @@ class MainMenuSceneBuilder(SceneBuilder):
     # add start button
     bb.setPosition(Vec2(250,100))
     
-    nextScene = ChooseSaveSceneBuilder().setResetSceneBuilder(self).build()
-    
-    bb.setOnClick(ChangeSceneCommand(nextScene))
+    nextSceneBuilder = ChooseSaveSceneBuilder()
+    bb.setOnClick(ChangeSceneCommand(nextSceneBuilder))
     bb.setText("Start")
     s.addEntity(bb.build())
 
