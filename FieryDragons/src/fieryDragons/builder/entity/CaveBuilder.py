@@ -1,4 +1,6 @@
 from __future__ import annotations
+from engine.command.DelayExecuteMFMFCommand import DelayExecuteMFMFCommand
+from engine.command.LinearMoveMFCommand import LinearMoveMFCommand
 from engine.component.TransformComponent import TransformComponent
 from engine.component.renderable.CircleComponent import CircleComponent
 from engine.component.renderable.SpriteComponent import SpriteComponent
@@ -6,6 +8,8 @@ from engine.component.renderable.TrapezoidComponent import TrapezoidComponent
 from engine.entity.Entity import Entity
 from engine.exceptions.IncompleteBuilderError import IncompleteBuilderError
 
+from engine.scene.MultiFrameCommandRunner import MultiFrameCommandRunner
+from engine.scene.World import World
 from engine.utils.Vec2 import Vec2
 from typing import List
 from fieryDragons.Segment import Segment
@@ -22,6 +26,7 @@ class CaveBuilder:
         self.__next: Segment | None = None
         self.__caves: List[Segment] = []
         self.__segmentSize: int = 0
+        self.__index = 0
 
     def setSegmentSize(self, segSize: int) -> CaveBuilder:
         self.__segmentSize = segSize
@@ -55,6 +60,7 @@ class CaveBuilder:
         return self.__caves
         
     def build(self) -> Entity:
+        self.__index += 1
         # Error handling
         if self.__transform is None:
             raise IncompleteBuilderError(self.__class__.__name__, "Transform Component")
@@ -89,5 +95,38 @@ class CaveBuilder:
         e.add_renderable(sprite)
 
         self.__caves.append(segment)
+
+
+        # move segments to position in a fanning motion
+        start = TransformComponent()
+        start.position = Vec2(World().SCREEN_WIDTH/2, World().SCREEN_HEIGHT/2)
+        imageDelayMove = DelayExecuteMFMFCommand(
+        LinearMoveMFCommand(
+            start,
+            self.__transform.clone(),
+            self.__transform, 
+            500
+        ),
+        self.__index * 100 + 3000
+        )
+        MultiFrameCommandRunner().addCommand(imageDelayMove)
+        imageDelayMove.run()
+        self.__transform.position = Vec2(-100,-100)
+
+        # move segments to position in a fanning motion
+        start = TransformComponent()
+        start.position = Vec2(World().SCREEN_WIDTH/2, World().SCREEN_HEIGHT/2)
+        imageDelayMove = DelayExecuteMFMFCommand(
+        LinearMoveMFCommand(
+            start,
+            transform.clone(),
+            transform, 
+            500
+        ),
+        self.__index * 100 + 3000
+        )
+        MultiFrameCommandRunner().addCommand(imageDelayMove)
+        imageDelayMove.run()
+        transform.position = Vec2(-100,-100)
 
         return e

@@ -1,9 +1,14 @@
 from __future__ import annotations
 
+from engine.command.DelayExecuteMFMFCommand import DelayExecuteMFMFCommand
+from engine.command.LinearMoveMFCommand import LinearMoveMFCommand
 from engine.component.TransformComponent import TransformComponent
 from engine.component.renderable.RectComponent import RectComponent
 from engine.entity.Entity import Entity
 from engine.exceptions.IncompleteBuilderError import IncompleteBuilderError
+from engine.scene.MultiFrameCommandRunner import MultiFrameCommandRunner
+from engine.scene.World import World
+from engine.utils.Vec2 import Vec2
 from fieryDragons.Player import Player
 from fieryDragons.Segment import Segment
 from engine.builder.SceneBuilder import SceneBuilder
@@ -47,7 +52,27 @@ class PlayerBuilder:
     self.__startingSegmentChanged = False
 
     t = TransformComponent()
+    t.position = Vec2(-100,-100)
     p = Player(self.__startingSegment, t, self.__playerNumber)
+
+    #slowly move player to segment from midddle
+    start = TransformComponent()
+    start.position = Vec2(World().SCREEN_WIDTH/2, World().SCREEN_HEIGHT/2)
+    playerDelayMove = DelayExecuteMFMFCommand(
+      LinearMoveMFCommand(
+        start,
+        self.__startingSegment.getSnapTransform(),
+        t, 
+        500
+      ),
+      4500
+    )
+    MultiFrameCommandRunner().addCommand(playerDelayMove)
+    playerDelayMove.run()
+
+
+
+
     SaveManager().register(p)
     
     if (self.__playerNumber == 0):

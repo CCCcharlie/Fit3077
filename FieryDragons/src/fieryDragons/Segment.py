@@ -14,6 +14,8 @@ class Segment():
     self.__next: 'Segment' = None
     self.__cave: 'Segment' = None
 
+    self.__snapTransform = transformComponent.clone()
+
   def setNext(self, segment: 'Segment'):
     self.__next = segment
 
@@ -30,7 +32,7 @@ class Segment():
     return self.__animalType
   
   def getSnapTransform(self) -> TransformComponent:
-    return self.__transformComponent.clone()
+    return self.__snapTransform.clone()
   
   def generatePath(self, start: 'Segment') -> List['Segment']:
     segmentList: List[Segment] = []

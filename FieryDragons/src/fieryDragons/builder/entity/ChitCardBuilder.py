@@ -1,5 +1,7 @@
 from __future__ import annotations
 from typing import List, Tuple
+from engine.command.DelayExecuteMFMFCommand import DelayExecuteMFMFCommand
+from engine.command.LinearMoveMFCommand import LinearMoveMFCommand
 from engine.command.PrintCommand import PrintCommand
 from engine.command.SetColorCommand import SetColorCommand
 from engine.component.TransformComponent import TransformComponent
@@ -13,6 +15,8 @@ from engine.component.renderable.TextComponent import TextComponent
 from engine.entity.Entity import Entity
 from engine.exceptions.IncompleteBuilderError import IncompleteBuilderError
 from engine.command.Command import Command
+from engine.scene.MultiFrameCommandRunner import MultiFrameCommandRunner
+from engine.scene.World import World
 from engine.utils.Vec2 import Vec2
 from fieryDragons.Random import Random
 from fieryDragons.command.ChitCardClickedCommand import ChitCardClickedCommand
@@ -34,6 +38,7 @@ class ChitCardBuilder:
     Args:
       radius (int): The radius of the chit card 
     """
+    self.__index = 0
     self.__position: Vec2 = Vec2(0,0)
     self.__radius: int = radius
 
@@ -71,6 +76,7 @@ class ChitCardBuilder:
 
 
   def build(self) -> Entity:
+    self.__index += 1
     if self.__positionChanged is False:
       raise IncompleteBuilderError("ChitCard", "Position")
     
@@ -82,7 +88,7 @@ class ChitCardBuilder:
     transformComponent: TransformComponent = TransformComponent()
     transformComponent.position = self.__position
 
-    hitbox: HitboxComponent = CircleHitboxComponent(transformComponent, self.__radius, True)
+    hitbox: HitboxComponent = CircleHitboxComponent(transformComponent, self.__radius, False)
     clickable: ClickableComponent = ClickableComponent(hitbox)
 
     front_circle = CircleComponent(transformComponent, self.__radius, self.__frontColor)
@@ -117,6 +123,26 @@ class ChitCardBuilder:
     e.add_updateable(clickable)
     e.add_updateable(button)
     e.add_updateable(ccComponent)
+
+
+
+    # move segments to position in a fanning motion
+    start = TransformComponent()
+    start.scale = Vec2(10,10)
+    start.position = transformComponent.position
+    # start.position = Vec2(World().SCREEN_WIDTH/2, World().SCREEN_HEIGHT/2)
+    imageDelayMove = DelayExecuteMFMFCommand(
+    LinearMoveMFCommand(
+        start,
+        transformComponent.clone(),
+        transformComponent, 
+        300
+    ),
+    self.__index * 250 + 5000
+    )
+    MultiFrameCommandRunner().addCommand(imageDelayMove)
+    imageDelayMove.run()
+    transformComponent.position = Vec2(-100,-100)
 
     return e
 

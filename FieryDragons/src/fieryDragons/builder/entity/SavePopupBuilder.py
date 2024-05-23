@@ -8,7 +8,6 @@ from engine.component.renderable.RenderableComponent import RenderableComponent
 from engine.component.renderable.TextComponent import TextComponent
 from engine.entity.Entity import Entity
 from engine.utils.Vec2 import Vec2
-from engine.builder.SceneBuilder import SceneBuilder
 from fieryDragons.command.SaveCommand import SaveCommand
 from fieryDragons.command.TogglePopupCommand import ShowSavePopup
 from pygame import Color
@@ -21,7 +20,7 @@ class SavePopupBuilder:
     popup = Entity()
     trans = TransformComponent()
     trans.position = Vec2(100,350)
-    popup_rect = RectComponent(trans, 300, 200, Color(0,0,0))
+    popup_rect = RectComponent(trans, 300, 200, Color(52,54,69))
     textPos = trans.clone()
     textPos.position = textPos.position + Vec2(10,10)
     popup_text = TextComponent(textPos, "Which save?")
@@ -72,7 +71,8 @@ class SavePopupBuilder:
       ButtonBuilder()
       .setText("Close")
       .setOnClick(closePopup)
-      .setPosition(Vec2(250, 500))
+      .setPosition(Vec2(200, 500))
+      .setRectDetails(200,50)
     )
     closePopupButton = closePopupButtonBuilder.build()
     
@@ -85,6 +85,7 @@ class SavePopupBuilder:
       .setText("Save")
       .setOnClick(showPopup)
       .setPosition(Vec2(100,300))
+      .setRectDetails(200,50)
     )
     openPopupE = openPopupBuilder.build()
 

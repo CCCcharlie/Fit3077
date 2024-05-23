@@ -29,7 +29,7 @@ class Player(Serializable):
     super().__init__()
 
     # snap to segment
-    self._moveToSegment(startingSegment)
+    #self._moveToSegment(startingSegment)
 
   def getPlayerNumber(self)-> int:
     return self.__playerNumber
