@@ -11,10 +11,12 @@ class Random(metaclass = SingletonMeta):
   def generateSeed(self):
     self.__seed = random.randint(0,9999999)
     random.seed(self.__seed)
+    self.__index = -1
   
   def setSeed(self, seed: int):
     self.__seed = seed
     random.seed(self.__seed)
+    self.__index = -1
 
   def getSeed(self) -> int:
     return self.__seed

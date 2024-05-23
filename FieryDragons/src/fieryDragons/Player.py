@@ -135,8 +135,11 @@ class Player(Serializable):
   
   def deserialise(self, data: Dict) -> None:
     location = data["location"]
+    self._moveToSegment(self.path[location])
+
     active = data["active"]
-    print(f"Location is {location}, active is {active}")
+    if active:
+      Player.ACTIVE_PLAYER = self
     return
 
 
