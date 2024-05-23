@@ -117,7 +117,7 @@ class GameSceneBuilder(SceneBuilder):
         s.addEntity(apdBuilder.build())
 
         # add save popop
-        savePopupBuilder = SavePopupBuilder()
+        savePopupBuilder = SavePopupBuilder().setGotoScene(self.__resetSceneBuilder)
         es: List[Entity] = savePopupBuilder.build()
 
         for e in es:

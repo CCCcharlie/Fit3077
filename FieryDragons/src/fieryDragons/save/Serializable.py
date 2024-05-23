@@ -7,7 +7,7 @@ class Serializable():
 
   """
   def __init__(self):
-     self.__uuid: str = str(random.randint(0,1000))
+     self.__uuid: str = str(random.randint(0,9999999))
 
   def getUUID(self) -> str:
      return self.__uuid

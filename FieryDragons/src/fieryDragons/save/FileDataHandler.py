@@ -12,7 +12,6 @@ class FileDataHandler:
     filename = self.__getFilename(saveId)
 
     with open(filename, 'w') as file:
-      print("saving")
       json.dump(jsonData, file, indent=4)
     
 

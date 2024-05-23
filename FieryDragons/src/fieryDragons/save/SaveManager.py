@@ -13,6 +13,7 @@ class SaveManager(metaclass=SingletonMeta):
   def register(self, s: Serializable):
     uuid: str = s.getUUID()
     if uuid in self.__serializables:
+      pass
       raise ValueError(f"Cannot register. Serializable with uuid {uuid} already is registered")
     self.__serializables[uuid] = s
 
