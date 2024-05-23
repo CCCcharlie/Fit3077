@@ -34,8 +34,17 @@ class SaveManager(metaclass=SingletonMeta):
     pass
 
   def load(self, saveId: int):
-    pass
-    
+    data = self.__fileDataHandler.load(saveId)
+    data.pop("seed")
+
+    for uuid, s in self.__serializables.items():
+      instanceData: Dict = data.get(uuid)
+      s.deserialise(instanceData)
+
+  def getSeed(self, saveId: int) -> int:
+    data = self.__fileDataHandler.load(saveId)
+    return data.get("seed")
+
   def onCleanup(self):
     self.__serializables = {}
 
