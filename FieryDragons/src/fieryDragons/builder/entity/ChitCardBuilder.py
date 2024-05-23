@@ -20,6 +20,7 @@ from fieryDragons.ChitCard import ChitCard
 
 
 from fieryDragons.enums.AnimalType import AnimalType
+from fieryDragons.save.SaveManager import SaveManager
 from pygame import Color
 
 class ChitCardBuilder:
@@ -95,7 +96,8 @@ class ChitCardBuilder:
     back_circle = CircleComponent(transformComponent, self.__radius, self.__backColor)
 
     ccComponent = ChitCard([front_circle, front_image], back_circle, animalType, amount)
-    
+    SaveManager().register(ccComponent)
+
     ccClickedCommand: Command = ChitCardClickedCommand(ccComponent)
     onDefault: Command = SetColorCommand(Color(0,0,0), back_circle)
     onHover: Command = SetColorCommand(Color(51,51,49), back_circle)

@@ -71,6 +71,7 @@ class ChitCard(Subscriber, Updateable, Serializable):
     
     
     def deserialise(self, data: Dict) -> None:
-        print(f"State is {data["state"]}")
+        state = data["state"]
+        print(f"State is {state}")
         return 
 

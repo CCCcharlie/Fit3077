@@ -3,7 +3,7 @@ import json
 
 class FileDataHandler:
   def __init__(self):
-    self.__base_filename = "/save/"
+    self.__base_filename = ""#"/save/"
 
   def __getFilename(self, saveId: int) -> str:
     return f"{self.__base_filename}save_{saveId}.json"
@@ -12,6 +12,7 @@ class FileDataHandler:
     filename = self.__getFilename(saveId)
 
     with open(filename, 'w') as file:
+      print("saving")
       json.dump(jsonData, file, indent=4)
     
 

@@ -1,6 +1,7 @@
 from __future__ import annotations
 from typing import List
 
+from engine.builder.entity.ButtonBuilder import ButtonBuilder
 from engine.scene.Scene import Scene
 
 from engine.scene.World import World
@@ -11,6 +12,7 @@ from fieryDragons.builder.entity.ChitCardBuilder import ChitCardBuilder
 from fieryDragons.builder.entity.PlayerBuilder import PlayerBuilder
 from fieryDragons.builder.entity.SegmentBuilder import SegmentBuilder
 from fieryDragons.builder.scene.SceneBuilder import SceneBuilder
+from fieryDragons.command.SaveCommand import SaveCommand
 from fieryDragons.enums.AnimalType import AnimalType
 from fieryDragons.utils.GridCoordinateIterator import GridCoordinateIterator
 from ...utils.CircleCoordinateIterator import CircleCoordinateIterator
@@ -111,5 +113,10 @@ class GameSceneBuilder(SceneBuilder):
         #place active player render
         apdBuilder = ActivePlayerDisplayBuilder().setPlayerColors(PlayerBuilder.playerColors)
         s.addEntity(apdBuilder.build())
+
+        #add save button 
+        saveCommand = SaveCommand()
+        saveButtonBuilder = ButtonBuilder().setText("Save").setOnClick(saveCommand).setPosition(Vec2(100,300))
+        s.addEntity(saveButtonBuilder.build())
 
         return s
