@@ -1,12 +1,16 @@
 from __future__ import annotations
 
 from typing import List, Tuple
+from engine.command.DelayExecuteMFMFCommand import DelayExecuteMFMFCommand
+from engine.command.LinearMoveMFCommand import LinearMoveMFCommand
 from engine.component.TransformComponent import TransformComponent
 from engine.component.renderable.SpriteComponent import SpriteComponent
 from engine.component.renderable.TrapezoidComponent import TrapezoidComponent
 from engine.entity.Entity import Entity
 from engine.exceptions.IncompleteBuilderError import IncompleteBuilderError
 
+from engine.scene.MultiFrameCommandRunner import MultiFrameCommandRunner
+from engine.scene.World import World
 from engine.utils.Vec2 import Vec2
 from fieryDragons.Random import Random
 from fieryDragons.Segment import Segment
@@ -24,6 +28,8 @@ class SegmentBuilder:
 
         self.__previous: Segment = None
         self.__first: Segment = None
+
+        self.__index = 0
 
         ## define volcano cards
         volcanoCardSpecifications: List[Tuple[AnimalType, AnimalType, AnimalType]] = [
@@ -47,7 +53,7 @@ class SegmentBuilder:
 
         
     def setTransform(self, transform: TransformComponent) -> SegmentBuilder:
-        self.__transform = transform
+        self.__transform = transform.clone()
         self.__transformChanged = True
         return self
 
@@ -67,6 +73,7 @@ class SegmentBuilder:
         return self.__previous
         
     def build(self) -> Entity:
+        self.__index += 1
         # Error handling
         if self.__transformChanged is False:
             return IncompleteBuilderError(self.__class__.__name__, "Transform Component Unchanged")
@@ -106,4 +113,42 @@ class SegmentBuilder:
         e.add_renderable(trap)
         e.add_renderable(sprite)
 
+
+        # move segments to position in a fanning motion
+        start = TransformComponent()
+        start.position = Vec2(World().SCREEN_WIDTH/2, World().SCREEN_HEIGHT/2)
+        segmentDelayMove = DelayExecuteMFMFCommand(
+        LinearMoveMFCommand(
+            start,
+            self.__transform.clone(),
+            self.__transform, 
+            250
+        ),
+        self.__index * 100
+        )
+        MultiFrameCommandRunner().addCommand(segmentDelayMove)
+        segmentDelayMove.run()
+
+        self.__transform.position = Vec2(-100,-100)
+
+        # this is a hack as the images transform should be an offset as it is a child component
+        # of the segment, but this has not been implemented in the engine
+
+        # move segments to position in a fanning motion
+        start = TransformComponent()
+        start.position = Vec2(World().SCREEN_WIDTH/2, World().SCREEN_HEIGHT/2)
+        imageDelayMove = DelayExecuteMFMFCommand(
+        LinearMoveMFCommand(
+            start,
+            transform.clone(),
+            transform, 
+            250
+        ),
+        self.__index * 100
+        )
+        MultiFrameCommandRunner().addCommand(imageDelayMove)
+        imageDelayMove.run()
+
+        transform.position = Vec2(-100,-100)
+        
         return e
