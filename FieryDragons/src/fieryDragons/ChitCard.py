@@ -26,7 +26,9 @@ class ChitCard(Subscriber, Updateable, Serializable):
         self.__timer:float = -1
         self.__debug:bool = False
 
+        print("hiding front")
         for renderable in self.__front:
+            
             renderable.hide()
 
         super().__init__()
@@ -72,6 +74,8 @@ class ChitCard(Subscriber, Updateable, Serializable):
     def deserialise(self, data: Dict) -> None:
         state = data["state"]
         self.__state = State(state)
+
+        print("State is " + str(self.__state))
 
         if self.__state == State.VISIBLE:
             for renderable in self.__front:
