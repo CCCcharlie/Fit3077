@@ -13,21 +13,23 @@ class LoadGameCommand(Command):
   
 
   def run(self):
-    seed: int = 0
+
+    
     #load game data 
     if self.__saveId is None:
-      seed = random.randint(1,999999)
+      Random().generateSeed()
     else:
-      SaveManager().getSeed(self.__saveId)
+      Random().setSeed(SaveManager().getSeed(self.__saveId))
 
-    Random().setSeed(seed)
 
     #create scene
     gameSceneBuilder = GameSceneBuilder()
-
     ChangeSceneCommand(gameSceneBuilder).run()
-    
-    # load in data
+
+      # load in data
     if self.__saveId is not None:
       SaveManager().load(self.__saveId)
+
+
+   
 

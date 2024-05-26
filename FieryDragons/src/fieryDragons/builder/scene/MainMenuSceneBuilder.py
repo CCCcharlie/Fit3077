@@ -14,8 +14,6 @@ from engine.builder.SceneBuilder import SceneBuilder
 class MainMenuSceneBuilder(SceneBuilder):
   def build(self) -> Scene:
 
-    Random().setSeed(999)
-    
     s = Scene() 
 
 

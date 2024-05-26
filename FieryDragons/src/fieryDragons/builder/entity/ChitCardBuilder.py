@@ -126,7 +126,7 @@ class ChitCardBuilder:
 
 
 
-    # move segments to position in a fanning motion
+    # move chit cards by 'slamming them down'
     start = TransformComponent()
     start.scale = Vec2(10,10)
     start.position = transformComponent.position
@@ -138,11 +138,30 @@ class ChitCardBuilder:
         transformComponent, 
         300
     ),
-    self.__index * 250 + 5000
+    self.__index * 250 + 5500
     )
     MultiFrameCommandRunner().addCommand(imageDelayMove)
     imageDelayMove.run()
     transformComponent.position = Vec2(-100,-100)
+
+
+    # move animals by slamming them down
+    start = TransformComponent()
+    start.scale = Vec2(10,10)
+    start.position = transform.position
+    # start.position = Vec2(World().SCREEN_WIDTH/2, World().SCREEN_HEIGHT/2)
+    imageDelayMove = DelayExecuteMFMFCommand(
+    LinearMoveMFCommand(
+        start,
+        transform.clone(),
+        transform, 
+        300
+    ),
+    self.__index * 250 + 5500
+    )
+    MultiFrameCommandRunner().addCommand(imageDelayMove)
+    imageDelayMove.run()
+    transform.position = Vec2(-100,-100)
 
     return e
 

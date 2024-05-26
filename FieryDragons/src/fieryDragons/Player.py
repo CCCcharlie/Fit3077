@@ -4,10 +4,13 @@ from __future__ import annotations
 from typing import Dict, List
 from engine.command.ChangeSceneCommand import ChangeSceneCommand
 from engine.command.DelayExecuteMFCommand import DelayExecuteMFCommand
+from engine.command.DelayExecuteMFMFCommand import DelayExecuteMFMFCommand
 from engine.command.LinearMoveMFCommand import LinearMoveMFCommand
 from engine.command.ShakeMFCommand import ShakeMFCommand
 from engine.component.TransformComponent import TransformComponent
 from engine.scene.MultiFrameCommandRunner import MultiFrameCommandRunner
+from engine.scene.World import World
+from engine.utils.Vec2 import Vec2
 from fieryDragons.Segment import Segment
 from fieryDragons.builder.scene.WinSceneBuilder import WinSceneBuilder
 
@@ -130,7 +133,20 @@ class Player(Serializable):
   
   def deserialise(self, data: Dict) -> None:
     location = data["location"]
-    self._moveToSegment(self.path[location])
+    self.position = int(location)
+
+    #slowly move player from cave to current position
+    playerDelayMove = DelayExecuteMFMFCommand(
+      LinearMoveMFCommand(
+        self.path[0].getSnapTransform(),
+        self.getPosition().getSnapTransform(),
+        self.transformComponent,
+        500
+      ),
+      5000
+    )
+    MultiFrameCommandRunner().addCommand(playerDelayMove)
+    playerDelayMove.run()
 
     active = data["active"]
     if active:
