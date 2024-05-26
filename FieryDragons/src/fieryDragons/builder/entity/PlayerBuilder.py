@@ -55,7 +55,7 @@ class PlayerBuilder:
     t.position = Vec2(-100,-100)
     p = Player(self.__startingSegment, t, self.__playerNumber)
 
-    #slowly move player to segment from midddle
+    #slowly move player to segment from middle
     start = TransformComponent()
     start.position = Vec2(World().SCREEN_WIDTH/2, World().SCREEN_HEIGHT/2)
     playerDelayMove = DelayExecuteMFMFCommand(

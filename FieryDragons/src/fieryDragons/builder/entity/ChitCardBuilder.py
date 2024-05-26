@@ -138,7 +138,7 @@ class ChitCardBuilder:
         transformComponent, 
         300
     ),
-    self.__index * 250 + 5000
+    self.__index * 250 + 5500
     )
     MultiFrameCommandRunner().addCommand(imageDelayMove)
     imageDelayMove.run()
