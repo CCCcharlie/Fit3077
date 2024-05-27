@@ -1,45 +1,40 @@
+from abc import ABC, abstractmethod
 from typing import Dict, List
-import json
 import os
 
-class FileDataHandler:
+class FileDataHandler(ABC):
   def __init__(self):
-    self.__base_filename = "./saves/"
-    if not os.path.exists(self.__base_filename):
-      os.makedirs(self.__base_filename)
+    self._base_filename: str = "./saves/"
+    if not os.path.exists(self._base_filename):
+      os.makedirs(self._base_filename)
 
-  def __getFilename(self, saveId: int) -> str:
-    return f"{self.__base_filename}save_{saveId}.json"
-  
-  def save(self, saveId: int, jsonData: Dict) -> None:
-    filename = self.__getFilename(saveId)
+  @abstractmethod
+  def save(self, saveId: int, data: Dict) -> None:
+    """
+    Save the current dictionary as save id
 
-    with open(filename, 'w') as file:
-      json.dump(jsonData, file, indent=4)
+    Args:
+      saveId (int): the id of the save
+      data (Dict): The data to save
     
+    """
+    raise NotImplementedError()
+    
+  @abstractmethod
   def load(self, saveId: int) -> Dict:
-    filename = self.__getFilename(saveId)
-
-    try: 
-      with open(filename, 'r') as file:
-        data = json.load(file)
-      return data
-    except FileNotFoundError:
-      raise ValueError(f"No data found for saveId {saveId}")
+    """
+    Load the save file into a dict
     
-  def getAllSaves(self,) -> List[int]:
+    Args:
+      saveId (int): the dave id to load
     """
-    Finds the index of avaliable save files
+    raise NotImplementedError()
+
+  @abstractmethod
+  def getAllSaves(self) -> List[int]:
     """
-    save_files = []
-    for filename in os.listdir(self.__base_filename):
-        if filename.startswith("save_") and filename.endswith(".json"):
-            try:
-                save_id = int(filename[5:-5])
-                save_files.append(save_id)
-            except ValueError:
-                # Skip files that don't have a proper integer saveId
-                continue
-    return sorted(save_files)
+    Finds the index of available save files
+    """
+    raise NotImplementedError()
 
     

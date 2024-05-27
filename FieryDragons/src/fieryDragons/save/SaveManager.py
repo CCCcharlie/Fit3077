@@ -3,13 +3,14 @@ from typing import Dict, List
 from engine.utils import SingletonMeta
 from fieryDragons.Random import Random
 from fieryDragons.save.FileDataHandler import FileDataHandler
+from fieryDragons.save.JsonDataHandler import JsonDataHandler
 from fieryDragons.save.Serializable import Serializable
 
 
 class SaveManager(metaclass=SingletonMeta):
   def __init__(self):
     self.__serializables: Dict[str, Serializable] = {}
-    self.__fileDataHandler: FileDataHandler = FileDataHandler()
+    self.__fileDataHandler: FileDataHandler = JsonDataHandler()
 
   def register(self, s: Serializable):
     uuid: str = s.getUUID()
@@ -47,5 +48,12 @@ class SaveManager(metaclass=SingletonMeta):
 
   def onCleanup(self):
     self.__serializables = {}
+
+  def getAllSaves(self) -> List[int]:
+    """
+    Finds the index of available save files 
+    """
+    return self.__fileDataHandler.getAllSaves()
+
 
   
