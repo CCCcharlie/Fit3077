@@ -12,13 +12,11 @@ class Random(metaclass = SingletonMeta):
     self.__seed = random.randint(0,9999999)
     random.seed(self.__seed)
     self.__index = -1
-    print("generate seed")
   
   def setSeed(self, seed: int):
     self.__seed = seed
     random.seed(self.__seed)
     self.__index = -1
-    print("set seed"  +str(seed))
 
   def getSeed(self) -> int:
     return self.__seed
@@ -30,7 +28,6 @@ class Random(metaclass = SingletonMeta):
     """
     Shuffle in place and return none
     """
-    print("shuffling")
     random.shuffle(list)
 
   def choice(self, list: List[Any]) -> Any:

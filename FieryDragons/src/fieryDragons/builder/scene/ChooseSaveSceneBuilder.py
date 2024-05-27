@@ -7,7 +7,7 @@ from engine.scene.World import World
 from engine.utils.Vec2 import Vec2
 from engine.builder.SceneBuilder import SceneBuilder
 from fieryDragons.command.LoadGameCommand import LoadGameCommand
-from fieryDragons.save.FileDataHandler import FileDataHandler
+from fieryDragons.save.SaveManager import SaveManager
 
 
 class ChooseSaveSceneBuilder(SceneBuilder): 
@@ -27,7 +27,7 @@ class ChooseSaveSceneBuilder(SceneBuilder):
     bb.setOnClick(newGame)
     s.addEntity(bb.build())
 
-    saves: List[int] = FileDataHandler().getAllSaves()
+    saves: List[int] = SaveManager().getAllSaves()
     for save in saves:
       loadGame = LoadGameCommand(save)
 
