@@ -1,6 +1,7 @@
 from enum import Enum
 from typing import Dict, List
 
+from engine.command.Command import Command
 from engine.component.renderable.RenderableComponent import RenderableComponent
 from engine.entity.Updateable import Updateable
 from engine.observer.subscriber import Subscriber
@@ -14,12 +15,16 @@ class State(Enum):
     VISIBLE = 2
 
 class ChitCard(Subscriber, Updateable, Serializable):
-    def __init__(self, front: List[RenderableComponent], back: RenderableComponent, animalType: AnimalType, amount: int):
+    def __init__(self, front: List[RenderableComponent], back: RenderableComponent, command: Command):
+        """
+        
+        Args:
+            command (Command): The command to run when this chit card is flipped
+        """
         self.__front: List[RenderableComponent] = front
         self.__back: RenderableComponent = back
         self.__state: State = State.HIDDEN
-        self.__animalType: AnimalType = animalType
-        self.__amount: int = amount
+        self.__command: Command = command
 
         PlayerTurnEndEmitter().subscribe(self)
 
@@ -45,7 +50,8 @@ class ChitCard(Subscriber, Updateable, Serializable):
   
             if self.__debug is False:
                 # move player
-                MoveActivePlayerCommand(self.__animalType, self.__amount).run()
+                self.__command.run()
+                
 
     def notify(self):
         if self.__state == State.VISIBLE:

@@ -23,6 +23,8 @@ from fieryDragons.command.ChitCardClickedCommand import ChitCardClickedCommand
 from fieryDragons.ChitCard import ChitCard
 
 
+from fieryDragons.command.MoveActivePlayerCommand import MoveActivePlayerCommand
+from fieryDragons.command.ShuffleCommand import ShuffleCommand
 from fieryDragons.enums.AnimalType import AnimalType
 from fieryDragons.save.SaveManager import SaveManager
 from pygame import Color
@@ -63,10 +65,14 @@ class ChitCardBuilder:
       (1, AnimalType.PIRATE_DRAGON, "chitcard/1PirateDragon.png"),
       (1, AnimalType.PIRATE_DRAGON, "chitcard/1PirateDragon.png"),
       (2, AnimalType.PIRATE_DRAGON, "chitcard/2PirateDragon.png"),
-      (2, AnimalType.PIRATE_DRAGON, "chitcard/2PirateDragon.png")
+      (0, AnimalType.PIRATE_DRAGON, "chitcard/2PirateDragon.png")
+      #(2, AnimalType.PIRATE_DRAGON, "chitcard/2PirateDragon.png")
     ]
 
     Random().shuffle(self.__chitCards)
+
+
+    self.__transforms: List[Tuple[TransformComponent, TransformComponent]] = []
 
 
   def setPosition(self, position: Vec2) -> ChitCardBuilder:
@@ -100,7 +106,13 @@ class ChitCardBuilder:
 
     back_circle = CircleComponent(transformComponent, self.__radius, self.__backColor)
 
-    ccComponent = ChitCard([front_circle, front_image], back_circle, animalType, amount)
+    if (amount == 0):
+      command = ShuffleCommand(self.__transforms)
+    else:
+      command = MoveActivePlayerCommand(animalType, amount)
+
+
+    ccComponent = ChitCard([front_circle, front_image], back_circle, command)
     SaveManager().register(ccComponent)
 
     ccClickedCommand: Command = ChitCardClickedCommand(ccComponent)
@@ -163,7 +175,12 @@ class ChitCardBuilder:
     imageDelayMove.run()
     transform.position = Vec2(-100,-100)
 
+
+    self.__transforms.append((transform, transformComponent))
+
     return e
+  
+
 
 
 
