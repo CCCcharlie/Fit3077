@@ -29,30 +29,33 @@ class ParagraphComponent(TextComponent):
 
     def _generateImageSurface(self):
         self.__text_surfs = []
-        words = self._text.split(" ")
-        currentText = words.pop()
+        lines = self._text.split("\n")
         currentHeight = 0
+        for line in lines:
+            words = line.split(" ")
+            currentText = words.pop()
 
-        # Render Lines
-        for word in words:
-            newText = f"{currentText} {word}"
-            textWidth, textHeight = self._font.size(newText)
+            # Render Line with potential breaks
+            for word in words:
+                newText = f"{currentText} {word}"
+                textWidth, textHeight = self._font.size(newText)
 
-            if currentHeight + textHeight > self.__height:
-                break
+                if currentHeight + textHeight > self.__height:
+                    break
 
-            if textWidth > self.__width:
+                if textWidth > self.__width:
+                    self.__text_surfs.append((self._font.render(currentText, True, self._color), currentHeight))
+                    _, textHeight = self._font.size(currentText)
+                    currentText = word
+                    currentHeight += textHeight + self.__margin
+                else:
+                    currentText = newText
+
+            # Last Linebreak
+            textWidth, textHeight = self._font.size(currentText)
+            if currentHeight + textHeight <= self.__height: 
                 self.__text_surfs.append((self._font.render(currentText, True, self._color), currentHeight))
-                _, textHeight = self._font.size(currentText)
-                currentText = word
                 currentHeight += textHeight + self.__margin
-            else:
-                currentText = newText
-
-        # Last Line
-        textWidth, textHeight = self._font.size(currentText)
-        if currentHeight + textHeight <= self.__height: 
-            self.__text_surfs.append((self._font.render(currentText, True, self._color), currentHeight))
 
     def render(self, display_surf: Surface) -> None:
         initialPos = self._transformComponent.position.clone()
