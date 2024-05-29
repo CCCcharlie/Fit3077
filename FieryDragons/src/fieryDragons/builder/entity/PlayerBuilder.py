@@ -34,11 +34,16 @@ class PlayerBuilder:
     self.__firstPlayer: Player = None
     self.__previousPlayer: Player = None
 
+    self.__animate = True
 
   def setStartingSegment(self, startingSegment: Segment) -> PlayerBuilder:
     self.__startingSegment = startingSegment
     self.__startingSegmentChanged = True
     return self
+
+  def setAnimate(self, value : bool) -> PlayerBuilder:
+      self.__animate = value
+      return self
 
   def finish(self):
     self.__previousPlayer.setNextPlayer(self.__firstPlayer)
@@ -52,26 +57,26 @@ class PlayerBuilder:
     self.__startingSegmentChanged = False
 
     t = TransformComponent()
-    t.position = Vec2(-100,-100)
     p = Player(self.__startingSegment, t, self.__playerNumber)
 
-    #slowly move player to segment from middle
-    start = TransformComponent()
-    start.position = Vec2(World().SCREEN_WIDTH/2, World().SCREEN_HEIGHT/2)
-    playerDelayMove = DelayExecuteMFMFCommand(
-      LinearMoveMFCommand(
-        start,
-        self.__startingSegment.getSnapTransform(),
-        t, 
-        500
-      ),
-      4500
-    )
-    MultiFrameCommandRunner().addCommand(playerDelayMove)
-    playerDelayMove.run()
-
-
-
+    if self.__animate:
+        t.position = Vec2(-100,-100)
+        #slowly move player to segment from middle
+        start = TransformComponent()
+        start.position = Vec2(World().SCREEN_WIDTH/2, World().SCREEN_HEIGHT/2)
+        playerDelayMove = DelayExecuteMFMFCommand(
+          LinearMoveMFCommand(
+            start,
+            self.__startingSegment.getSnapTransform(),
+            t, 
+            500
+          ),
+          4500
+        )
+        MultiFrameCommandRunner().addCommand(playerDelayMove)
+        playerDelayMove.run()
+    else:
+        t.position = self.__startingSegment.getSnapTransform().position
 
     SaveManager().register(p)
     

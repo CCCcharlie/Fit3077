@@ -31,16 +31,18 @@ class SegmentBuilder:
 
         self.__index = 0
 
+        self.__animate = True
+
         ## define volcano cards
         volcanoCardSpecifications: List[Tuple[AnimalType, AnimalType, AnimalType]] = [
-        ([AnimalType.BABY_DRAGON, AnimalType.BAT, AnimalType.SPIDER]),
-        ([AnimalType.SALAMANDER, AnimalType.SPIDER, AnimalType.BAT]),
-        ([AnimalType.SPIDER, AnimalType.SALAMANDER, AnimalType.BABY_DRAGON]),
-        ([AnimalType.BAT, AnimalType.SPIDER, AnimalType.BABY_DRAGON]),
-        ([AnimalType.SPIDER, AnimalType.BAT, AnimalType.SALAMANDER]),
-        ([AnimalType.BABY_DRAGON, AnimalType.SALAMANDER, AnimalType.BAT]),
-        ([AnimalType.BAT, AnimalType.BABY_DRAGON, AnimalType.SALAMANDER]),
-        ([AnimalType.SALAMANDER, AnimalType.BABY_DRAGON, AnimalType.SPIDER])
+            (AnimalType.BABY_DRAGON, AnimalType.BAT, AnimalType.SPIDER),
+            (AnimalType.SALAMANDER, AnimalType.SPIDER, AnimalType.BAT),
+            (AnimalType.SPIDER, AnimalType.SALAMANDER, AnimalType.BABY_DRAGON),
+            (AnimalType.BAT, AnimalType.SPIDER, AnimalType.BABY_DRAGON),
+            (AnimalType.SPIDER, AnimalType.BAT, AnimalType.SALAMANDER),
+            (AnimalType.BABY_DRAGON, AnimalType.SALAMANDER, AnimalType.BAT),
+            (AnimalType.BAT, AnimalType.BABY_DRAGON, AnimalType.SALAMANDER),
+            (AnimalType.SALAMANDER, AnimalType.BABY_DRAGON, AnimalType.SPIDER)
         ]
         
         Random().shuffle(volcanoCardSpecifications)
@@ -65,6 +67,9 @@ class SegmentBuilder:
         self.__animal_type = animal_type
         return self
 
+    def setAnimate(self, value : bool) -> SegmentBuilder:
+        self.__animate = value
+        return self
     
     def finish(self):
         self.__previous.setNext(self.__first)
@@ -85,7 +90,8 @@ class SegmentBuilder:
         self.__transformChanged = False
         # Creation
         
-        self.__animal_type = self._volcanoCardTypes.pop(0)
+        if self.__animal_type is None:
+            self.__animal_type = self._volcanoCardTypes.pop(0)
 
         segment = Segment(self.__transform, self.__animal_type, Vec2(0,0))
         
@@ -114,41 +120,45 @@ class SegmentBuilder:
         e.add_renderable(sprite)
 
 
-        # move segments to position in a fanning motion
-        start = TransformComponent()
-        start.position = Vec2(World().SCREEN_WIDTH/2, World().SCREEN_HEIGHT/2)
-        segmentDelayMove = DelayExecuteMFMFCommand(
-        LinearMoveMFCommand(
-            start,
-            self.__transform.clone(),
-            self.__transform, 
-            250
-        ),
-        self.__index * 100
-        )
-        MultiFrameCommandRunner().addCommand(segmentDelayMove)
-        segmentDelayMove.run()
+        if self.__animate:
+            # move segments to position in a fanning motion
+            start = TransformComponent()
+            start.position = Vec2(World().SCREEN_WIDTH/2, World().SCREEN_HEIGHT/2)
+            segmentDelayMove = DelayExecuteMFMFCommand(
+            LinearMoveMFCommand(
+                start,
+                self.__transform.clone(),
+                self.__transform, 
+                250
+            ),
+            self.__index * 100
+            )
+            MultiFrameCommandRunner().addCommand(segmentDelayMove)
+            segmentDelayMove.run()
 
-        self.__transform.position = Vec2(-100,-100)
+            self.__transform.position = Vec2(-100,-100)
 
-        # this is a hack as the images transform should be an offset as it is a child component
-        # of the segment, but this has not been implemented in the engine
+            # this is a hack as the images transform should be an offset as it is a child component
+            # of the segment, but this has not been implemented in the engine
 
-        # move segments to position in a fanning motion
-        start = TransformComponent()
-        start.position = Vec2(World().SCREEN_WIDTH/2, World().SCREEN_HEIGHT/2)
-        imageDelayMove = DelayExecuteMFMFCommand(
-        LinearMoveMFCommand(
-            start,
-            transform.clone(),
-            transform, 
-            250
-        ),
-        self.__index * 100
-        )
-        MultiFrameCommandRunner().addCommand(imageDelayMove)
-        imageDelayMove.run()
+            # move segments to position in a fanning motion
+            start = TransformComponent()
+            start.position = Vec2(World().SCREEN_WIDTH/2, World().SCREEN_HEIGHT/2)
+            imageDelayMove = DelayExecuteMFMFCommand(
+            LinearMoveMFCommand(
+                start,
+                transform.clone(),
+                transform, 
+                250
+            ),
+            self.__index * 100
+            )
+            MultiFrameCommandRunner().addCommand(imageDelayMove)
+            imageDelayMove.run()
 
-        transform.position = Vec2(-100,-100)
+            transform.position = Vec2(-100,-100)
+
+        # Reset animal type
+        self.__animal_type = None
         
         return e

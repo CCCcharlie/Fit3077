@@ -44,7 +44,7 @@ class Segment():
     currentSpot: 'Segment' = start.getNext().getNext()
 
     while searching:
-      if currentSpot.getCave() == start:
+      if currentSpot is start or currentSpot.getCave() is start:
         searching = False
         segmentList.append(currentSpot.getCave())
       else:

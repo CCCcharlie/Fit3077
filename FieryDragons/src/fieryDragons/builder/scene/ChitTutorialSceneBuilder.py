@@ -51,7 +51,7 @@ You can demo clicking the Chit Card now."""
             (World().size[0] // 2) - (chitRadius // 2),
             (World().size[1] // 2) - (chitRadius // 2),
         )
-        chitCard = ChitCardBuilder(chitRadius).setPosition(chitVecPos).build()
+        chitCard = ChitCardBuilder(chitRadius).setPosition(chitVecPos).setAnimate(False).build()
         scene.addEntity(chitCard)
 
         return scene

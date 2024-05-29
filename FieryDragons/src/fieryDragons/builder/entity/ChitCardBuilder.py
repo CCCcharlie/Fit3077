@@ -48,6 +48,9 @@ class ChitCardBuilder:
     self.__backColor: Color = Color(0,0,0)
 
     self.__positionChanged: bool = False
+    self.__animate = True
+    self.__animalType = None
+    self.__count = None
 
     self.__chitCards: List[Tuple[int, AnimalType, str]] = [
       (1, AnimalType.SALAMANDER, "chitcard/1Salamander.png"),
@@ -80,13 +83,30 @@ class ChitCardBuilder:
     self.__position = position
     return self
 
+  def setAnimate(self, value : bool) -> ChitCardBuilder:
+      self.__animate = value
+      return self
+
+  def setAnimalType(self, animalType : AnimalType) -> ChitCardBuilder:
+      self.__animalType = animalType
+      return self
+
+  def setCount(self, count: int) -> ChitCardBuilder:
+      self.__count = count 
+      return self
 
   def build(self) -> Entity:
     self.__index += 1
     if self.__positionChanged is False:
       raise IncompleteBuilderError("ChitCard", "Position")
     
-    amount, animalType, imageLocation = self.__chitCards.pop()
+    chitCards = self.__chitCards
+    if self.__animalType is not None:
+        chitCards = list(filter(lambda x : x[1] == self.__animalType, chitCards))
+    if self.__count is not None:
+        chitCards = list(filter(lambda x : x[0] == self.__count, chitCards))
+
+    amount, animalType, imageLocation = chitCards.pop()
 
     #set front colour based on animal type
     self.__frontColor = animalType.get_colour()
@@ -138,42 +158,43 @@ class ChitCardBuilder:
 
 
 
-    # move chit cards by 'slamming them down'
-    start = TransformComponent()
-    start.scale = Vec2(10,10)
-    start.position = transformComponent.position
-    # start.position = Vec2(World().SCREEN_WIDTH/2, World().SCREEN_HEIGHT/2)
-    imageDelayMove = DelayExecuteMFMFCommand(
-    LinearMoveMFCommand(
-        start,
-        transformComponent.clone(),
-        transformComponent, 
-        300
-    ),
-    self.__index * 250 + 5500
-    )
-    MultiFrameCommandRunner().addCommand(imageDelayMove)
-    imageDelayMove.run()
-    transformComponent.position = Vec2(-100,-100)
+    if self.__animate:
+        # move chit cards by 'slamming them down'
+        start = TransformComponent()
+        start.scale = Vec2(10,10)
+        start.position = transformComponent.position
+        # start.position = Vec2(World().SCREEN_WIDTH/2, World().SCREEN_HEIGHT/2)
+        imageDelayMove = DelayExecuteMFMFCommand(
+        LinearMoveMFCommand(
+            start,
+            transformComponent.clone(),
+            transformComponent, 
+            300
+        ),
+        self.__index * 250 + 5500
+        )
+        MultiFrameCommandRunner().addCommand(imageDelayMove)
+        imageDelayMove.run()
+        transformComponent.position = Vec2(-100,-100)
 
 
-    # move animals by slamming them down
-    start = TransformComponent()
-    start.scale = Vec2(10,10)
-    start.position = transform.position
-    # start.position = Vec2(World().SCREEN_WIDTH/2, World().SCREEN_HEIGHT/2)
-    imageDelayMove = DelayExecuteMFMFCommand(
-    LinearMoveMFCommand(
-        start,
-        transform.clone(),
-        transform, 
-        300
-    ),
-    self.__index * 250 + 5500
-    )
-    MultiFrameCommandRunner().addCommand(imageDelayMove)
-    imageDelayMove.run()
-    transform.position = Vec2(-100,-100)
+        # move animals by slamming them down
+        start = TransformComponent()
+        start.scale = Vec2(10,10)
+        start.position = transform.position
+        # start.position = Vec2(World().SCREEN_WIDTH/2, World().SCREEN_HEIGHT/2)
+        imageDelayMove = DelayExecuteMFMFCommand(
+        LinearMoveMFCommand(
+            start,
+            transform.clone(),
+            transform, 
+            300
+        ),
+        self.__index * 250 + 5500
+        )
+        MultiFrameCommandRunner().addCommand(imageDelayMove)
+        imageDelayMove.run()
+        transform.position = Vec2(-100,-100)
 
 
     self.__transforms.append((transform, transformComponent))
