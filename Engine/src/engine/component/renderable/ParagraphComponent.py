@@ -30,7 +30,6 @@ class ParagraphComponent(TextComponent):
     def _generateImageSurface(self):
         self.__text_surfs = []
         lines = self._text.split("\n")
-        print(lines)
         currentHeight = 0
         for line in lines:
             words = line.split(" ")

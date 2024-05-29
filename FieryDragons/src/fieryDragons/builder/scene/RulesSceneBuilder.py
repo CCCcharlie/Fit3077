@@ -11,8 +11,8 @@ from pygame.color import Color
 class RulesSceneBuilder(SceneBuilder):
 
     RULES = """Fiery Dragons is a board game focused on memorization.
-Players start with a Dragon Token on one of the distinct caves around the board.
-The aim of the game is to make a full rotation around the board and reach your home cave again.
+Players start with a Dragon Token on one of the distinct Caves around the board.
+The aim of the game is to make a full rotation around the board and reach your home Cave again.
 Movement occurs by flipping Chit Cards in the center of the board. 
 Depending on the result of the flip the Player will move a different number of spaces.
 

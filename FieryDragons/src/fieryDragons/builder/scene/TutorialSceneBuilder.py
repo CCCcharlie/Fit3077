@@ -86,6 +86,7 @@ class TutorialSceneBuilder(SceneBuilder):
 
         ## Exit to Menu
         from ...builder.scene.MainMenuSceneBuilder import MainMenuSceneBuilder
+
         exitVecPos = Vec2(64, 64)
         exitButton = (
             ButtonBuilder()
