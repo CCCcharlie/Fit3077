@@ -72,7 +72,7 @@ class ChitCardBuilder:
     Random().shuffle(self.__chitCards)
 
 
-    self.__transforms: List[Tuple[TransformComponent, TransformComponent]] = []
+    self.__transforms: List[Tuple[ TransformComponent, TransformComponent]] = []
 
 
   def setPosition(self, position: Vec2) -> ChitCardBuilder:
