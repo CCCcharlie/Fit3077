@@ -20,6 +20,7 @@ from fieryDragons.builder.entity.CaveBuilder import CaveBuilder
 from fieryDragons.builder.entity.PlayerBuilder import PlayerBuilder
 from fieryDragons.builder.entity.SegmentBuilder import SegmentBuilder
 from fieryDragons.enums.AnimalType import AnimalType
+from fieryDragons.utils.CircleCoordinateIterator import CircleCoordinateIterator
 import pygame
 
 
@@ -39,6 +40,9 @@ class VolcanoCardBuilder:
         # internal Variables
         self.__previous: VolcanoCard = None
         self.__first: VolcanoCard = None
+        self.__screen_width = World().size[0]
+        self.__screen_height = World().size[1]
+        self.__index = 0
 
         #builders 
         self.__segmentBuilder: SegmentBuilder = None
@@ -99,14 +103,24 @@ class VolcanoCardBuilder:
         self.__transformChanged = False
 
         # Creation
+        segment_iter = CircleCoordinateIterator(
+            self.__numVolcanoCards * self.__numSegments,
+            self.__arcRadius + 4,
+            self.__screen_width // 2,
+            self.__screen_height // 2
+        )
 
+        transforms = [t for t in segment_iter]
+        
         # first create each segment
         segments = []
         for i in range(self.__numSegments):
+
+            transform = transforms[self.__index * (self.__numSegments) + i]
             e = (
                 self.__segmentBuilder
                 .setAnimalType(AnimalType.get_random_animal())
-                .setTransform(self.__transform.clone())
+                .setTransform(transform)
                 .build()
             )
             segment = self.__segmentBuilder.getLastSegment()
@@ -147,6 +161,9 @@ class VolcanoCardBuilder:
         e.add_renderable(trap)
         result = [e]
         result.extend(entities)
+
+        self.__index += 1
+
         return result
 
     def finish(self):

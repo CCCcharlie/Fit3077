@@ -52,7 +52,7 @@ class GameSceneBuilder(SceneBuilder):
 
         # Create iterators 
         circleRadius =  1 * min(self.__screen_width, self.__screen_height) // 4 + 25
-        segment_iter = CircleCoordinateIterator(
+        vc_iter = CircleCoordinateIterator(
             self.__numVolcanoCards,
             circleRadius,
             center_x,
@@ -60,7 +60,7 @@ class GameSceneBuilder(SceneBuilder):
         )
 
         #Create builders
-        segmentBuilder = SegmentBuilder().setSize(40 * 1.55)
+        segmentBuilder = SegmentBuilder().setSize(200-8)
         caveBuilder = CaveBuilder().setRadius(40)
         playerBuilder = PlayerBuilder()
 
@@ -77,7 +77,7 @@ class GameSceneBuilder(SceneBuilder):
         # build volcano cards saving built caves
         builtCaves = []
 
-        for index, t in enumerate(segment_iter):
+        for index, t in enumerate(vc_iter):
             # Determine if this vc has a cave
             hasCave: bool = (index % (self.__numVolcanoCards // self.__numPlayers)) == 0
        

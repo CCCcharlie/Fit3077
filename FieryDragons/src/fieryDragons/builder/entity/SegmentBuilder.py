@@ -4,6 +4,7 @@ from typing import List, Tuple
 from engine.command.DelayExecuteMFMFCommand import DelayExecuteMFMFCommand
 from engine.command.LinearMoveMFCommand import LinearMoveMFCommand
 from engine.component.TransformComponent import TransformComponent
+from engine.component.renderable.CircularSegmentTrapezoidComponent import CircularSegmentTrapezoidComponent
 from engine.component.renderable.SpriteComponent import SpriteComponent
 from engine.component.renderable.TrapezoidComponent import TrapezoidComponent
 from engine.entity.Entity import Entity
@@ -63,9 +64,13 @@ class SegmentBuilder:
         segment = Segment(self.__transform, self.__animal_type, Vec2(0,0))
         self.__lastBuiltSegment = segment
 
-        # trap = TrapezoidComponent(
-        #     self.__transform, round(3 * self.__size/4 - 10), self.__size+ 10, self.__size, self.__animal_type.get_colour()
-        # )
+        trap = CircularSegmentTrapezoidComponent(
+            self.__transform,
+            200 - 8,
+            1080 //4 + 29,
+            44//3 - 1,
+            self.__animal_type.get_colour()
+        )
 
         transform = self.__transform.clone()
         offset = pygame.Vector2(self.__size/4, 0).rotate(-transform.rotation)
@@ -76,7 +81,7 @@ class SegmentBuilder:
         )
 
         e = Entity()
-        # e.add_renderable(trap)
+        e.add_renderable(trap)
         e.add_renderable(sprite)
 
 
