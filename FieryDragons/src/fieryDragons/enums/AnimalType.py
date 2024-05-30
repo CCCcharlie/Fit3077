@@ -10,6 +10,7 @@ class AnimalType(Enum):
     BABY_DRAGON = 2
     BAT = 3
     PIRATE_DRAGON = 4
+    SWAP = 5 
 
     def get_colour(self) -> Color:
         match self:
@@ -21,6 +22,8 @@ class AnimalType(Enum):
                 return Color(0, 255, 0)
             case AnimalType.BAT:
                 return Color(100, 20, 130)
+            case AnimalType.SWAP:
+                return Color(255, 255, 0)  
             case AnimalType.PIRATE_DRAGON:
                 return Color(150, 150, 150)
             case _:
@@ -38,6 +41,8 @@ class AnimalType(Enum):
                 return "chitcard/1Bat.png"
             case AnimalType.PIRATE_DRAGON:
                 return "chitcard/1PirateDragon.png"
+            case AnimalType.SWAP:
+                return "chitcard/Swap.png" 
             case _:
                 return ""
     @classmethod

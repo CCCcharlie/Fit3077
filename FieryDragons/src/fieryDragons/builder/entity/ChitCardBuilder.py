@@ -20,6 +20,7 @@ from engine.scene.World import World
 from engine.utils.Vec2 import Vec2
 from fieryDragons.Random import Random
 from fieryDragons.command.ChitCardClickedCommand import ChitCardClickedCommand
+from fieryDragons.command.SwapPlayerCommand import SwapPlayerCommand
 from fieryDragons.ChitCard import ChitCard
 
 
@@ -50,6 +51,7 @@ class ChitCardBuilder:
     self.__positionChanged: bool = False
 
     self.__chitCards: List[Tuple[int, AnimalType, str]] = [
+      (0, AnimalType.SWAP, "chitcard/swap.png")
       (1, AnimalType.SALAMANDER, "chitcard/1Salamander.png"),
       (2, AnimalType.SALAMANDER, "chitcard/2Salamander.png"),
       (3, AnimalType.SALAMANDER, "chitcard/3Salamander.png"),
@@ -108,6 +110,8 @@ class ChitCardBuilder:
 
     if (amount == 0):
       command = ShuffleCommand(self.__transforms)
+    elif animalType == AnimalType.SWAP:
+      command = SwapPlayerCommand() 
     else:
       command = MoveActivePlayerCommand(animalType, amount)
 
