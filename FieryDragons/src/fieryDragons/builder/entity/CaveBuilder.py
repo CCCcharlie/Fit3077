@@ -23,25 +23,10 @@ class CaveBuilder:
         self.__transform: TransformComponent | None = None
         self.__radius: int | None = None
         self.__animal_type: AnimalType | None = None
-        self.__next: Segment | None = None
-        self.__caves: List[Segment] = []
-        self.__segmentSize: int = 0
-        self.__index = 0
 
-    def setSegmentSize(self, segSize: int) -> CaveBuilder:
-        self.__segmentSize = segSize
-        return self
         
-    def setSegmentTransform(self, transform: TransformComponent) -> CaveBuilder:
-        newTransform = transform.clone()
-
-        moveDistance = pygame.Vector2(0,self.__segmentSize)
-        offset = moveDistance.rotate(-newTransform.rotation)
-
-        newPos = newTransform.position + Vec2(offset.x, offset.y)
-        newTransform.position = newPos
-
-        self.__transform = newTransform
+    def setTransform(self, transform: TransformComponent) -> CaveBuilder:
+        self.__transform = transform
         return self
 
     def setRadius(self, radius: int) -> CaveBuilder:
@@ -52,15 +37,8 @@ class CaveBuilder:
         self.__animal_type = animal_type
         return self
     
-    def setNext(self, segment: Segment) -> CaveBuilder:
-        self.__next = segment
-        return self
 
-    def getCaves(self) -> List[Segment]:
-        return self.__caves
-        
     def build(self) -> Entity:
-        self.__index += 1
         # Error handling
         if self.__transform is None:
             raise IncompleteBuilderError(self.__class__.__name__, "Transform Component")
@@ -68,14 +46,10 @@ class CaveBuilder:
             raise IncompleteBuilderError(self.__class__.__name__, "Radius")
         if self.__animal_type is None:
             raise IncompleteBuilderError(self.__class__.__name__, "Animal Type")
-        if self.__next is None:
-            raise IncompleteBuilderError(self.__class__.__name__, "Next")
+
 
 
         segment = Segment(self.__transform, self.__animal_type, Vec2(0,0))
-
-        self.__next.setCave(segment)    
-        segment.setNext(self.__next)
 
         cave = CircleComponent(
             self.__transform, self.__radius, self.__animal_type.get_colour(),Color(0,0,0)
@@ -94,7 +68,6 @@ class CaveBuilder:
         e.add_renderable(cave)
         e.add_renderable(sprite)
 
-        self.__caves.append(segment)
 
 
         # move segments to position in a fanning motion
@@ -107,7 +80,7 @@ class CaveBuilder:
             self.__transform, 
             500
         ),
-        self.__index * 100 + 3000
+        3000
         )
         MultiFrameCommandRunner().addCommand(imageDelayMove)
         imageDelayMove.run()
@@ -123,7 +96,7 @@ class CaveBuilder:
             transform, 
             500
         ),
-        self.__index * 100 + 3000
+        3000
         )
         MultiFrameCommandRunner().addCommand(imageDelayMove)
         imageDelayMove.run()

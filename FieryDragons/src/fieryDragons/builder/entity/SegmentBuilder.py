@@ -88,6 +88,7 @@ class SegmentBuilder:
         # move segments to position in a fanning motion
         start = TransformComponent()
         start.position = Vec2(World().SCREEN_WIDTH/2, World().SCREEN_HEIGHT/2)
+        start.rotation = self.__transform.rotation
         segmentDelayMove = DelayExecuteMFMFCommand(
         LinearMoveMFCommand(
             start,
@@ -108,6 +109,7 @@ class SegmentBuilder:
         # move segments to position in a fanning motion
         start = TransformComponent()
         start.position = Vec2(World().SCREEN_WIDTH/2, World().SCREEN_HEIGHT/2)
+        start.rotation = transform.rotation
         imageDelayMove = DelayExecuteMFMFCommand(
         LinearMoveMFCommand(
             start,

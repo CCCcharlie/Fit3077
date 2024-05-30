@@ -85,9 +85,6 @@ class VolcanoCardBuilder:
         return self.__previous
 
     def build(self) -> List[Entity]:
-        entities = []
-       
-
         # Error handling
         if self.__transformChanged is False:
             return IncompleteBuilderError(self.__class__.__name__, "Transform Component Unchanged")
@@ -101,6 +98,22 @@ class VolcanoCardBuilder:
             raise IncompleteBuilderError(self.__class__.__name__, "NumVolcanoCards")
 
         self.__transformChanged = False
+
+        # store built entities
+        entities = []
+
+        # build trap shape
+        trap = CircularSegmentTrapezoidComponent(
+            self.__transform, 
+            self.__arcHeight,
+            self.__arcRadius,
+            (360 //self.__numVolcanoCards) - 1,
+            pygame.Color(0,0,0),
+        )
+        e = Entity()
+        e.add_renderable(trap)
+        entities.append(e)
+
 
         # Creation
         segment_iter = CircleCoordinateIterator(
@@ -116,7 +129,7 @@ class VolcanoCardBuilder:
         segments = []
         for i in range(self.__numSegments):
 
-            transform = transforms[self.__index * (self.__numSegments) + i]
+            transform = transforms[self.__index * (self.__numSegments) + i - 1]
             e = (
                 self.__segmentBuilder
                 .setAnimalType(AnimalType.get_random_animal())
@@ -132,7 +145,7 @@ class VolcanoCardBuilder:
         cave = None
         if self.__hasCave:
             e = (
-                self.__segmentBuilder
+                self.__caveBuilder
                 .setAnimalType(AnimalType.get_random_animal())
                 .setTransform(self.__transform.clone())
                 .build()
@@ -148,23 +161,9 @@ class VolcanoCardBuilder:
             self.__previous.setNext(vc)
         self.__previous = vc
 
-  
-        # build trap shape
-        trap = CircularSegmentTrapezoidComponent(
-            self.__transform, 
-            self.__arcHeight,
-            self.__arcRadius,
-            (360 //self.__numVolcanoCards) - 1,
-            pygame.Color(0,0,0),
-        )
-        e = Entity()
-        e.add_renderable(trap)
-        result = [e]
-        result.extend(entities)
-
         self.__index += 1
 
-        return result
+        return entities
 
     def finish(self):
         self.__previous.setNext(self.__first)
