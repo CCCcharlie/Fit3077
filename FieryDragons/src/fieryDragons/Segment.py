@@ -18,7 +18,11 @@ class Segment():
 
   def setNext(self, segment: 'Segment'):
     self.__next = segment
+  def isCave(self) -> bool:
 
+    return self.__cave is not None
+  
+  
   def setCave(self, cave: 'Segment'):
     self.__cave = cave
 

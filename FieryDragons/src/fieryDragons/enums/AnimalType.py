@@ -47,10 +47,10 @@ class AnimalType(Enum):
                 return ""
     @classmethod
     def get_random_any(cls) -> AnimalType:
-        return Random().choice([t for t in AnimalType])
+        return Random().choice([t for t in AnimalType if t is not AnimalType.SWAP])
 
     @classmethod
     def get_random_animal(cls) -> AnimalType:
         return Random().choice(
-            [t for t in AnimalType if t is not AnimalType.PIRATE_DRAGON]
+            [t for t in AnimalType if t is not AnimalType.PIRATE_DRAGON and t is not AnimalType.SWAP]
         )

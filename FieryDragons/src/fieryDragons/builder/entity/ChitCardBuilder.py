@@ -51,7 +51,7 @@ class ChitCardBuilder:
     self.__positionChanged: bool = False
 
     self.__chitCards: List[Tuple[int, AnimalType, str]] = [
-      (0, AnimalType.SWAP, "chitcard/swap.png")
+      (0, AnimalType.SWAP, "chitcard/Swap.png"),
       (1, AnimalType.SALAMANDER, "chitcard/1Salamander.png"),
       (2, AnimalType.SALAMANDER, "chitcard/2Salamander.png"),
       (3, AnimalType.SALAMANDER, "chitcard/3Salamander.png"),
