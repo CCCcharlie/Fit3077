@@ -48,27 +48,26 @@ class GameSceneBuilder(SceneBuilder):
 
         # Determine segment-related coordinates
         center_x = self.__screen_width // 2
-        center_y = self.__screen_height // 2 + 40
+        center_y = self.__screen_height // 2 
 
         # Create iterators 
-        circleRadius =  3 * min(self.__screen_width, self.__screen_height) // 4
+        circleRadius =  1 * min(self.__screen_width, self.__screen_height) // 4 + 25
         segment_iter = CircleCoordinateIterator(
             self.__numVolcanoCards,
             circleRadius,
             center_x,
-            center_y,
-            offset=1,
+            center_y
         )
 
         #Create builders
-        segmentBuilder = SegmentBuilder().setSize(segment_iter.size * 1.55)
+        segmentBuilder = SegmentBuilder().setSize(40 * 1.55)
         caveBuilder = CaveBuilder().setRadius(40)
         playerBuilder = PlayerBuilder()
 
         volcanoCardBuilder = (
             VolcanoCardBuilder()
             .setArcHeight(200)
-            .setArcRadius(200)
+            .setArcRadius(circleRadius)
             .setCaveBuilder(caveBuilder)
             .setSegmentBuilder(segmentBuilder)
             .setNumSegments(self.__numSegmentPerVolcanoCard)
@@ -108,9 +107,9 @@ class GameSceneBuilder(SceneBuilder):
         gridIterator = GridCoordinateIterator(
             4,
             4,
-            Vec2(center_x + 20, center_y),
-            min(self.__screen_width, self.__screen_height) // 2,
-            min(self.__screen_width, self.__screen_height) // 2,
+            Vec2(center_x + 40, center_y + 40),
+            10 * circleRadius/8,
+            10 * circleRadius/8,
         )
         chitCardBuilder = ChitCardBuilder(40)
 

@@ -8,16 +8,14 @@ from engine.utils.Vec2 import Vec2
 class CircleCoordinateIterator(Iterator[TransformComponent]):
 
     def __init__(
-        self, elements: int, radius: int, center_x: int, center_y: int, offset: int = 0
+        self, elements: int, radius: int, center_x: int, center_y: int
     ) -> None:
-        self.size = (radius * 2) // ((elements + 4 * offset) // 2)
         self.__center_x = center_x
         self.__center_y = center_y
         self.__elements = elements
         self.__n = 0
-        self.__radius = radius - self.size * (
-            offset + 1
-        )  # Center point exists on the inner circle
+        self.__radius = radius
+         
 
     def __iter__(self) -> Iterator[TransformComponent]:
         return self
@@ -45,7 +43,7 @@ class CircleCoordinateIterator(Iterator[TransformComponent]):
         # Return result, offsetting for top left square position and centering
         t = TransformComponent()
         t.position = Vec2(
-            x - (self.size / 2) + self.__center_x, y - (self.size / 2) + self.__center_y
+            x + self.__center_x, y + self.__center_y
         )
         t.rotation = rotation_angle
         return t
