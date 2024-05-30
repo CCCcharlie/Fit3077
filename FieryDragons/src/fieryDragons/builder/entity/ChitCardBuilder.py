@@ -138,7 +138,8 @@ class ChitCardBuilder:
     e.add_updateable(button)
     e.add_updateable(ccComponent)
 
-
+    if amount == 0:
+      e.add_updateable(command)
 
     # move chit cards by 'slamming them down'
     start = TransformComponent()
