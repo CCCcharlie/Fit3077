@@ -22,9 +22,9 @@ class TestCircularSegmentTrapBuilder(SceneBuilder):
     transform.rotate(180)
     render = CircularSegmentTrapezoidComponent(
       transform, 
-      30, 
       200, 
-      180, 
+      600, 
+      44, 
       Color(0,0,0))
 
 

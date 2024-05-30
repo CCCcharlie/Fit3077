@@ -51,9 +51,10 @@ class GameSceneBuilder(SceneBuilder):
         center_y = self.__screen_height // 2 + 40
 
         # Create iterators 
+        circleRadius =  3 * min(self.__screen_width, self.__screen_height) // 4
         segment_iter = CircleCoordinateIterator(
             self.__numVolcanoCards,
-            5 * min(self.__screen_width, self.__screen_height) // 8 - 150,
+            circleRadius,
             center_x,
             center_y,
             offset=1,
@@ -66,10 +67,12 @@ class GameSceneBuilder(SceneBuilder):
 
         volcanoCardBuilder = (
             VolcanoCardBuilder()
-            .setArcHeight(40)
+            .setArcHeight(200)
+            .setArcRadius(200)
             .setCaveBuilder(caveBuilder)
             .setSegmentBuilder(segmentBuilder)
             .setNumSegments(self.__numSegmentPerVolcanoCard)
+            .setNumVolcanoCards(self.__numVolcanoCards)
         )
 
         # build volcano cards saving built caves

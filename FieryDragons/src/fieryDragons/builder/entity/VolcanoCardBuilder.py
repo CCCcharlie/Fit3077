@@ -31,6 +31,7 @@ class VolcanoCardBuilder:
         self.__hasCave: bool = None
         self.__arcHeight: int | None = None
         self.__arcRadius: int | None = None
+        self.__numVolcanoCards: int | None = None
 
         # Validation variables
         self.__transformChanged = False
@@ -49,6 +50,10 @@ class VolcanoCardBuilder:
 
     def setArcRadius(self, arcRadius: int) -> VolcanoCardBuilder:
         self.__arcRadius = arcRadius
+        return self
+    
+    def setNumVolcanoCards(self, numVolcanoCards: int) -> VolcanoCardBuilder:
+        self.__numVolcanoCards = numVolcanoCards
         return self
     
     def setSegmentBuilder(self, segmentBuilder: SegmentBuilder) -> VolcanoCardBuilder:
@@ -88,6 +93,8 @@ class VolcanoCardBuilder:
             raise IncompleteBuilderError(self.__class__.__name__, "ArcHeight")
         if self.__arcRadius is None:
             raise IncompleteBuilderError(self.__class__.__name__, "ArcRadius")
+        if self.__numVolcanoCards is None:
+            raise IncompleteBuilderError(self.__class__.__name__, "NumVolcanoCards")
 
         self.__transformChanged = False
 
@@ -133,7 +140,7 @@ class VolcanoCardBuilder:
             self.__transform, 
             self.__arcHeight,
             self.__arcRadius,
-            360 //self.__numSegments - 1,
+            (360 //self.__numVolcanoCards) - 1,
             pygame.Color(0,0,0),
         )
         e = Entity()
