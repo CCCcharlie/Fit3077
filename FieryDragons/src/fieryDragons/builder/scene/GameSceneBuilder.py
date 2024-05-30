@@ -14,6 +14,7 @@ from fieryDragons.builder.entity.PlayerBuilder import PlayerBuilder
 from fieryDragons.builder.entity.SavePopupBuilder import SavePopupBuilder
 from fieryDragons.builder.entity.SegmentBuilder import SegmentBuilder
 from engine.builder.SceneBuilder import SceneBuilder
+from fieryDragons.builder.entity.VolcanoCardBuilder import VolcanoCardBuilder
 from fieryDragons.enums.AnimalType import AnimalType
 from fieryDragons.save.SaveManager import SaveManager
 from fieryDragons.utils.GridCoordinateIterator import GridCoordinateIterator
@@ -24,22 +25,22 @@ class GameSceneBuilder(SceneBuilder):
     def __init__(self):
         self.__screen_width = World().size[0]
         self.__screen_height = World().size[1]
-        self.__players: int = 2
-        ##self.__chit_cards: int  = 24
-        self.__segments: int = 24
+        self.__numPlayers: int = 2
+        self.__numVolcanoCards = 8
+        self.__numSegmentPerVolcanoCard = 3
 
-    def setPlayers(self, players: int) -> GameSceneBuilder:
-        self.__players = players
+    def setNumPlayers(self, count: int) -> GameSceneBuilder:
+        self.__numPlayers = count
         return self
 
-    # def setChitCards(self, chit_cards: int) -> GameSceneBuilder:
-    #     self.__chit_cards = chit_cards
-    #     return self
-
-    def setSegments(self, segments: int) -> GameSceneBuilder:
-        self.__segments = segments
+    def setNumVolcanoCards(self, count: int) -> GameSceneBuilder:
+        self.__numVolcanoCards = count
         return self
-
+    
+    def setNumSegmentPerVolcanoCard(self, count: int) -> GameSceneBuilder:
+        self.__numSegmentPerVolcanoCard = count
+        return self
+  
     def build(self) -> Scene:
         SaveManager().onCleanup()
         # Build
@@ -49,45 +50,54 @@ class GameSceneBuilder(SceneBuilder):
         center_x = self.__screen_width // 2
         center_y = self.__screen_height // 2 + 40
 
-        # Place segments
+        # Create iterators 
         segment_iter = CircleCoordinateIterator(
-            self.__segments,
+            self.__numVolcanoCards,
             5 * min(self.__screen_width, self.__screen_height) // 8 - 150,
             center_x,
             center_y,
             offset=1,
         )
-        segmentBuilder = SegmentBuilder()
-        caveBuilder = CaveBuilder().setRadius(40)
 
+        #Create builders
+        segmentBuilder = SegmentBuilder().setSize(segment_iter.size * 1.55)
+        caveBuilder = CaveBuilder().setRadius(40)
+        playerBuilder = PlayerBuilder()
+
+        volcanoCardBuilder = (
+            VolcanoCardBuilder()
+            .setArcHeight(40)
+            .setCaveBuilder(caveBuilder)
+            .setSegmentBuilder(segmentBuilder)
+            .setNumSegments(self.__numSegmentPerVolcanoCard)
+        )
+
+        # build volcano cards saving built caves
+        builtCaves = []
 
         for index, t in enumerate(segment_iter):
-            e = (
-                segmentBuilder
-                .setSize(segment_iter.size * 1.55)
+            # Determine if this vc has a cave
+            hasCave: bool = (index % (self.__numVolcanoCards // self.__numPlayers)) == 0
+       
+            # add this volcano card 
+            es = (
+                volcanoCardBuilder
                 .setTransform(t)
+                .setHasCave(hasCave)
                 .build()
             )
-            s.addEntity(e)
 
-            # Place caves according to player count
-            if (index % (self.__segments // self.__players) == 0):
-                c = (
-                    caveBuilder
-                    .setNext(segmentBuilder.getLastSegment())
-                    .setSegmentSize(segment_iter.size + 30)
-                    .setSegmentTransform(t)
-                    .setAnimalType(AnimalType.get_random_animal())
-                    .build()
-                )
-                s.addEntity(c)
-        segmentBuilder.finish()
+            for e in es:
+                s.addEntity(e)
+
+            if hasCave:
+             builtCaves.append(volcanoCardBuilder.getLastVolcanoCard())
+
+        volcanoCardBuilder.finish()
 
         #place players
-        playerBuilder = PlayerBuilder()
-        
-        for cave in caveBuilder.getCaves():
-            p = playerBuilder.setStartingSegment(cave).build()
+        for vc in builtCaves:
+            p = playerBuilder.setStartingVolcanoCard(vc).build()
             s.addEntity(p)
         playerBuilder.finish()
 

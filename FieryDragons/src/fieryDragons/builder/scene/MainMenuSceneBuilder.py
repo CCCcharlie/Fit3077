@@ -6,7 +6,6 @@ from engine.command.QuitCommand import QuitCommand
 from engine.scene.Scene import Scene
 from engine.scene.World import World
 from engine.utils.Vec2 import Vec2
-from fieryDragons.Random import Random
 from fieryDragons.builder.scene.ChooseSaveSceneBuilder import ChooseSaveSceneBuilder
 from engine.builder.SceneBuilder import SceneBuilder
 

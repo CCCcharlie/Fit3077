@@ -22,9 +22,9 @@ from fieryDragons.save.Serializable import Serializable
 class Player(Serializable):
   ACTIVE_PLAYER: Player = None
 
-  def __init__(self, startingSegment: Segment, transformComponent: TransformComponent, playerNumber: int):
+  def __init__(self, path: List[Segment], transformComponent: TransformComponent, playerNumber: int):
     self.position: int = 0
-    self.path: List[Segment] = startingSegment.generatePath(startingSegment)
+    self.path: List[Segment] = path
     self.transformComponent = transformComponent
 
     self.__playerNumber: int = playerNumber
