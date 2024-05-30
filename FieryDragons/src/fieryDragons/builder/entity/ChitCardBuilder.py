@@ -65,8 +65,8 @@ class ChitCardBuilder:
       (1, AnimalType.PIRATE_DRAGON, "chitcard/1PirateDragon.png"),
       (1, AnimalType.PIRATE_DRAGON, "chitcard/1PirateDragon.png"),
       (2, AnimalType.PIRATE_DRAGON, "chitcard/2PirateDragon.png"),
-      (0, AnimalType.PIRATE_DRAGON, "chitcard/2PirateDragon.png")
-      #(2, AnimalType.PIRATE_DRAGON, "chitcard/2PirateDragon.png")
+      (0, AnimalType.SHUFFLE, "chitcard/2PirateDragon.png"),
+      (2, AnimalType.PIRATE_DRAGON, "chitcard/2PirateDragon.png")
     ]
 
     Random().shuffle(self.__chitCards)
@@ -80,6 +80,8 @@ class ChitCardBuilder:
     self.__position = position
     return self
 
+  def has_more_cards(self) -> bool:
+        return len(self.__chitCards) > 0
 
   def build(self) -> Entity:
     self.__index += 1
