@@ -1,6 +1,5 @@
 from engine.command.Command import Command
 from fieryDragons.Player import Player
-
 class SwapPlayerCommand(Command):
     def run(self):
         active_player = Player.ACTIVE_PLAYER
