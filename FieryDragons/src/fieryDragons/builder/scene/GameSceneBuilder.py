@@ -61,7 +61,7 @@ class GameSceneBuilder(SceneBuilder):
 
         #Create builders
         segmentBuilder = SegmentBuilder().setSize(200-8)
-        caveBuilder = CaveBuilder().setRadius(40)
+        caveBuilder = CaveBuilder().setRadius(60)
         playerBuilder = PlayerBuilder()
 
         volcanoCardBuilder = (

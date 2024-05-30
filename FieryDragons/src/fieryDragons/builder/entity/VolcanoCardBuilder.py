@@ -144,10 +144,16 @@ class VolcanoCardBuilder:
         # now create cave if required
         cave = None
         if self.__hasCave:
+            # Calculate caves new transform
+            caveTransform = self.__transform.clone()
+            offset = pygame.Vector2(0,-240)
+            offset = offset.rotate(caveTransform.rotation)
+            caveTransform.position += Vec2(offset.x, offset.y)
+
             e = (
                 self.__caveBuilder
                 .setAnimalType(AnimalType.get_random_animal())
-                .setTransform(self.__transform.clone())
+                .setTransform(caveTransform)
                 .build()
             )
             cave = self.__segmentBuilder.getLastSegment()
