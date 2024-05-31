@@ -1,11 +1,13 @@
 from engine.command.Command import Command
 from fieryDragons.Player import Player
+from fieryDragons.enums.AnimalType import AnimalType
+
 class SwapPlayerCommand(Command):
     def run(self):
         active_player = Player.ACTIVE_PLAYER
         players = active_player.traverse(active_player, True)
         
-        # finding closest path 
+        # Finding the closest player
         min_distance = float('inf')
         closest_player = None
         for player in players:
@@ -15,13 +17,18 @@ class SwapPlayerCommand(Command):
                     min_distance = distance
                     closest_player = player
         
-        # swap
+        # Swap positions if a closest player is found
         if closest_player:
-            active_player_position = active_player.position
+            temp_position = active_player.position
+            temp_transform = active_player.transformComponent.clone()
+
             active_player.position = closest_player.position
-            closest_player.position = active_player_position
+            active_player.transformComponent.copy(closest_player.transformComponent)
+
+            closest_player.position = temp_position
+            closest_player.transformComponent.copy(temp_transform)
             
-            # move to the new position
+            # Move to the new position
             active_player._moveToSegment(active_player.getPosition())
             closest_player._moveToSegment(closest_player.getPosition())
 
