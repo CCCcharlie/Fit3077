@@ -68,14 +68,14 @@ class ChitCardBuilder:
       (1, AnimalType.PIRATE_DRAGON, "chitcard/1PirateDragon.png"),
       (1, AnimalType.PIRATE_DRAGON, "chitcard/1PirateDragon.png"),
       (2, AnimalType.PIRATE_DRAGON, "chitcard/2PirateDragon.png"),
-      (0, AnimalType.PIRATE_DRAGON, "chitcard/2PirateDragon.png")
-      #(2, AnimalType.PIRATE_DRAGON, "chitcard/2PirateDragon.png")
+      (0, AnimalType.SHUFFLE, "chitcard/2PirateDragon.png"),
+      (2, AnimalType.PIRATE_DRAGON, "chitcard/2PirateDragon.png")
     ]
 
     Random().shuffle(self.__chitCards)
 
 
-    self.__transforms: List[Tuple[TransformComponent, TransformComponent]] = []
+    self.__transforms: List[Tuple[ TransformComponent, TransformComponent]] = []
 
 
   def setPosition(self, position: Vec2) -> ChitCardBuilder:
@@ -94,6 +94,9 @@ class ChitCardBuilder:
   def setCount(self, count: int) -> ChitCardBuilder:
       self.__count = count 
       return self
+
+  def has_more_cards(self) -> bool:
+        return len(self.__chitCards) > 0
 
   def build(self) -> Entity:
     self.__index += 1
@@ -156,7 +159,8 @@ class ChitCardBuilder:
     e.add_updateable(button)
     e.add_updateable(ccComponent)
 
-
+    if amount == 0:
+      e.add_updateable(command)
 
     if self.__animate:
         # move chit cards by 'slamming them down'
