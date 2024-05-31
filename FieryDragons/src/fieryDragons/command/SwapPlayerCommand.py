@@ -1,8 +1,10 @@
 from engine.command.Command import Command
 from fieryDragons.Player import Player
 from fieryDragons.enums.AnimalType import AnimalType
+import pdb  
 
 class SwapPlayerCommand(Command):
+    # pdb.set_trace()  
     def run(self):
         active_player = Player.ACTIVE_PLAYER
         players = active_player.traverse(active_player, True)
@@ -28,8 +30,7 @@ class SwapPlayerCommand(Command):
             closest_player.position = temp_position
             closest_player.transformComponent.copy(temp_transform)
             
-            # Move to the new position
-            active_player._moveToSegment(active_player.getPosition())
-            closest_player._moveToSegment(closest_player.getPosition())
+
+        
 
         active_player.endTurn()
