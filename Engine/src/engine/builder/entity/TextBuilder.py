@@ -17,6 +17,7 @@ class TextBuilder:
     self.__rectHeight: int = 60
     self.__rectColor: Color = Color(0,0,0)
     self.__font: Font = SysFont("Corbel", 60)
+    self.__has_rect : bool = True
 
   def setPosition(self, pos: Vec2) -> TextBuilder:
     self.__pos = pos
@@ -46,15 +47,23 @@ class TextBuilder:
     self.__font = font
     return self
 
+  def setHasRect(self, value: bool) -> TextBuilder:
+    self.__has_rect = value
+    return self
+
   def build(self,) -> Entity:
     e = Entity()
     
     transformComponent = TransformComponent()
     self.__transformComponent = transformComponent
     transformComponent.position = self.__pos
-    rect = RectComponent(transformComponent, self.__rectWidth, self.__rectHeight, self.__rectColor)
-    textComponent = TextComponent(transformComponent, self.__text, self.__font, self.__textColor)
 
-    e.add_renderable(rect)
+    if self.__has_rect:
+        rect = RectComponent(transformComponent, self.__rectWidth, self.__rectHeight, self.__rectColor)
+        e.add_renderable(rect)
+
+    textComponent = TextComponent(transformComponent, self.__text, self.__font, self.__textColor)
     e.add_renderable(textComponent)
+
+
     return e

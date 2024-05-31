@@ -6,6 +6,7 @@ from engine.entity.Entity import Entity
 from engine.scene.Scene import Scene
 from engine.scene.World import World
 from engine.utils.Vec2 import Vec2
+from pygame.color import Color
 
 from ..entity.ChitCardBuilder import ChitCardBuilder
 
@@ -41,6 +42,7 @@ You can demo clicking the Chit Card now."""
                 ChitTutorialSceneBuilder.TEXT,
                 512,
                 int(World().size[1] * 6 / 8),
+                color=Color(0,0,0)
             )
             e.add_renderable(text)
             scene.addEntity(e)
