@@ -60,7 +60,15 @@ class SegmentBuilder:
 
 
         # Creation
-        segment = Segment(self.__transform, self.__animal_type)
+        # calculate snap transform from this transform
+        snap_transform = self.__transform.clone()
+        offset = pygame.Vector2(0,125)
+        offset = offset.rotate(-snap_transform.rotation)
+        
+        snap_transform.position += Vec2(offset.x, offset.y)
+
+
+        segment = Segment(snap_transform, self.__animal_type)
         self.__lastBuiltSegment = segment
 
         trap = CircularSegmentTrapezoidComponent(
@@ -71,12 +79,12 @@ class SegmentBuilder:
             self.__animal_type.get_colour()
         )
 
-        transform = self.__transform.clone()
-        offset = pygame.Vector2(self.__size/4, 0).rotate(-transform.rotation)
-        transform.position = self.__transform.position - Vec2(offset.x, offset.y)
+        sprite_transform = self.__transform.clone()
+        offset = pygame.Vector2(self.__size/4, 0).rotate(-sprite_transform.rotation)
+        sprite_transform.position = self.__transform.position - Vec2(offset.x, offset.y)
 
         sprite = SpriteComponent(
-            transform, self.__size/2, self.__size/2, self.__animal_type.get_sprite()
+            sprite_transform, self.__size/2, self.__size/2, self.__animal_type.get_sprite()
         )
 
         e = Entity()
@@ -108,12 +116,12 @@ class SegmentBuilder:
         # move segments to position in a fanning motion
         start = TransformComponent()
         start.position = Vec2(World().SCREEN_WIDTH/2, World().SCREEN_HEIGHT/2)
-        start.rotation = transform.rotation
+        start.rotation = sprite_transform.rotation
         imageDelayMove = DelayExecuteMFMFCommand(
         LinearMoveMFCommand(
             start,
-            transform.clone(),
-            transform, 
+            sprite_transform.clone(),
+            sprite_transform, 
             250
         ),
         self.__index * 100
@@ -121,6 +129,6 @@ class SegmentBuilder:
         MultiFrameCommandRunner().addCommand(imageDelayMove)
         imageDelayMove.run()
 
-        transform.position = Vec2(-100,-100)
+        sprite_transform.position = Vec2(-100,-100)
         
         return e

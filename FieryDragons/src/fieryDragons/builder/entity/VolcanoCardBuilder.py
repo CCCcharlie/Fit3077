@@ -129,11 +129,8 @@ class VolcanoCardBuilder:
         segments = []
         for i in range(self.__numSegments):
 
-            transform = transforms[self.__index * (self.__numSegments) + i - 1]
 
-            #calculate offset from transform
-            # offset = pygame.Vector2(0,100)
-            # offset = offset.rotate(transform.rotation)
+            transform = transforms[self.__index * (self.__numSegments) + i - 1]
 
             e = (
                 self.__segmentBuilder
