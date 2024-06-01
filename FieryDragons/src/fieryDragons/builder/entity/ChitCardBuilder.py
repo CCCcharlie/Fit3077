@@ -1,5 +1,6 @@
 from __future__ import annotations
 from typing import List, Tuple
+from engine.command.DelayExecuteMFCommand import DelayExecuteMFCommand
 from engine.command.DelayExecuteMFMFCommand import DelayExecuteMFMFCommand
 from engine.command.LinearMoveMFCommand import LinearMoveMFCommand
 from engine.command.PrintCommand import PrintCommand
@@ -49,30 +50,30 @@ class ChitCardBuilder:
 
     self.__positionChanged: bool = False
 
-    self.__chitCards: List[Tuple[int, AnimalType, str]] = [
-      (1, AnimalType.SALAMANDER, "chitcard/1Salamander.png"),
-      (2, AnimalType.SALAMANDER, "chitcard/2Salamander.png"),
-      (3, AnimalType.SALAMANDER, "chitcard/3Salamander.png"),
-      (1, AnimalType.BAT, "chitcard/1Bat.png"),
-      (2, AnimalType.BAT, "chitcard/2Bat.png"),
-      (3, AnimalType.BAT, "chitcard/3Bat.png"),
-      (1, AnimalType.SPIDER, "chitcard/1Spider.png"),
-      (2, AnimalType.SPIDER,"chitcard/2Spider.png"),
-      (3, AnimalType.SPIDER, "chitcard/3Spider.png"),
-      (1, AnimalType.BABY_DRAGON, "chitcard/1BabyDragon.png"),
-      (2, AnimalType.BABY_DRAGON, "chitcard/2BabyDragon.png"),
-      (3, AnimalType.BABY_DRAGON, "chitcard/3BabyDragon.png"),
-      (1, AnimalType.PIRATE_DRAGON, "chitcard/1PirateDragon.png"),
-      (1, AnimalType.PIRATE_DRAGON, "chitcard/1PirateDragon.png"),
-      (2, AnimalType.PIRATE_DRAGON, "chitcard/2PirateDragon.png"),
-      (0, AnimalType.SHUFFLE, "chitcard/2PirateDragon.png"),
-      (2, AnimalType.PIRATE_DRAGON, "chitcard/2PirateDragon.png")
+    self.__transforms: List[Tuple[ TransformComponent, TransformComponent]] = []
+
+    self.__chitCards: List[Tuple[AnimalType, str, Command]] = [
+      (AnimalType.SALAMANDER, "chitcard/1Salamander.png",MoveActivePlayerCommand(AnimalType.SALAMANDER, 1) ),
+      (AnimalType.SALAMANDER, "chitcard/2Salamander.png", MoveActivePlayerCommand(AnimalType.SALAMANDER, 2)),
+      (AnimalType.SALAMANDER, "chitcard/3Salamander.png", MoveActivePlayerCommand(AnimalType.SALAMANDER, 3)),
+      (AnimalType.BAT, "chitcard/1Bat.png", MoveActivePlayerCommand(AnimalType.BAT, 1)),
+      (AnimalType.BAT, "chitcard/2Bat.png", MoveActivePlayerCommand(AnimalType.BAT, 2)),
+      (AnimalType.BAT, "chitcard/3Bat.png", MoveActivePlayerCommand(AnimalType.BAT, 3)),
+      (AnimalType.SPIDER, "chitcard/1Spider.png", MoveActivePlayerCommand(AnimalType.SPIDER, 1)),
+      (AnimalType.SPIDER,"chitcard/2Spider.png", MoveActivePlayerCommand(AnimalType.SPIDER, 2)),
+      (AnimalType.SPIDER, "chitcard/3Spider.png", MoveActivePlayerCommand(AnimalType.SPIDER, 3)),
+      (AnimalType.BABY_DRAGON, "chitcard/1BabyDragon.png", MoveActivePlayerCommand(AnimalType.BABY_DRAGON, 1)),
+      (AnimalType.BABY_DRAGON, "chitcard/2BabyDragon.png", MoveActivePlayerCommand(AnimalType.BABY_DRAGON, 2)),
+      (AnimalType.BABY_DRAGON, "chitcard/3BabyDragon.png", MoveActivePlayerCommand(AnimalType.BABY_DRAGON, 3)),
+      (AnimalType.PIRATE_DRAGON, "chitcard/1PirateDragon.png", MoveActivePlayerCommand(AnimalType.PIRATE_DRAGON, 1)),
+      (AnimalType.PIRATE_DRAGON, "chitcard/1PirateDragon.png", MoveActivePlayerCommand(AnimalType.PIRATE_DRAGON, 1)),
+      (AnimalType.PIRATE_DRAGON, "chitcard/2PirateDragon.png", MoveActivePlayerCommand(AnimalType.PIRATE_DRAGON, 2)),
+      (AnimalType.PIRATE_DRAGON, "chitcard/2PirateDragon.png", MoveActivePlayerCommand(AnimalType.PIRATE_DRAGON, 2)),
+      (AnimalType.SHUFFLE, "chitcard/Shuffle.png", ShuffleCommand(self.__transforms)),
+      
     ]
 
     Random().shuffle(self.__chitCards)
-
-
-    self.__transforms: List[Tuple[ TransformComponent, TransformComponent]] = []
 
 
   def setPosition(self, position: Vec2) -> ChitCardBuilder:
@@ -88,7 +89,7 @@ class ChitCardBuilder:
     if self.__positionChanged is False:
       raise IncompleteBuilderError("ChitCard", "Position")
     
-    amount, animalType, imageLocation = self.__chitCards.pop()
+    animalType, imageLocation, command = self.__chitCards.pop()
 
     #set front colour based on animal type
     self.__frontColor = animalType.get_colour()
@@ -107,12 +108,6 @@ class ChitCardBuilder:
    
 
     back_circle = CircleComponent(transformComponent, self.__radius, self.__backColor)
-
-    if (amount == 0):
-      command = ShuffleCommand(self.__transforms)
-    else:
-      command = MoveActivePlayerCommand(animalType, amount)
-
 
     ccComponent = ChitCard([front_circle, front_image], back_circle, command)
     SaveManager().register(ccComponent)
@@ -137,9 +132,6 @@ class ChitCardBuilder:
     e.add_updateable(clickable)
     e.add_updateable(button)
     e.add_updateable(ccComponent)
-
-    if amount == 0:
-      e.add_updateable(command)
 
     # move chit cards by 'slamming them down'
     start = TransformComponent()

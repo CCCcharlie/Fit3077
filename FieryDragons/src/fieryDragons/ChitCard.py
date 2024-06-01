@@ -5,8 +5,6 @@ from engine.command.Command import Command
 from engine.component.renderable.RenderableComponent import RenderableComponent
 from engine.entity.Updateable import Updateable
 from engine.observer.subscriber import Subscriber
-from fieryDragons.command.MoveActivePlayerCommand import MoveActivePlayerCommand
-from fieryDragons.enums.AnimalType import AnimalType
 from fieryDragons.observer.PlayerTurnEndEmitter import PlayerTurnEndEmitter
 from fieryDragons.save.Serializable import Serializable
 
