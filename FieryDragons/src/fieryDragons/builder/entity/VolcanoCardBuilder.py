@@ -13,7 +13,7 @@ from engine.exceptions.IncompleteBuilderError import IncompleteBuilderError
 from engine.scene.MultiFrameCommandRunner import MultiFrameCommandRunner
 from engine.scene.World import World
 from engine.utils.Vec2 import Vec2
-from fieryDragons.Random import Random
+from engine.Random import Random
 from fieryDragons.Segment import Segment
 from fieryDragons.VolcanoCard import VolcanoCard
 from fieryDragons.builder.entity.CaveBuilder import CaveBuilder

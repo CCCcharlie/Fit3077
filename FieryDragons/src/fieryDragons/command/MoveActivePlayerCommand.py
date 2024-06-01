@@ -1,7 +1,7 @@
+from typing import Dict
 from engine.command.Command import Command
 from fieryDragons.Player import Player
 from fieryDragons.enums.AnimalType import AnimalType
-
 
 class MoveActivePlayerCommand(Command):
   def __init__(self, animalType: AnimalType, amount: int):

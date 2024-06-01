@@ -2,18 +2,19 @@ from enum import Enum
 from typing import Dict, List
 
 from engine.command.Command import Command
+from engine.component.TransformComponent import TransformComponent
 from engine.component.renderable.RenderableComponent import RenderableComponent
 from engine.entity.Updateable import Updateable
 from engine.observer.subscriber import Subscriber
 from fieryDragons.observer.PlayerTurnEndEmitter import PlayerTurnEndEmitter
-from fieryDragons.save.Serializable import Serializable
+from engine.Serializable import Serializable
 
 class State(Enum):
     HIDDEN = 1
     VISIBLE = 2
 
 class ChitCard(Subscriber, Updateable, Serializable):
-    def __init__(self, front: List[RenderableComponent], back: RenderableComponent, command: Command):
+    def __init__(self, transforms: List[TransformComponent], front: List[RenderableComponent], back: RenderableComponent, command: Command):
         """
         
         Args:
@@ -23,6 +24,8 @@ class ChitCard(Subscriber, Updateable, Serializable):
         self.__back: RenderableComponent = back
         self.__state: State = State.HIDDEN
         self.__command: Command = command
+
+        self.__transforms: List[TransformComponent] = transforms
 
         PlayerTurnEndEmitter().subscribe(self)
 
@@ -71,10 +74,12 @@ class ChitCard(Subscriber, Updateable, Serializable):
     def serialise(self) -> Dict:
         d: dict = {}
         d["state"] = self.__state.value
+        d["transforms"] = [transform.serialise() for transform in self.__transforms]
         return d
     
     
     def deserialise(self, data: Dict) -> None:
+        ## deserialise state 
         state = data["state"]
         self.__state = State(state)
 
@@ -87,4 +92,8 @@ class ChitCard(Subscriber, Updateable, Serializable):
                 renderable.hide()
             self.__back.show()
 
-        
+        ## deserialise transforms
+        transformData = data["transforms"]
+        for (transform, data) in zip(self.__transforms, transformData):
+            transform.deserialise(data)
+

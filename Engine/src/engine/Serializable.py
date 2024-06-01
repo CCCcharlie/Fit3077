@@ -1,7 +1,7 @@
 from abc import abstractmethod
 from typing import Dict
 
-from fieryDragons.Random import Random
+from engine.Random import Random
 
 class Serializable():
   """

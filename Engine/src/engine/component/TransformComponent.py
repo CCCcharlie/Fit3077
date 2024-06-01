@@ -1,10 +1,13 @@
 from __future__ import annotations
+from typing import Dict
+
+from engine.Serializable import Serializable
 
 
 from ..utils.Vec2 import Vec2
 
 
-class TransformComponent():
+class TransformComponent(Serializable):
   def __init__(self):
     self._position: Vec2 = Vec2(0,0) 
     self._scale: Vec2 = Vec2(1,1)
@@ -52,3 +55,32 @@ class TransformComponent():
     self._position = t.position.clone()
     self._rotation = t.rotation
     self._scale = t.scale.clone()
+
+  def serialise(self) -> Dict:
+    d: Dict = {}
+
+    d["position"] = {
+      "x": self.position.x,
+      "y": self.position.y
+    }
+    d["rotation"] = self.rotation
+    d["scale"] = {
+      "x": self.scale.x,
+      "y": self.scale.y
+    }
+
+    return d
+  
+  def deserialise(self, data: Dict) -> None:
+    position = data["position"]
+    rotation = data["rotation"]
+    scale = data["scale"]
+
+    positionVec = Vec2(float(position["x"]), float(position['y']))
+    rotationInt = int(rotation)
+    scaleVec = Vec2(float(scale['x']), float(scale['y']))
+
+    self.position = positionVec
+    self.rotation = rotationInt
+    self.scale = scaleVec
+    return None

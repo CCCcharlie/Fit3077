@@ -16,7 +16,7 @@ from fieryDragons.builder.scene.WinSceneBuilder import WinSceneBuilder
 
 from fieryDragons.enums.AnimalType import AnimalType
 from fieryDragons.observer.PlayerTurnEndEmitter import PlayerTurnEndEmitter
-from fieryDragons.save.Serializable import Serializable
+from engine.Serializable import Serializable
 
 
 class Player(Serializable):
