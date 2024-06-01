@@ -109,7 +109,7 @@ class GameSceneBuilder(SceneBuilder):
             4,
             Vec2(center_x + 40, center_y + 40),
             10 * circleRadius/8,
-            10 * circleRadius/8,
+            12 * circleRadius/8,
         )
         chitCardBuilder = ChitCardBuilder(40)
 
