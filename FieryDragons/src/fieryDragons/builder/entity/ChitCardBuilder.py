@@ -107,7 +107,7 @@ class ChitCardBuilder:
 
     back_circle = CircleComponent(transformComponent, self.__radius, self.__backColor)
 
-    ccComponent = ChitCard([front_circle, front_image], back_circle, command)
+    ccComponent = ChitCard([transformComponent, transform],[front_circle, front_image], back_circle, command)
     SaveManager().register(ccComponent)
 
     ccClickedCommand: Command = ChitCardClickedCommand(ccComponent)
@@ -139,7 +139,7 @@ class ChitCardBuilder:
     imageDelayMove = DelayExecuteMFMFCommand(
     LinearMoveMFCommand(
         start,
-        transformComponent.clone(),
+        transformComponent,
         transformComponent, 
         300
     ),
@@ -158,7 +158,7 @@ class ChitCardBuilder:
     imageDelayMove = DelayExecuteMFMFCommand(
     LinearMoveMFCommand(
         start,
-        transform.clone(),
+        transform,
         transform, 
         300
     ),

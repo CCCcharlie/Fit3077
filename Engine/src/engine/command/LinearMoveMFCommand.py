@@ -29,6 +29,12 @@ class LinearMoveMFCommand(MultiFrameCommand):
         self.__timeElapsed: float = 0.0
         super().__init__()
 
+    def run(self):
+        self.__start = self.__start.clone()
+        self.__end = self.__end.clone()
+        super().run()
+    
+
     def update(self, dt: float):
         """
         Update of the linear movement
