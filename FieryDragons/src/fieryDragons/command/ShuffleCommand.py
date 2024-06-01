@@ -11,11 +11,12 @@ class ShuffleCommand(Command):
     """
     Shuffle the ChitCards by rearranging the order
     """
-    def __init__(self, transforms: List[Tuple[TransformComponent, TransformComponent]]):
-        self.__transforms = transforms
+    def __init__(self, transforms: List[Tuple[TransformComponent, TransformComponent]], leftHand: TransformComponent):
+        self.__transforms: List[Tuple[TransformComponent, TransformComponent]] = transforms
+        self.__leftHand: TransformComponent = leftHand
 
     def run(self):
-        command = DelayExecuteMFCommand(ExecuteShuffleCommand(self.__transforms), 1000)
+        command = DelayExecuteMFCommand(ExecuteShuffleCommand(self.__transforms, self.__leftHand), 1000)
         MultiFrameCommandRunner().addCommand(command)
         command.run()
 

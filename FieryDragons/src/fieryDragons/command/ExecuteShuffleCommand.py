@@ -2,6 +2,7 @@ from engine.command.Command import Command
 from typing import List, Tuple
 from engine.command.DelayExecuteMFMFCommand import DelayExecuteMFMFCommand
 from engine.command.LinearMoveMFCommand import LinearMoveMFCommand
+from engine.command.ShakeMFCommand import ShakeMFCommand
 from engine.component.TransformComponent import TransformComponent
 from engine.scene.MultiFrameCommandRunner import MultiFrameCommandRunner
 from engine.scene.World import World
@@ -15,8 +16,10 @@ class ExecuteShuffleCommand(Command):
     """
     Shuffle the ChitCards by rearranging the order
     """
-    def __init__(self, transforms: List[Tuple[TransformComponent, TransformComponent]]):
-        self.__transforms = transforms
+    def __init__(self, transforms: List[Tuple[TransformComponent, TransformComponent]], leftHand: TransformComponent):
+        self.__transforms: List[Tuple[TransformComponent, TransformComponent]] = transforms
+        self.__leftHand: TransformComponent = leftHand
+
 
     def getNewTransforms(self, transforms: List[Tuple[TransformComponent, TransformComponent]]) -> List[Tuple[TransformComponent, TransformComponent]]:
         """
@@ -54,8 +57,8 @@ class ExecuteShuffleCommand(Command):
             moveToPosition1 = LinearMoveMFCommand(centerTransform, new_t1, t1, 250)
             moveToPosition2 = LinearMoveMFCommand(centerTransform, new_t2, t2, 250)
 
-            delayMove1 = DelayExecuteMFMFCommand(moveToPosition1, 1000)
-            delayMove2 = DelayExecuteMFMFCommand(moveToPosition2, 1000)
+            delayMove1 = DelayExecuteMFMFCommand(moveToPosition1, 2500)
+            delayMove2 = DelayExecuteMFMFCommand(moveToPosition2, 2500)
 
             MultiFrameCommandRunner().addCommand(delayMove1)
             MultiFrameCommandRunner().addCommand(delayMove2)
@@ -63,7 +66,29 @@ class ExecuteShuffleCommand(Command):
             delayMove1.run()
             delayMove2.run()
 
-        #Position Hand sprites to fly in and then fly out
+        #Position Hand sprites to fly in and jitter then fly out
+        startTransform = TransformComponent()
+        startTransform.position = Vec2(-2000, World().SCREEN_HEIGHT//2-250)
+        endTransform = TransformComponent()
+        endTransform.position = Vec2(World().SCREEN_WIDTH//2 - 500 + 50, World().SCREEN_HEIGHT//2-250)
+
+        moveHandIn = LinearMoveMFCommand(startTransform, endTransform, self.__leftHand, 1000)
+        moveHandOut = LinearMoveMFCommand(endTransform, startTransform, self.__leftHand, 1000)
+
+        delayMoveHandOut = DelayExecuteMFMFCommand(moveHandOut, 1000 + 750)
+
+        #jitter
+        jitter = ShakeMFCommand(5, self.__leftHand, 550)
+        jitterDelay = DelayExecuteMFMFCommand(jitter, 1100)
+
+
+        MultiFrameCommandRunner().addCommand(moveHandIn)
+        MultiFrameCommandRunner().addCommand(delayMoveHandOut)
+        MultiFrameCommandRunner().addCommand(jitterDelay)
+
+        moveHandIn.run()
+        delayMoveHandOut.run()
+        jitterDelay.run()
             
 
         #end the active players turn

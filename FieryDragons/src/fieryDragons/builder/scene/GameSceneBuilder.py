@@ -2,6 +2,8 @@ from __future__ import annotations
 from typing import List
 
 from engine.builder.entity.ButtonBuilder import ButtonBuilder
+from engine.component.TransformComponent import TransformComponent
+from engine.component.renderable.SpriteComponent import SpriteComponent
 from engine.entity.Entity import Entity
 from engine.scene.Scene import Scene
 
@@ -103,6 +105,15 @@ class GameSceneBuilder(SceneBuilder):
             s.addEntity(p)
         playerBuilder.finish()
 
+
+        # build hands
+        leftHandE = Entity()
+        leftHandT = TransformComponent()
+        leftHandT.position = Vec2(-2000, World.SCREEN_HEIGHT//2 - 250)
+        leftHandSprite = SpriteComponent(leftHandT, 1000,500, "hand.png")
+        leftHandE.add_renderable(leftHandSprite)
+        
+
         # Place chit cards
         gridIterator = GridCoordinateIterator(
             5,
@@ -111,7 +122,7 @@ class GameSceneBuilder(SceneBuilder):
             10 * circleRadius/8,
             12 * circleRadius/8,
         )
-        chitCardBuilder = ChitCardBuilder(40)
+        chitCardBuilder = ChitCardBuilder(40, leftHandT)
 
         for v2 in gridIterator:
             if not chitCardBuilder.has_more_cards():
@@ -120,7 +131,9 @@ class GameSceneBuilder(SceneBuilder):
             if e is not None:
                 s.addEntity(e)
 
-
+        # place hand after chit cards 
+        s.addEntity(leftHandE)
+        
         #place active player render
         apdBuilder = ActivePlayerDisplayBuilder().setPlayerColors(PlayerBuilder.playerColors)
         s.addEntity(apdBuilder.build())

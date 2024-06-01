@@ -34,7 +34,7 @@ class ChitCardBuilder:
   """
   Build a chit card
   """
-  def __init__(self, radius: int):
+  def __init__(self, radius: int, leftHand: TransformComponent):
     """
     Create the builder 
 
@@ -51,6 +51,8 @@ class ChitCardBuilder:
     self.__positionChanged: bool = False
 
     self.__transforms: List[Tuple[ TransformComponent, TransformComponent]] = []
+
+    self.__leftHand: TransformComponent = leftHand
 
     self.__chitCards: List[Tuple[AnimalType, str, Command]] = [
       (AnimalType.SALAMANDER, "chitcard/1Salamander.png",MoveActivePlayerCommand(AnimalType.SALAMANDER, 1) ),
@@ -69,7 +71,7 @@ class ChitCardBuilder:
       (AnimalType.PIRATE_DRAGON, "chitcard/1PirateDragon.png", MoveActivePlayerCommand(AnimalType.PIRATE_DRAGON, 1)),
       (AnimalType.PIRATE_DRAGON, "chitcard/2PirateDragon.png", MoveActivePlayerCommand(AnimalType.PIRATE_DRAGON, 2)),
       (AnimalType.PIRATE_DRAGON, "chitcard/2PirateDragon.png", MoveActivePlayerCommand(AnimalType.PIRATE_DRAGON, 2)),
-      (AnimalType.SHUFFLE, "chitcard/Shuffle.png", ShuffleCommand(self.__transforms)),
+      (AnimalType.SHUFFLE, "chitcard/Shuffle.png", ShuffleCommand(self.__transforms, self.__leftHand)),
       
     ]
 

@@ -52,5 +52,9 @@ class ShakeMFCommand(MultiFrameCommand):
             self.__original.position.y + offsetY
         )
 
+    def run(self):
+        super().run()
+        self.__original = self.__transform.clone()
+
 
  
