@@ -44,8 +44,6 @@ class PlayerBuilder:
   def build(self) -> Entity:
     # first generate path
     path = self.__startingVolcanoCard.generatePath()
-    print("Path is")
-    print(path)
 
     t = TransformComponent()
     t.position = Vec2(-100,-100)

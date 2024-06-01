@@ -87,9 +87,7 @@ class CircularSegmentTrapezoidComponent(RenderableComponent):
         a2 = math.radians(90)
         y2 = self.__inner_radius * math.sin(a2)
         self.__pivot = Vec2(width/2, y2 - y1)
-        print("Set pivot to")
-        print(self.__pivot)
-
+        
         draw.circle(image_surf, Color(0,255,0), (self.__pivot.x, self.__pivot.y),5)
         # draw.circle(image_surf, Color(0,255,0), (0,0),5)
         # draw.circle(image_surf, Color(255,0,0), (width,0),5)

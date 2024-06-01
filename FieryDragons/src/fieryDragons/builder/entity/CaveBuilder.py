@@ -24,6 +24,8 @@ class CaveBuilder:
         self.__radius: int | None = None
         self.__animal_type: AnimalType | None = None
 
+        self.__lastSegment: Segment | None = None
+
         
     def setTransform(self, transform: TransformComponent) -> CaveBuilder:
         self.__transform = transform
@@ -37,6 +39,10 @@ class CaveBuilder:
         self.__animal_type = animal_type
         return self
     
+    def getLastSegment(self) -> Segment:
+        if self.__lastSegment is None:
+            raise IncompleteBuilderError(self.__class__.__name__, "Must call build before accessing last segment")
+        return self.__lastSegment
 
     def build(self) -> Entity:
         # Error handling
@@ -49,7 +55,7 @@ class CaveBuilder:
 
 
 
-        segment = Segment(self.__transform, self.__animal_type, Vec2(0,0))
+        self.__lastSegment = Segment(self.__transform, self.__animal_type)
 
         cave = CircleComponent(
             self.__transform, self.__radius, self.__animal_type.get_colour(),Color(0,0,0)

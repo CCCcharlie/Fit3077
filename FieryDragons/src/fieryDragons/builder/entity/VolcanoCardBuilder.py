@@ -132,15 +132,13 @@ class VolcanoCardBuilder:
             transform = transforms[self.__index * (self.__numSegments) + i - 1]
 
             #calculate offset from transform
-            offset = pygame.Vector2(0,-100)
-            offset = offset.rotate(transform.rotation)
-
+            # offset = pygame.Vector2(0,100)
+            # offset = offset.rotate(transform.rotation)
 
             e = (
                 self.__segmentBuilder
                 .setAnimalType(AnimalType.get_random_animal())
                 .setTransform(transform)
-                .setOffset(Vec2(offset.x, offset.y))
                 .build()
             )
             segment = self.__segmentBuilder.getLastSegment()
@@ -163,7 +161,7 @@ class VolcanoCardBuilder:
                 .setTransform(caveTransform)
                 .build()
             )
-            cave = self.__segmentBuilder.getLastSegment()
+            cave = self.__caveBuilder.getLastSegment()
             
             entities.append(e)
 

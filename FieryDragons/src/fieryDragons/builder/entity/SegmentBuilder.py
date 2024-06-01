@@ -26,7 +26,6 @@ class SegmentBuilder:
         self.__size: int | None = None
         self.__animal_type: AnimalType | None = None
         self.__transformChanged: bool = False
-        self.__offset: Vec2 = Vec2(0,0)
 
         self.__index = 0
 
@@ -36,10 +35,6 @@ class SegmentBuilder:
         self.__transformChanged = True
         return self
     
-    def setOffset(self, offset: Vec2) -> SegmentBuilder:
-        self.__offset = offset
-        return self
-
     def setSize(self, size: int) -> SegmentBuilder:
         self.__size = size
         return self
@@ -65,7 +60,7 @@ class SegmentBuilder:
 
 
         # Creation
-        segment = Segment(self.__transform, self.__animal_type, self.__offset)
+        segment = Segment(self.__transform, self.__animal_type)
         self.__lastBuiltSegment = segment
 
         trap = CircularSegmentTrapezoidComponent(

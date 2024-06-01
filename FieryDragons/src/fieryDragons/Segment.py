@@ -4,11 +4,9 @@ from fieryDragons.enums.AnimalType import AnimalType
 
 
 class Segment():
-  def __init__(self, transformComponent: TransformComponent, animalType: AnimalType, offset: Vec2 = Vec2(0,0)):
+  def __init__(self, snapTransform: TransformComponent, animalType: AnimalType):
     self.__animalType: AnimalType = animalType
-
-    self.__snapTransform = transformComponent.clone()
-    self.__snapTransform.position += offset
+    self.__snapTransform: TransformComponent = snapTransform.clone()
 
   def getAnimalType(self) -> AnimalType:
     return self.__animalType
