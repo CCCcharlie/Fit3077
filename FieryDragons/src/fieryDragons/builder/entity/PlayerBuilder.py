@@ -11,8 +11,9 @@ from engine.scene.World import World
 from engine.utils.Vec2 import Vec2
 from fieryDragons.Player import Player
 from fieryDragons.Segment import Segment
-from engine.builder.SceneBuilder import SceneBuilder
 from fieryDragons.save.SaveManager import SaveManager
+from fieryDragons.VolcanoCard import VolcanoCard
+
 from pygame import Color
 
 
@@ -27,18 +28,15 @@ class PlayerBuilder:
   def __init__(self):
     self.__playerNumber = 0
 
-    self.__startingSegment: Segment = None
-    self.__startingSegmentChanged = False
-
+    self.__startingVolcanoCard: VolcanoCard = None
 
     self.__firstPlayer: Player = None
     self.__previousPlayer: Player = None
 
     self.__animate = True
 
-  def setStartingSegment(self, startingSegment: Segment) -> PlayerBuilder:
-    self.__startingSegment = startingSegment
-    self.__startingSegmentChanged = True
+  def setStartingVolcanoCard(self, startingVolcanoCard: VolcanoCard) -> PlayerBuilder:
+    self.__startingVolcanoCard = startingVolcanoCard
     return self
 
   def setAnimate(self, value : bool) -> PlayerBuilder:
@@ -50,24 +48,21 @@ class PlayerBuilder:
     Player.ACTIVE_PLAYER = self.__firstPlayer
 
   def build(self) -> Entity:
-    #error handling
-    if self.__startingSegmentChanged is False:
-      return IncompleteBuilderError(self.__class__.__name__, "Starting Segment Unchanged")
-
-    self.__startingSegmentChanged = False
+    # first generate path
+    path = self.__startingVolcanoCard.generatePath()
 
     t = TransformComponent()
-    p = Player(self.__startingSegment, t, self.__playerNumber)
+    t.position = Vec2(-100,-100)
+    p = Player(path, t, self.__playerNumber)
 
     if self.__animate:
-        t.position = Vec2(-100,-100)
         #slowly move player to segment from middle
         start = TransformComponent()
         start.position = Vec2(World().SCREEN_WIDTH/2, World().SCREEN_HEIGHT/2)
         playerDelayMove = DelayExecuteMFMFCommand(
           LinearMoveMFCommand(
             start,
-            self.__startingSegment.getSnapTransform(),
+            path[0].getSnapTransform(),
             t, 
             500
           ),
@@ -76,7 +71,7 @@ class PlayerBuilder:
         MultiFrameCommandRunner().addCommand(playerDelayMove)
         playerDelayMove.run()
     else:
-        t.position = self.__startingSegment.getSnapTransform().position
+        t.position = path[0].getSnapTransform().position
 
     SaveManager().register(p)
     
@@ -93,9 +88,3 @@ class PlayerBuilder:
     e = Entity()
     e.add_renderable(r)
     return e
-
-
-   
-
-
-    

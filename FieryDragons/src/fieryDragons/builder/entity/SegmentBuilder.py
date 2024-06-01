@@ -4,6 +4,7 @@ from typing import List, Tuple
 from engine.command.DelayExecuteMFMFCommand import DelayExecuteMFMFCommand
 from engine.command.LinearMoveMFCommand import LinearMoveMFCommand
 from engine.component.TransformComponent import TransformComponent
+from engine.component.renderable.CircularSegmentTrapezoidComponent import CircularSegmentTrapezoidComponent
 from engine.component.renderable.SpriteComponent import SpriteComponent
 from engine.component.renderable.TrapezoidComponent import TrapezoidComponent
 from engine.entity.Entity import Entity
@@ -24,41 +25,18 @@ class SegmentBuilder:
         self.__transform: TransformComponent | None = None
         self.__size: int | None = None
         self.__animal_type: AnimalType | None = None
-        self.__transformChanged = False
-
-        self.__previous: Segment = None
-        self.__first: Segment = None
+        self.__transformChanged: bool = False
+        self.__lastBuiltSegment : Segment = None
 
         self.__index = 0
+        self.__animate: bool = True
 
-        self.__animate = True
 
-        ## define volcano cards
-        volcanoCardSpecifications: List[Tuple[AnimalType, AnimalType, AnimalType]] = [
-            (AnimalType.BABY_DRAGON, AnimalType.BAT, AnimalType.SPIDER),
-            (AnimalType.SALAMANDER, AnimalType.SPIDER, AnimalType.BAT),
-            (AnimalType.SPIDER, AnimalType.SALAMANDER, AnimalType.BABY_DRAGON),
-            (AnimalType.BAT, AnimalType.SPIDER, AnimalType.BABY_DRAGON),
-            (AnimalType.SPIDER, AnimalType.BAT, AnimalType.SALAMANDER),
-            (AnimalType.BABY_DRAGON, AnimalType.SALAMANDER, AnimalType.BAT),
-            (AnimalType.BAT, AnimalType.BABY_DRAGON, AnimalType.SALAMANDER),
-            (AnimalType.SALAMANDER, AnimalType.BABY_DRAGON, AnimalType.SPIDER)
-        ]
-        
-        Random().shuffle(volcanoCardSpecifications)
-        # extract order from specs 
-        self._volcanoCardTypes: List[AnimalType] = []
-        for a,b,c in volcanoCardSpecifications:
-            self._volcanoCardTypes.append(a)
-            self._volcanoCardTypes.append(b)
-            self._volcanoCardTypes.append(c)
-
-        
     def setTransform(self, transform: TransformComponent) -> SegmentBuilder:
         self.__transform = transform.clone()
         self.__transformChanged = True
         return self
-
+    
     def setSize(self, size: int) -> SegmentBuilder:
         self.__size = size
         return self
@@ -71,12 +49,9 @@ class SegmentBuilder:
         self.__animate = value
         return self
     
-    def finish(self):
-        self.__previous.setNext(self.__first)
-
     def getLastSegment(self) -> Segment:
-        return self.__previous
-        
+        return self.__lastBuiltSegment
+
     def build(self) -> Entity:
         self.__index += 1
         # Error handling
@@ -86,33 +61,34 @@ class SegmentBuilder:
             raise IncompleteBuilderError(self.__class__.__name__, "Transform Component")
         if self.__size is None:
             raise IncompleteBuilderError(self.__class__.__name__, "Size")
-
         self.__transformChanged = False
+
+
         # Creation
+        # calculate snap transform from this transform
+        snap_transform = self.__transform.clone()
+        offset = pygame.Vector2(0,125)
+        offset = offset.rotate(-snap_transform.rotation)
         
-        if self.__animal_type is None:
-            self.__animal_type = self._volcanoCardTypes.pop(0)
+        snap_transform.position += Vec2(offset.x, offset.y)
 
-        segment = Segment(self.__transform, self.__animal_type, Vec2(0,0))
-        
-        if self.__first is None:
-            self.__first = segment
-        else:
-            self.__previous.setNext(segment)
-        self.__previous = segment
-        
-        
+        segment = Segment(snap_transform, self.__animal_type)
+        self.__lastBuiltSegment = segment
 
-        trap = TrapezoidComponent(
-            self.__transform, round(3 * self.__size/4 - 10), self.__size+ 10, self.__size, self.__animal_type.get_colour()
+        trap = CircularSegmentTrapezoidComponent(
+            self.__transform,
+            200 - 8,
+            1080 //4 + 29,
+            44//3 - 1,
+            self.__animal_type.get_colour()
         )
 
-        transform = self.__transform.clone()
-        offset = pygame.Vector2(self.__size/4, 0).rotate(-transform.rotation)
-        transform.position = self.__transform.position - Vec2(offset.x, offset.y)
+        sprite_transform = self.__transform.clone()
+        offset = pygame.Vector2(self.__size/4, 0).rotate(-sprite_transform.rotation)
+        sprite_transform.position = self.__transform.position - Vec2(offset.x, offset.y)
 
         sprite = SpriteComponent(
-            transform, self.__size/2, self.__size/2, self.__animal_type.get_sprite()
+            sprite_transform, self.__size/2, self.__size/2, self.__animal_type.get_sprite()
         )
 
         e = Entity()
@@ -124,6 +100,7 @@ class SegmentBuilder:
             # move segments to position in a fanning motion
             start = TransformComponent()
             start.position = Vec2(World().SCREEN_WIDTH/2, World().SCREEN_HEIGHT/2)
+            start.rotation = self.__transform.rotation
             segmentDelayMove = DelayExecuteMFMFCommand(
             LinearMoveMFCommand(
                 start,
@@ -144,11 +121,12 @@ class SegmentBuilder:
             # move segments to position in a fanning motion
             start = TransformComponent()
             start.position = Vec2(World().SCREEN_WIDTH/2, World().SCREEN_HEIGHT/2)
+            start.rotation = sprite_transform.rotation
             imageDelayMove = DelayExecuteMFMFCommand(
             LinearMoveMFCommand(
                 start,
-                transform.clone(),
-                transform, 
+                sprite_transform.clone(),
+                sprite_transform, 
                 250
             ),
             self.__index * 100
@@ -156,9 +134,6 @@ class SegmentBuilder:
             MultiFrameCommandRunner().addCommand(imageDelayMove)
             imageDelayMove.run()
 
-            transform.position = Vec2(-100,-100)
-
-        # Reset animal type
-        self.__animal_type = None
+            sprite_transform.position = Vec2(-100,-100)
         
         return e

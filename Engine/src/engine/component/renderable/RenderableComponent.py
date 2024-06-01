@@ -105,8 +105,9 @@ class RenderableComponent(Renderable):
     rect.x += position.x
     rect.y += position.y
 
+
     #blit to screen
     display_surf.blit(image, rect)
-    #pygame.draw.circle(display_surf, Color(0,0,0), position.toTuple(), 2)
+    pygame.draw.circle(display_surf, Color(255,0,0), position.toTuple(), 5)
 
 
