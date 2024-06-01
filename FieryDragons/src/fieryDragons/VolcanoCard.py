@@ -29,7 +29,7 @@ class VolcanoCard():
     for i in range(numSegmentsBeforeCave, len(self.__segments)):
       path.append(self.__segments[i]) 
 
-    restOfPath = self._generatePath(self.__cave)
+    restOfPath = self.__next._generatePath(self.__cave)
     path.extend(restOfPath)
     return path
 

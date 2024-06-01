@@ -174,6 +174,10 @@ class VolcanoCardBuilder:
             self.__previous.setNext(vc)
         self.__previous = vc
 
+        # save first
+        if self.__index == 0:
+            self.__first = vc
+
         self.__index += 1
 
         return entities
