@@ -2,6 +2,7 @@ from __future__ import annotations
 from engine.builder.SceneBuilder import SceneBuilder
 from engine.component.TransformComponent import TransformComponent
 from engine.component.renderable.ParagraphComponent import ParagraphComponent
+from engine.command.DoNothingCommand import DoNothingCommand
 from engine.entity.Entity import Entity
 from engine.scene.Scene import Scene
 from engine.scene.World import World
@@ -53,7 +54,7 @@ You can demo clicking the Chit Card now."""
             (World().size[0] // 2) - (chitRadius // 2),
             (World().size[1] // 2) - (chitRadius // 2),
         )
-        chitCard = ChitCardBuilder(chitRadius).setPosition(chitVecPos).setAnimate(False).build()
+        chitCard = ChitCardBuilder(chitRadius, None).setPosition(chitVecPos).setCommandOverride(DoNothingCommand()).setAnimate(False).build()
         scene.addEntity(chitCard)
 
         return scene

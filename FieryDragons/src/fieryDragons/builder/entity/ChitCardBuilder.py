@@ -50,6 +50,9 @@ class ChitCardBuilder:
 
     self.__positionChanged: bool = False
     self.__animate : bool = True
+    self.__command : Command = None
+    self.__animalType : AnimalType = None
+    self.__image : str = None
 
     self.__transforms: List[Tuple[ TransformComponent, TransformComponent]] = []
     self.__leftHand: TransformComponent = leftHand
@@ -74,11 +77,29 @@ class ChitCardBuilder:
       (AnimalType.SHUFFLE, "chitcard/Shuffle.png", ShuffleCommand(self.__transforms, self.__leftHand)),
     ]
 
+    Random().shuffle(self.__chitCards)
+
 
   def setPosition(self, position: Vec2) -> ChitCardBuilder:
     self.__positionChanged = True
     self.__position = position
     return self
+
+  def setAnimate(self, value : bool) -> ChitCardBuilder:
+      self.__animate = value
+      return self
+
+  def setImageOverride(self, image : str) -> ChitCardBuilder:
+      self.__image = image
+      return self
+
+  def setCommandOverride(self, command : Command) -> ChitCardBuilder:
+      self.__command = command
+      return self
+
+  def setAnimalTypeOverride(self, animalType : AnimalType) -> ChitCardBuilder:
+      self.__animalType = animalType
+      return self
 
   def has_more_cards(self) -> bool:
         return len(self.__chitCards) > 0
@@ -88,7 +109,13 @@ class ChitCardBuilder:
     if self.__positionChanged is False:
       raise IncompleteBuilderError("ChitCard", "Position")
     
+    if self.__animalType is not None:
+        self.__chitCards = list(filter(lambda x : x[0] == self.__animalType, self.__chitCards))
     animalType, imageLocation, command = self.__chitCards.pop()
+    if self.__image is not None:
+        imageLocation = self.__image
+    if self.__command is not None:
+        command = self.__command
 
     #set front colour based on animal type
     self.__frontColor = animalType.get_colour()

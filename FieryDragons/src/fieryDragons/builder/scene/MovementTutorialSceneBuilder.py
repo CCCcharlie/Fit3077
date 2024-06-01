@@ -2,11 +2,13 @@ from __future__ import annotations
 from engine.builder.SceneBuilder import SceneBuilder
 from engine.component.TransformComponent import TransformComponent
 from engine.component.renderable.ParagraphComponent import ParagraphComponent
+from engine.component.renderable.RectComponent import RectComponent
 from engine.entity.Entity import Entity
 from engine.scene.Scene import Scene
 from engine.scene.World import World
 from engine.utils.Vec2 import Vec2
 from pygame.color import Color
+from fieryDragons.Player import Player
 
 from fieryDragons.builder.entity.ChitCardBuilder import ChitCardBuilder
 from fieryDragons.builder.entity.PlayerBuilder import PlayerBuilder
@@ -47,13 +49,12 @@ Click the Chit Card in the middle of the screen to demo player movement."""
                 MovementTutorialSceneBuilder.TEXT,
                 512,
                 int(World().size[1] * 6 / 8),
-                color=Color(0,0,0)
+                color=Color(0, 0, 0),
             )
             e.add_renderable(text)
             scene.addEntity(e)
 
         animalType = AnimalType.get_random_animal()
-        count = 2
 
         # Chit
         chitRadius = 40
@@ -62,49 +63,37 @@ Click the Chit Card in the middle of the screen to demo player movement."""
             (World().size[1] // 2) - (chitRadius // 2),
         )
         chitCard = (
-            ChitCardBuilder(chitRadius)
+            ChitCardBuilder(chitRadius, None)
             .setPosition(chitVecPos)
             .setAnimate(False)
-            .setAnimalType(animalType)
-            .setCount(count)
+            .setAnimalTypeOverride(animalType)
             .build()
         )
         scene.addEntity(chitCard)
 
         # Segments
-        circleIter = CircleCoordinateIterator(
-            24,
-            5 * min(*World().size) // 8 - 150,
-            World().size[0] // 2,
-            World().size[1] // 2 + 40,
-            offset=1,
-        )
-        segmentBuilder = SegmentBuilder()
-        for i, t in zip(range(count + 1), circleIter):
-            if i == 0:
-                e = (
-                    segmentBuilder.setSize(circleIter.size * 1.55)
-                    .setTransform(t)
-                    .setAnimalType(animalType)
-                    .setAnimate(False)
-                    .build()
-                )
-                segment = segmentBuilder.getLastSegment()
-            else:
-                e = (
-                    segmentBuilder.setSize(circleIter.size * 1.55)
-                    .setTransform(t)
-                    .setAnimalType(None)
-                    .setAnimate(False)
-                    .build()
-                )
-            scene.addEntity(e)
-        segmentBuilder.finish()
+        segmentBuilder = SegmentBuilder().setSize(200-8)
+
+        circleRadius = 1 * min(World().size[0], World().size[1]) // 4 + 25
+        center_x = World().size[0] // 2
+        center_y = World().size[1] // 2
+        c_iter = CircleCoordinateIterator(8*3, circleRadius, center_x, center_y)
+        segments = []
+        for i in range(4):
+            segmentBuilder.setAnimalType(animalType if i == 0 else AnimalType.get_random_animal())
+            scene.addEntity(segmentBuilder.setTransform(next(c_iter)).build())
+            segments.append(segmentBuilder.getLastSegment())
 
         # Player
-        playerBuilder = PlayerBuilder()
-        e = playerBuilder.setStartingSegment(segment).setAnimate(False).build()
-        playerBuilder.finish()
-        scene.addEntity(e)
+        path = segments + segments
+        transform = TransformComponent()
+        transform.position = path[0].getSnapTransform().position
+        r = RectComponent(transform, 50,50,PlayerBuilder.playerColors[0])
+        player_entity = Entity()
+        player_entity.add_renderable(r)
+        player = Player(path, transform, 0)
+        player.setNextPlayer(player)
+        Player.ACTIVE_PLAYER = player
+        scene.addEntity(player_entity)
 
         return scene

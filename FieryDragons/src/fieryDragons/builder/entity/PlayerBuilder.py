@@ -52,7 +52,6 @@ class PlayerBuilder:
     path = self.__startingVolcanoCard.generatePath()
 
     t = TransformComponent()
-    t.position = Vec2(-100,-100)
     p = Player(path, t, self.__playerNumber)
 
     if self.__animate:
@@ -70,6 +69,7 @@ class PlayerBuilder:
         )
         MultiFrameCommandRunner().addCommand(playerDelayMove)
         playerDelayMove.run()
+        t.position = Vec2(-100,-100)
     else:
         t.position = path[0].getSnapTransform().position
 
