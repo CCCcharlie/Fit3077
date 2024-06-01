@@ -105,7 +105,7 @@ class GameSceneBuilder(SceneBuilder):
 
         # Place chit cards
         gridIterator = GridCoordinateIterator(
-            4,
+            5,
             4,
             Vec2(center_x + 40, center_y + 40),
             10 * circleRadius/8,
@@ -114,8 +114,11 @@ class GameSceneBuilder(SceneBuilder):
         chitCardBuilder = ChitCardBuilder(40)
 
         for v2 in gridIterator:
+            if not chitCardBuilder.has_more_cards():
+                break
             e = chitCardBuilder.setPosition(v2).build()
-            s.addEntity(e)
+            if e is not None:
+                s.addEntity(e)
 
 
         #place active player render
