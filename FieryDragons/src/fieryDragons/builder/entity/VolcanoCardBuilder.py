@@ -130,10 +130,17 @@ class VolcanoCardBuilder:
         for i in range(self.__numSegments):
 
             transform = transforms[self.__index * (self.__numSegments) + i - 1]
+
+            #calculate offset from transform
+            offset = pygame.Vector2(0,-100)
+            offset = offset.rotate(transform.rotation)
+
+
             e = (
                 self.__segmentBuilder
                 .setAnimalType(AnimalType.get_random_animal())
                 .setTransform(transform)
+                .setOffset(Vec2(offset.x, offset.y))
                 .build()
             )
             segment = self.__segmentBuilder.getLastSegment()
