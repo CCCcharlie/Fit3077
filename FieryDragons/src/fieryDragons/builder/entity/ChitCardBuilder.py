@@ -1,8 +1,10 @@
 from __future__ import annotations
 from typing import List, Tuple
+from engine.command.DelayExecuteMFCommand import DelayExecuteMFCommand
 from engine.command.DelayExecuteMFMFCommand import DelayExecuteMFMFCommand
 from engine.command.LinearMoveMFCommand import LinearMoveMFCommand
 from engine.command.SetColorCommand import SetColorCommand
+from engine.command.ShowHideCommand import ShowHideCommand
 from engine.component.TransformComponent import TransformComponent
 from engine.component.hitbox.CircleHitboxComponent import CircleHitboxComponent
 from engine.component.hitbox.HitboxComponent import HitboxComponent
@@ -21,6 +23,7 @@ from fieryDragons.ChitCard import ChitCard
 
 
 from fieryDragons.command.MoveActivePlayerCommand import MoveActivePlayerCommand
+from fieryDragons.command.NotifyChitCardInPositionCommand import NotifyChitCardInPositionCommand
 from fieryDragons.command.ShuffleCommand import ShuffleCommand
 from fieryDragons.enums.AnimalType import AnimalType
 from fieryDragons.save.SaveManager import SaveManager
@@ -71,8 +74,12 @@ class ChitCardBuilder:
       
     ]
 
+    self.__numChitCards: int = len(self.__chitCards)
+
     Random().shuffle(self.__chitCards)
 
+  def onCleanup(self) -> None:
+     self.__transforms = []
 
   def setPosition(self, position: Vec2) -> ChitCardBuilder:
     self.__positionChanged = True
@@ -147,8 +154,15 @@ class ChitCardBuilder:
     )
     MultiFrameCommandRunner().addCommand(imageDelayMove)
     imageDelayMove.run()
-    transformComponent.position = Vec2(-100,-100)
+    #transformComponent.position = Vec2(-100,-100)
 
+    #hide the chit card
+    back_circle.hide()
+
+    #show the chit card once the slam animation begins
+    showBackOnSlamCommand = DelayExecuteMFCommand(ShowHideCommand(True, back_circle), self.__index * 250 + 5500)
+    MultiFrameCommandRunner().addCommand(showBackOnSlamCommand)
+    showBackOnSlamCommand.run()
 
     # move animals by slamming them down
     start = TransformComponent()
@@ -166,7 +180,14 @@ class ChitCardBuilder:
     )
     MultiFrameCommandRunner().addCommand(imageDelayMove)
     imageDelayMove.run()
-    transform.position = Vec2(-100,-100)
+
+    #finally notify the chit card that it is in position after the slam
+    finishCommand = DelayExecuteMFCommand(NotifyChitCardInPositionCommand(ccComponent), 5500 + 250 * (self.__numChitCards + 1))
+    MultiFrameCommandRunner().addCommand(finishCommand)
+    finishCommand.run()
+
+
+    #transform.position = Vec2(-100,-100)
 
 
     self.__transforms.append((transform, transformComponent))

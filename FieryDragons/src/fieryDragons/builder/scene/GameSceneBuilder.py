@@ -17,7 +17,6 @@ from fieryDragons.builder.entity.SavePopupBuilder import SavePopupBuilder
 from fieryDragons.builder.entity.SegmentBuilder import SegmentBuilder
 from engine.builder.SceneBuilder import SceneBuilder
 from fieryDragons.builder.entity.VolcanoCardBuilder import VolcanoCardBuilder
-from fieryDragons.enums.AnimalType import AnimalType
 from fieryDragons.save.SaveManager import SaveManager
 from fieryDragons.utils.GridCoordinateIterator import GridCoordinateIterator
 from ...utils.CircleCoordinateIterator import CircleCoordinateIterator

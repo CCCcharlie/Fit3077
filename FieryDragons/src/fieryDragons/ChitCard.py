@@ -36,6 +36,8 @@ class ChitCard(Subscriber, Updateable, Serializable):
             
             renderable.hide()
 
+        self.__transformData = []
+
         super().__init__()
 
     def activateDebug(self):
@@ -77,12 +79,7 @@ class ChitCard(Subscriber, Updateable, Serializable):
         d["transforms"] = [transform.serialise() for transform in self.__transforms]
         return d
     
-    
-    def deserialise(self, data: Dict) -> None:
-        ## deserialise state 
-        state = data["state"]
-        self.__state = State(state)
-
+    def inPosition(self) -> None:
         if self.__state == State.VISIBLE:
             for renderable in self.__front:
                 renderable.show()
@@ -92,8 +89,17 @@ class ChitCard(Subscriber, Updateable, Serializable):
                 renderable.hide()
             self.__back.show()
 
-        ## deserialise transforms
-        transformData = data["transforms"]
-        for (transform, data) in zip(self.__transforms, transformData):
+        for (transform, data) in zip(self.__transforms, self.__transformData):
             transform.deserialise(data)
+    
+    def deserialise(self, data: Dict) -> None:
+        ## deserialise state 
+        state = data["state"]
+        self.__state = State(state)
+
+        ## deserialise transforms
+        self.__transformData = data["transforms"]
+        print("transform data is ")
+        print(self.__transformData)
+        
 
