@@ -83,7 +83,7 @@ class Player(Serializable):
     return distance
 
 
-  def moveToSegment(self, segment: Segment):
+  def _moveToSegment(self, segment: Segment):
     command = LinearMoveMFCommand(self.transformComponent.clone(), segment.getSnapTransform(), self.transformComponent, 500)
     MultiFrameCommandRunner().addCommand(command)
     command.run()
@@ -119,6 +119,13 @@ class Player(Serializable):
     #print(f"Active player is {self.__nextPlayer.__playerNumber}")
     PlayerTurnEndEmitter().notify()
 
+  def forceMoveToSegment(self, segment: Segment):
+    """
+    Moves a player to a segment, overrides checks 
+    """
+    self._moveToSegment(segment)
+    self.position = self.path.index(segment)
+
   def move(self, animalType: AnimalType, amount: int):
     # CASE picked pirate dragon
     if animalType is AnimalType.PIRATE_DRAGON:
@@ -127,10 +134,10 @@ class Player(Serializable):
       newSegment = self.path[newLocation]
       if self.__canMove(newSegment):
         self.position = newLocation
-        self.moveToSegment(newSegment)
+        self._moveToSegment(newSegment)
       self.endTurn()
       return
-
+  
     #CASE picked the right animal
     if animalType is self.path[self.position].getAnimalType():
       newLocation = self.position + amount
@@ -139,7 +146,7 @@ class Player(Serializable):
       if newLocation >= len(self.path) - 1:
         #this player has won
         newLocation = len(self.path) - 1
-        self.moveToSegment(self.path[newLocation])
+        self._moveToSegment(self.path[newLocation])
 
         winSceneBuilder = WinSceneBuilder().setWinningPlayer(str(self.__playerNumber))
         csc = ChangeSceneCommand(winSceneBuilder)
@@ -154,7 +161,7 @@ class Player(Serializable):
       if self.__canMove(newSegment):
         #CASE CAN MOVE 
         self.position = newLocation
-        self.moveToSegment(newSegment)
+        self._moveToSegment(newSegment)
         return
       else:
         # CASE CANT MOVE

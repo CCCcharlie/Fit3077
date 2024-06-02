@@ -39,10 +39,8 @@ class SwapCommand(Command):
         swapPlayerSegment: Segment = player.getPosition()
 
         # move players
-        player.moveToSegment(closestPlayerSegment)
-        closestPlayer.moveToSegment(swapPlayerSegment)
-
-        # update path ... position
+        player.forceMoveToSegment(closestPlayerSegment)
+        closestPlayer.forceMoveToSegment(swapPlayerSegment)
 
 
 
