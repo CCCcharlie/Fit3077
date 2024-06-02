@@ -23,12 +23,17 @@ class CaveBuilder:
         self.__transform: TransformComponent | None = None
         self.__radius: int | None = None
         self.__animal_type: AnimalType | None = None
+        self.__animate: bool = False
 
         self.__lastSegment: Segment | None = None
 
         
     def setTransform(self, transform: TransformComponent) -> CaveBuilder:
         self.__transform = transform
+        return self
+
+    def setAnimate(self, value : bool) -> CaveBuilder:
+        self.__animate = value
         return self
 
     def setRadius(self, radius: int) -> CaveBuilder:
@@ -53,8 +58,6 @@ class CaveBuilder:
         if self.__animal_type is None:
             raise IncompleteBuilderError(self.__class__.__name__, "Animal Type")
 
-
-
         self.__lastSegment = Segment(self.__transform, self.__animal_type)
 
         cave = CircleComponent(
@@ -69,43 +72,41 @@ class CaveBuilder:
             transform,2 * self.__radius, 2 * self.__radius, self.__animal_type.get_sprite()
         )
     
-
         e = Entity()
         e.add_renderable(cave)
         e.add_renderable(sprite)
 
+        if self.__animate:
+            # move segments to position in a fanning motion
+            start = TransformComponent()
+            start.position = Vec2(World().SCREEN_WIDTH/2, World().SCREEN_HEIGHT/2)
+            imageDelayMove = DelayExecuteMFMFCommand(
+            LinearMoveMFCommand(
+                start,
+                self.__transform.clone(),
+                self.__transform, 
+                500
+            ),
+            3000
+            )
+            MultiFrameCommandRunner().addCommand(imageDelayMove)
+            imageDelayMove.run()
+            self.__transform.position = Vec2(-100,-100)
 
-
-        # move segments to position in a fanning motion
-        start = TransformComponent()
-        start.position = Vec2(World().SCREEN_WIDTH/2, World().SCREEN_HEIGHT/2)
-        imageDelayMove = DelayExecuteMFMFCommand(
-        LinearMoveMFCommand(
-            start,
-            self.__transform.clone(),
-            self.__transform, 
-            500
-        ),
-        3000
-        )
-        MultiFrameCommandRunner().addCommand(imageDelayMove)
-        imageDelayMove.run()
-        self.__transform.position = Vec2(-100,-100)
-
-        # move segments to position in a fanning motion
-        start = TransformComponent()
-        start.position = Vec2(World().SCREEN_WIDTH/2, World().SCREEN_HEIGHT/2)
-        imageDelayMove = DelayExecuteMFMFCommand(
-        LinearMoveMFCommand(
-            start,
-            transform.clone(),
-            transform, 
-            500
-        ),
-        3000
-        )
-        MultiFrameCommandRunner().addCommand(imageDelayMove)
-        imageDelayMove.run()
-        transform.position = Vec2(-100,-100)
+            # move segments to position in a fanning motion
+            start = TransformComponent()
+            start.position = Vec2(World().SCREEN_WIDTH/2, World().SCREEN_HEIGHT/2)
+            imageDelayMove = DelayExecuteMFMFCommand(
+            LinearMoveMFCommand(
+                start,
+                transform.clone(),
+                transform, 
+                500
+            ),
+            3000
+            )
+            MultiFrameCommandRunner().addCommand(imageDelayMove)
+            imageDelayMove.run()
+            transform.position = Vec2(-100,-100)
 
         return e

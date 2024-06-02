@@ -48,9 +48,12 @@ class ChitCardBuilder:
     self.__backColor: Color = Color(0,0,0)
 
     self.__positionChanged: bool = False
+    self.__animate : bool = True
+    self.__command : Command = None
+    self.__animalType : AnimalType = None
+    self.__image : str = None
 
     self.__transforms: List[Tuple[ TransformComponent, TransformComponent]] = []
-
     self.__leftHand: TransformComponent = leftHand
 
     self.__chitCards: List[Tuple[AnimalType, str, Command]] = [
@@ -71,7 +74,6 @@ class ChitCardBuilder:
       (AnimalType.PIRATE_DRAGON, "chitcard/2PirateDragon.png", MoveActivePlayerCommand(AnimalType.PIRATE_DRAGON, 2)),
       (AnimalType.PIRATE_DRAGON, "chitcard/2PirateDragon.png", MoveActivePlayerCommand(AnimalType.PIRATE_DRAGON, 2)),
       (AnimalType.SHUFFLE, "chitcard/Shuffle.png", ShuffleCommand(self.__transforms, self.__leftHand)),
-      
     ]
 
     self.__numChitCards: int = len(self.__chitCards)
@@ -86,6 +88,22 @@ class ChitCardBuilder:
     self.__position = position
     return self
 
+  def setAnimate(self, value : bool) -> ChitCardBuilder:
+      self.__animate = value
+      return self
+
+  def setImageOverride(self, image : str) -> ChitCardBuilder:
+      self.__image = image
+      return self
+
+  def setCommandOverride(self, command : Command) -> ChitCardBuilder:
+      self.__command = command
+      return self
+
+  def setAnimalTypeOverride(self, animalType : AnimalType) -> ChitCardBuilder:
+      self.__animalType = animalType
+      return self
+
   def has_more_cards(self) -> bool:
         return len(self.__chitCards) > 0
 
@@ -94,7 +112,13 @@ class ChitCardBuilder:
     if self.__positionChanged is False:
       raise IncompleteBuilderError("ChitCard", "Position")
     
+    if self.__animalType is not None:
+        self.__chitCards = list(filter(lambda x : x[0] == self.__animalType, self.__chitCards))
     animalType, imageLocation, command = self.__chitCards.pop()
+    if self.__image is not None:
+        imageLocation = self.__image
+    if self.__command is not None:
+        command = self.__command
 
     #set front colour based on animal type
     self.__frontColor = animalType.get_colour()
@@ -110,8 +134,6 @@ class ChitCardBuilder:
     transform = transformComponent.clone()
     transform.position = transformComponent.position - Vec2(self.__radius, self.__radius) 
     front_image = SpriteComponent(transform, self.__radius * 2, self.__radius *2 , imageLocation)
-   
-
     back_circle = CircleComponent(transformComponent, self.__radius, self.__backColor)
 
     ccComponent = ChitCard([transformComponent, transform],[front_circle, front_image], back_circle, command)
@@ -139,56 +161,53 @@ class ChitCardBuilder:
     e.add_updateable(ccComponent)
 
     # move chit cards by 'slamming them down'
-    start = TransformComponent()
-    start.scale = Vec2(10,10)
-    start.position = transformComponent.position
-    # start.position = Vec2(World().SCREEN_WIDTH/2, World().SCREEN_HEIGHT/2)
-    imageDelayMove = DelayExecuteMFMFCommand(
-    LinearMoveMFCommand(
-        start,
-        transformComponent,
-        transformComponent, 
-        300
-    ),
-    self.__index * 250 + 5500
-    )
-    MultiFrameCommandRunner().addCommand(imageDelayMove)
-    imageDelayMove.run()
-    #transformComponent.position = Vec2(-100,-100)
+    if self.__animate:
+      start = TransformComponent()
+      start.scale = Vec2(10,10)
+      start.position = transformComponent.position
+      # start.position = Vec2(World().SCREEN_WIDTH/2, World().SCREEN_HEIGHT/2)
+      imageDelayMove = DelayExecuteMFMFCommand(
+      LinearMoveMFCommand(
+          start,
+          transformComponent,
+          transformComponent, 
+          300
+      ),
+      self.__index * 250 + 5500
+      )
+      MultiFrameCommandRunner().addCommand(imageDelayMove)
 
-    #hide the chit card
-    back_circle.hide()
+      imageDelayMove.run()
+ 
+      #hide the chit card
+      back_circle.hide()
 
-    #show the chit card once the slam animation begins
-    showBackOnSlamCommand = DelayExecuteMFCommand(ShowHideCommand(True, back_circle), self.__index * 250 + 5500)
-    MultiFrameCommandRunner().addCommand(showBackOnSlamCommand)
-    showBackOnSlamCommand.run()
+      #show the chit card once the slam animation begins
+      showBackOnSlamCommand = DelayExecuteMFCommand(ShowHideCommand(True, back_circle), self.__index * 250 + 5500)
+      MultiFrameCommandRunner().addCommand(showBackOnSlamCommand)
+      showBackOnSlamCommand.run()
 
-    # move animals by slamming them down
-    start = TransformComponent()
-    start.scale = Vec2(10,10)
-    start.position = transform.position
-    # start.position = Vec2(World().SCREEN_WIDTH/2, World().SCREEN_HEIGHT/2)
-    imageDelayMove = DelayExecuteMFMFCommand(
-    LinearMoveMFCommand(
-        start,
-        transform,
-        transform, 
-        300
-    ),
-    self.__index * 250 + 5500
-    )
-    MultiFrameCommandRunner().addCommand(imageDelayMove)
-    imageDelayMove.run()
+      # move animals by slamming them down
+      start = TransformComponent()
+      start.scale = Vec2(10,10)
+      start.position = transform.position
+      # start.position = Vec2(World().SCREEN_WIDTH/2, World().SCREEN_HEIGHT/2)
+      imageDelayMove = DelayExecuteMFMFCommand(
+      LinearMoveMFCommand(
+          start,
+          transform,
+          transform, 
+          300
+      ),
+      self.__index * 250 + 5500
+      )
+      MultiFrameCommandRunner().addCommand(imageDelayMove)
+      imageDelayMove.run()
 
-    #finally notify the chit card that it is in position after the slam
-    finishCommand = DelayExecuteMFCommand(NotifyChitCardInPositionCommand(ccComponent), 5500 + 250 * (self.__numChitCards + 1))
-    MultiFrameCommandRunner().addCommand(finishCommand)
-    finishCommand.run()
-
-
-    #transform.position = Vec2(-100,-100)
-
+      #finally notify the chit card that it is in position after the slam
+      finishCommand = DelayExecuteMFCommand(NotifyChitCardInPositionCommand(ccComponent), 5500 + 250 * (self.__numChitCards + 1))
+      MultiFrameCommandRunner().addCommand(finishCommand)
+      finishCommand.run()
 
     self.__transforms.append((transform, transformComponent))
 

@@ -33,9 +33,15 @@ class PlayerBuilder:
     self.__firstPlayer: Player = None
     self.__previousPlayer: Player = None
 
+    self.__animate = True
+
   def setStartingVolcanoCard(self, startingVolcanoCard: VolcanoCard) -> PlayerBuilder:
     self.__startingVolcanoCard = startingVolcanoCard
     return self
+
+  def setAnimate(self, value : bool) -> PlayerBuilder:
+      self.__animate = value
+      return self
 
   def finish(self):
     self.__previousPlayer.setNextPlayer(self.__firstPlayer)
@@ -46,24 +52,26 @@ class PlayerBuilder:
     path = self.__startingVolcanoCard.generatePath()
 
     t = TransformComponent()
-    t.position = Vec2(-100,-100)
     p = Player(path, t, self.__playerNumber)
 
-    #slowly move player to segment from middle
-    start = TransformComponent()
-    start.position = Vec2(World().SCREEN_WIDTH/2, World().SCREEN_HEIGHT/2)
-    playerDelayMove = DelayExecuteMFMFCommand(
-      LinearMoveMFCommand(
-        start,
-        path[0].getSnapTransform(),
-        t, 
-        500
-      ),
-      4500
-    )
-    MultiFrameCommandRunner().addCommand(playerDelayMove)
-    playerDelayMove.run()
-
+    if self.__animate:
+        #slowly move player to segment from middle
+        start = TransformComponent()
+        start.position = Vec2(World().SCREEN_WIDTH/2, World().SCREEN_HEIGHT/2)
+        playerDelayMove = DelayExecuteMFMFCommand(
+          LinearMoveMFCommand(
+            start,
+            path[0].getSnapTransform(),
+            t, 
+            500
+          ),
+          4500
+        )
+        MultiFrameCommandRunner().addCommand(playerDelayMove)
+        playerDelayMove.run()
+        t.position = Vec2(-100,-100)
+    else:
+        t.position = path[0].getSnapTransform().position
 
     SaveManager().register(p)
     
@@ -80,9 +88,3 @@ class PlayerBuilder:
     e = Entity()
     e.add_renderable(r)
     return e
-
-
-   
-
-
-    

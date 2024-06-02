@@ -14,11 +14,11 @@ class TextComponent(RenderableComponent):
       font (Font): The font of the text
       color (Color): The color of the circle
     """
-    self.__text: str = text
+    self._text: str = text
     if font is None:
-      self.__font: Font = SysFont("Corbel", 30)
+      self._font: Font = SysFont("Corbel", 30)
     else:
-      self.__font: Font = font
+      self._font: Font = font
     super().__init__(transformComponent)
     self.setColor(color)
 
@@ -29,7 +29,7 @@ class TextComponent(RenderableComponent):
     Args:
       text (str): the content of the text
     """
-    self.__text = text
+    self._text = text
     self._generateImageSurface()
 
   def setFont(self, font: Font):
@@ -39,12 +39,12 @@ class TextComponent(RenderableComponent):
     Args:
       font (Font): The new font
     """
-    self.__font = font
+    self._font = font
     self._generateImageSurface()
 
   def _generateImageSurface(self):
     """
     Generate text on the surface
     """
-    textSurf = self.__font.render(self.__text, True, self._color)
+    textSurf = self._font.render(self._text, True, self._color)
     self._setImageSurface(textSurf)

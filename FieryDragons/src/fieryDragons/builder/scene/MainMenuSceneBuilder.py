@@ -7,6 +7,7 @@ from engine.scene.Scene import Scene
 from engine.scene.World import World
 from engine.utils.Vec2 import Vec2
 from fieryDragons.builder.scene.ChooseSaveSceneBuilder import ChooseSaveSceneBuilder
+from .TutorialSceneBuilder import TutorialSceneBuilder
 from engine.builder.SceneBuilder import SceneBuilder
 
 
@@ -30,6 +31,12 @@ class MainMenuSceneBuilder(SceneBuilder):
     bb.setText("Start")
     s.addEntity(bb.build())
 
+    # add tutorial button
+    pos.y += 200
+    nextSceneBuilder = TutorialSceneBuilder()
+    bb.setOnClick(ChangeSceneCommand(nextSceneBuilder))
+    bb.setText("Tutorial")
+    s.addEntity(bb.build())
 
     # add quit button
     pos.y += 200

@@ -21,7 +21,7 @@ class RenderableComponent(Renderable):
     """
     self.__showing: bool = True
     self.__imageSurface: Surface = None
-    self.__transformComponent: TransformComponent = transformComponent
+    self._transformComponent: TransformComponent = transformComponent
     self._color: Color = Color(255,255,255)
 
     self._generateImageSurface()
@@ -92,16 +92,16 @@ class RenderableComponent(Renderable):
     pivot: Vec2 = self._pivot()
 
     #Scale surface based on scale information
-    scale: Vec2 = self.__transformComponent.scale
+    scale: Vec2 = self._transformComponent.scale
     image = pygame.transform.scale(image, (int(image.get_width() * scale.x), int(image.get_height() * scale.y)))
 
 
     #Rotate
-    rotation: int = self.__transformComponent.rotation
+    rotation: int = self._transformComponent.rotation
     image, rect = self.__rotatePivot(image, rotation, pivot)
 
     # apply position
-    position: Vec2 = self.__transformComponent.position
+    position: Vec2 = self._transformComponent.position
     rect.x += position.x
     rect.y += position.y
 

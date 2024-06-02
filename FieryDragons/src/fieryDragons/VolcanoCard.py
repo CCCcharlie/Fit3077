@@ -21,7 +21,7 @@ class VolcanoCard():
   def generatePath(self) -> List[Segment]:
     # INITIAL CASE add cave and segments that come after the cave 
     # add cave to start of path
-    path: List[Segment] = [self.__cave]
+    path: List[Segment] = [self.__cave] if self.__cave is not None else []
 
     # add segments that come after the cave 
     numSegmentsBeforeCave: int = len(self.__segments) // 2
