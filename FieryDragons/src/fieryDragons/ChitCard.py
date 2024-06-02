@@ -99,7 +99,6 @@ class ChitCard(Subscriber, Updateable, Serializable):
 
         ## deserialise transforms
         self.__transformData = data["transforms"]
-        print("transform data is ")
-        print(self.__transformData)
+    
         
 

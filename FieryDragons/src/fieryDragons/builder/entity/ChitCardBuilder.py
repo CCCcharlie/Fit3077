@@ -25,6 +25,7 @@ from fieryDragons.ChitCard import ChitCard
 from fieryDragons.command.MoveActivePlayerCommand import MoveActivePlayerCommand
 from fieryDragons.command.NotifyChitCardInPositionCommand import NotifyChitCardInPositionCommand
 from fieryDragons.command.ShuffleCommand import ShuffleCommand
+from fieryDragons.command.SwapCommand import SwapCommand
 from fieryDragons.enums.AnimalType import AnimalType
 from fieryDragons.save.SaveManager import SaveManager
 from pygame import Color
@@ -74,6 +75,7 @@ class ChitCardBuilder:
       (AnimalType.PIRATE_DRAGON, "chitcard/2PirateDragon.png", MoveActivePlayerCommand(AnimalType.PIRATE_DRAGON, 2)),
       (AnimalType.PIRATE_DRAGON, "chitcard/2PirateDragon.png", MoveActivePlayerCommand(AnimalType.PIRATE_DRAGON, 2)),
       (AnimalType.SHUFFLE, "chitcard/Shuffle.png", ShuffleCommand(self.__transforms, self.__leftHand)),
+      (AnimalType.SHUFFLE, "chitcard/swapPosition.png", SwapCommand()),
     ]
 
     self.__numChitCards: int = len(self.__chitCards)

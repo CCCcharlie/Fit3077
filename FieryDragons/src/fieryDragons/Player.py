@@ -36,6 +36,51 @@ class Player(Serializable):
 
   def getPlayerNumber(self)-> int:
     return self.__playerNumber
+  
+  def getDistanceToPlayer(self, player: Player):
+    """
+    Gets the distance to the other player 
+
+    returns none if the player is not on this players path 
+
+    Args:
+      player (Player): the other player to check the distance to 
+    """
+    otherSegment: Segment = player.getPosition()
+
+    distance = None
+
+    segmentIndex = 0
+    try:
+      segmentIndex = self.path.index(otherSegment)
+    except ValueError:
+        return None
+    
+    # if i am in cave also skip
+    if self.position == 0:
+      return None
+    
+    
+    # convert segment index into distance 
+    # accounting for the fact that it is a circle, 
+    # ignoring the first and last element as they are caves
+    
+    # this ignores the first index in the list as cave
+    adjustedSelfPosition = self.position - 1
+    adjustedOtherPosition = segmentIndex - 1
+    adjustedCircleLength = len(self.path) - 2 # this ignores the last index as it is a cave 
+
+    # now calculate distance from this adjusted position.
+
+    distance = segmentIndex - self.position
+
+    if adjustedOtherPosition >= adjustedSelfPosition:
+        distance = adjustedOtherPosition - adjustedSelfPosition
+    else:
+        distance = adjustedCircleLength - adjustedSelfPosition + adjustedOtherPosition
+
+    return distance
+
 
   def _moveToSegment(self, segment: Segment):
     command = LinearMoveMFCommand(self.transformComponent.clone(), segment.getSnapTransform(), self.transformComponent, 500)
@@ -73,6 +118,13 @@ class Player(Serializable):
     #print(f"Active player is {self.__nextPlayer.__playerNumber}")
     PlayerTurnEndEmitter().notify()
 
+  def forceMoveToSegment(self, segment: Segment):
+    """
+    Moves a player to a segment, overrides checks 
+    """
+    self._moveToSegment(segment)
+    self.position = self.path.index(segment)
+
   def move(self, animalType: AnimalType, amount: int):
     # CASE picked pirate dragon
     if animalType is AnimalType.PIRATE_DRAGON:
@@ -84,7 +136,7 @@ class Player(Serializable):
         self._moveToSegment(newSegment)
       self.endTurn()
       return
-
+  
     #CASE picked the right animal
     if animalType is self.path[self.position].getAnimalType():
       newLocation = self.position + amount

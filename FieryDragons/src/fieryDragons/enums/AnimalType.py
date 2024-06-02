@@ -11,6 +11,7 @@ class AnimalType(Enum):
     BAT = 3
     PIRATE_DRAGON = 4
     SHUFFLE = 5
+    SWAP = 6
 
     def get_colour(self) -> Color:
         match self:
@@ -25,7 +26,9 @@ class AnimalType(Enum):
             case AnimalType.PIRATE_DRAGON:
                 return Color(150, 150, 150)
             case AnimalType.SHUFFLE:
-                return Color(0, 0, 0)
+                return Color(235, 16, 42)
+            case AnimalType.SWAP:
+                return Color(237, 130, 232)
             case _:
                 return Color(255, 255, 255)
 
@@ -52,5 +55,5 @@ class AnimalType(Enum):
     @classmethod
     def get_random_animal(cls) -> AnimalType:
         return Random().choice(
-            [t for t in AnimalType if t is not AnimalType.PIRATE_DRAGON and t is not AnimalType.SHUFFLE]
+            [t for t in AnimalType if t is not AnimalType.PIRATE_DRAGON and t is not AnimalType.SHUFFLE and t is not AnimalType.SWAP]
         )
