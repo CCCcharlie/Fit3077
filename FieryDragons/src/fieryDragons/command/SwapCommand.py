@@ -15,23 +15,25 @@ class SwapCommand(Command):
         pass
 
     def run(self):
+        
         # first get the active player
         player: Player = Player.ACTIVE_PLAYER
 
-        other_players: List[Player] = player.traverse(player, True)
-
-        playerPositions: List[Segment] = [player.getPosition() for player in other_players]
-
-        #temp (get the distance for each player to each segment)
-        closestPlayer: Player | None = other_players[0]
-
         # player looses their turn 
 
+        # get all player distances 
+        other_players: List[Player] = player.traverse(player, True)
+        distances = [player.getDistanceToPlayer(other_player) for other_player in other_players]
 
-        # if no player is found then this chit card is done 
-        if closestPlayer is None:
-            return 
+        # if no players can be found 
+        non_none_distances = [(i, d) for i, d in enumerate(distances) if d is not None]
+        if not non_none_distances:
+            return
         
+        # Find the closest player
+        smallest_index, smallest_value = min(non_none_distances, key=lambda x: x[1])
+        closestPlayer: Player = other_players[smallest_index]
+
         #get the segments of each player
         closestPlayerSegment: Segment = closestPlayer.getPosition()
         swapPlayerSegment: Segment = player.getPosition()
@@ -41,6 +43,7 @@ class SwapCommand(Command):
         closestPlayer.moveToSegment(swapPlayerSegment)
 
         # update path ... position
+
 
 
         

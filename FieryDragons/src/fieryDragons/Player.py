@@ -36,6 +36,52 @@ class Player(Serializable):
 
   def getPlayerNumber(self)-> int:
     return self.__playerNumber
+  
+  def getDistanceToPlayer(self, player: Player):
+    """
+    Gets the distance to the other player 
+
+    returns none if the player is not on this players path 
+
+    Args:
+      player (Player): the other player to check the distance to 
+    """
+    otherSegment: Segment = player.getPosition()
+
+    distance = None
+
+    segmentIndex = 0
+    try:
+      segmentIndex = self.path.index(otherSegment)
+    except ValueError:
+        return None
+    
+    # if i am in cave also skip
+    if self.position == 0:
+      return None
+    
+    
+    # convert segment index into distance 
+    # accounting for the fact that it is a circle, 
+    # ignoring the first and last element as they are caves
+    
+    # this ignores the first index in the list as cave
+    adjustedSelfPosition = self.position - 1
+    adjustedOtherPosition = segmentIndex - 1
+    adjustedCircleLength = len(self.path) - 2 # this ignores the last index as it is a cave 
+
+    # now calculate distance from this adjusted position.
+
+    distance = segmentIndex - self.position
+
+    if adjustedOtherPosition >= adjustedSelfPosition:
+        distance = adjustedOtherPosition - adjustedSelfPosition
+    else:
+        distance = adjustedCircleLength - adjustedSelfPosition + adjustedOtherPosition
+
+    print("distance is " + str(distance))
+    return distance
+
 
   def moveToSegment(self, segment: Segment):
     command = LinearMoveMFCommand(self.transformComponent.clone(), segment.getSnapTransform(), self.transformComponent, 500)
