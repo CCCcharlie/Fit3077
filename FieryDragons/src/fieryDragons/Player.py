@@ -79,7 +79,6 @@ class Player(Serializable):
     else:
         distance = adjustedCircleLength - adjustedSelfPosition + adjustedOtherPosition
 
-    print("distance is " + str(distance))
     return distance
 
 

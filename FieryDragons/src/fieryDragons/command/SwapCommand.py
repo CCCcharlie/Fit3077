@@ -4,6 +4,7 @@ from engine.command.LinearMoveMFCommand import LinearMoveMFCommand
 from engine.component.TransformComponent import TransformComponent
 from fieryDragons.Player import Player
 from fieryDragons.Segment import Segment
+from fieryDragons.observer.PlayerTurnEndEmitter import PlayerTurnEndEmitter
 
 
 
@@ -20,6 +21,10 @@ class SwapCommand(Command):
         player: Player = Player.ACTIVE_PLAYER
 
         # player looses their turn 
+         #end the active players turn
+        if Player.ACTIVE_PLAYER is not None:
+            Player.ACTIVE_PLAYER.endTurn()
+        PlayerTurnEndEmitter().notify()
 
         # get all player distances 
         other_players: List[Player] = player.traverse(player, True)
