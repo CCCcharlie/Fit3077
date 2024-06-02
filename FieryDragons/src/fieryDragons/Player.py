@@ -37,7 +37,7 @@ class Player(Serializable):
   def getPlayerNumber(self)-> int:
     return self.__playerNumber
 
-  def _moveToSegment(self, segment: Segment):
+  def moveToSegment(self, segment: Segment):
     command = LinearMoveMFCommand(self.transformComponent.clone(), segment.getSnapTransform(), self.transformComponent, 500)
     MultiFrameCommandRunner().addCommand(command)
     command.run()
@@ -81,7 +81,7 @@ class Player(Serializable):
       newSegment = self.path[newLocation]
       if self.__canMove(newSegment):
         self.position = newLocation
-        self._moveToSegment(newSegment)
+        self.moveToSegment(newSegment)
       self.endTurn()
       return
 
@@ -93,7 +93,7 @@ class Player(Serializable):
       if newLocation >= len(self.path) - 1:
         #this player has won
         newLocation = len(self.path) - 1
-        self._moveToSegment(self.path[newLocation])
+        self.moveToSegment(self.path[newLocation])
 
         winSceneBuilder = WinSceneBuilder().setWinningPlayer(str(self.__playerNumber))
         csc = ChangeSceneCommand(winSceneBuilder)
@@ -108,7 +108,7 @@ class Player(Serializable):
       if self.__canMove(newSegment):
         #CASE CAN MOVE 
         self.position = newLocation
-        self._moveToSegment(newSegment)
+        self.moveToSegment(newSegment)
         return
       else:
         # CASE CANT MOVE

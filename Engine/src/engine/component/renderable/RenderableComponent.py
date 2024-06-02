@@ -56,8 +56,8 @@ class RenderableComponent(Renderable):
     """
     Hide the renderable component.
     """
-    self.__showing = False 
-    #pass
+    #self.__showing = False 
+    pass
 
   def _pivot(self) -> Vec2:
     return Vec2(0,0)
@@ -108,6 +108,6 @@ class RenderableComponent(Renderable):
 
     #blit to screen
     display_surf.blit(image, rect)
-    pygame.draw.circle(display_surf, Color(255,0,0), position.toTuple(), 5)
+    # pygame.draw.circle(display_surf, Color(255,0,0), position.toTuple(), 5)
 
 
