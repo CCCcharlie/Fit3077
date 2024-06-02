@@ -3,8 +3,8 @@ from typing import List, Tuple
 from engine.command.DelayExecuteMFCommand import DelayExecuteMFCommand
 from engine.command.DelayExecuteMFMFCommand import DelayExecuteMFMFCommand
 from engine.command.LinearMoveMFCommand import LinearMoveMFCommand
-from engine.command.PrintCommand import PrintCommand
 from engine.command.SetColorCommand import SetColorCommand
+from engine.command.ShowHideCommand import ShowHideCommand
 from engine.component.TransformComponent import TransformComponent
 from engine.component.hitbox.CircleHitboxComponent import CircleHitboxComponent
 from engine.component.hitbox.HitboxComponent import HitboxComponent
@@ -12,19 +12,18 @@ from engine.component.interaction.ButtonComponent import ButtonComponent
 from engine.component.interaction.ClickableComponent import ClickableComponent
 from engine.component.renderable.CircleComponent import CircleComponent
 from engine.component.renderable.SpriteComponent import SpriteComponent
-from engine.component.renderable.TextComponent import TextComponent
 from engine.entity.Entity import Entity
 from engine.exceptions.IncompleteBuilderError import IncompleteBuilderError
 from engine.command.Command import Command
 from engine.scene.MultiFrameCommandRunner import MultiFrameCommandRunner
-from engine.scene.World import World
 from engine.utils.Vec2 import Vec2
-from fieryDragons.Random import Random
+from engine.Random import Random
 from fieryDragons.command.ChitCardClickedCommand import ChitCardClickedCommand
 from fieryDragons.ChitCard import ChitCard
 
 
 from fieryDragons.command.MoveActivePlayerCommand import MoveActivePlayerCommand
+from fieryDragons.command.NotifyChitCardInPositionCommand import NotifyChitCardInPositionCommand
 from fieryDragons.command.ShuffleCommand import ShuffleCommand
 from fieryDragons.enums.AnimalType import AnimalType
 from fieryDragons.save.SaveManager import SaveManager
@@ -77,8 +76,12 @@ class ChitCardBuilder:
       (AnimalType.SHUFFLE, "chitcard/Shuffle.png", ShuffleCommand(self.__transforms, self.__leftHand)),
     ]
 
+    self.__numChitCards: int = len(self.__chitCards)
+
     Random().shuffle(self.__chitCards)
 
+  def onCleanup(self) -> None:
+     self.__transforms = []
 
   def setPosition(self, position: Vec2) -> ChitCardBuilder:
     self.__positionChanged = True
@@ -133,7 +136,7 @@ class ChitCardBuilder:
     front_image = SpriteComponent(transform, self.__radius * 2, self.__radius *2 , imageLocation)
     back_circle = CircleComponent(transformComponent, self.__radius, self.__backColor)
 
-    ccComponent = ChitCard([front_circle, front_image], back_circle, command)
+    ccComponent = ChitCard([transformComponent, transform],[front_circle, front_image], back_circle, command)
     SaveManager().register(ccComponent)
 
     ccClickedCommand: Command = ChitCardClickedCommand(ccComponent)
@@ -157,44 +160,54 @@ class ChitCardBuilder:
     e.add_updateable(button)
     e.add_updateable(ccComponent)
 
+    # move chit cards by 'slamming them down'
     if self.__animate:
-        # move chit cards by 'slamming them down'
-        start = TransformComponent()
-        start.scale = Vec2(10,10)
-        start.position = transformComponent.position
-        # start.position = Vec2(World().SCREEN_WIDTH/2, World().SCREEN_HEIGHT/2)
-        imageDelayMove = DelayExecuteMFMFCommand(
-        LinearMoveMFCommand(
-            start,
-            transformComponent.clone(),
-            transformComponent, 
-            300
-        ),
-        self.__index * 250 + 5500
-        )
-        MultiFrameCommandRunner().addCommand(imageDelayMove)
-        imageDelayMove.run()
-        transformComponent.position = Vec2(-100,-100)
+      start = TransformComponent()
+      start.scale = Vec2(10,10)
+      start.position = transformComponent.position
+      # start.position = Vec2(World().SCREEN_WIDTH/2, World().SCREEN_HEIGHT/2)
+      imageDelayMove = DelayExecuteMFMFCommand(
+      LinearMoveMFCommand(
+          start,
+          transformComponent,
+          transformComponent, 
+          300
+      ),
+      self.__index * 250 + 5500
+      )
+      MultiFrameCommandRunner().addCommand(imageDelayMove)
 
+      imageDelayMove.run()
+ 
+      #hide the chit card
+      back_circle.hide()
 
-        # move animals by slamming them down
-        start = TransformComponent()
-        start.scale = Vec2(10,10)
-        start.position = transform.position
-        # start.position = Vec2(World().SCREEN_WIDTH/2, World().SCREEN_HEIGHT/2)
-        imageDelayMove = DelayExecuteMFMFCommand(
-        LinearMoveMFCommand(
-            start,
-            transform.clone(),
-            transform, 
-            300
-        ),
-        self.__index * 250 + 5500
-        )
-        MultiFrameCommandRunner().addCommand(imageDelayMove)
-        imageDelayMove.run()
-        transform.position = Vec2(-100,-100)
+      #show the chit card once the slam animation begins
+      showBackOnSlamCommand = DelayExecuteMFCommand(ShowHideCommand(True, back_circle), self.__index * 250 + 5500)
+      MultiFrameCommandRunner().addCommand(showBackOnSlamCommand)
+      showBackOnSlamCommand.run()
 
+      # move animals by slamming them down
+      start = TransformComponent()
+      start.scale = Vec2(10,10)
+      start.position = transform.position
+      # start.position = Vec2(World().SCREEN_WIDTH/2, World().SCREEN_HEIGHT/2)
+      imageDelayMove = DelayExecuteMFMFCommand(
+      LinearMoveMFCommand(
+          start,
+          transform,
+          transform, 
+          300
+      ),
+      self.__index * 250 + 5500
+      )
+      MultiFrameCommandRunner().addCommand(imageDelayMove)
+      imageDelayMove.run()
+
+      #finally notify the chit card that it is in position after the slam
+      finishCommand = DelayExecuteMFCommand(NotifyChitCardInPositionCommand(ccComponent), 5500 + 250 * (self.__numChitCards + 1))
+      MultiFrameCommandRunner().addCommand(finishCommand)
+      finishCommand.run()
 
     self.__transforms.append((transform, transformComponent))
 

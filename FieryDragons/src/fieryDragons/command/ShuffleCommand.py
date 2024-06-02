@@ -1,5 +1,5 @@
 from engine.command.Command import Command
-from typing import List, Tuple
+from typing import Dict, List, Tuple
 from engine.command.DelayExecuteMFCommand import DelayExecuteMFCommand
 from engine.component.TransformComponent import TransformComponent
 from engine.scene.MultiFrameCommandRunner import MultiFrameCommandRunner
@@ -19,7 +19,5 @@ class ShuffleCommand(Command):
         command = DelayExecuteMFCommand(ExecuteShuffleCommand(self.__transforms, self.__leftHand), 1000)
         MultiFrameCommandRunner().addCommand(command)
         command.run()
-
-
 
         

@@ -1,7 +1,7 @@
 import random
 from engine.command.ChangeSceneCommand import ChangeSceneCommand
 from engine.command.Command import Command
-from fieryDragons.Random import Random
+from engine.Random import Random
 from fieryDragons.builder.scene.GameSceneBuilder import GameSceneBuilder
 from engine.builder.SceneBuilder import SceneBuilder
 from fieryDragons.save.SaveManager import SaveManager

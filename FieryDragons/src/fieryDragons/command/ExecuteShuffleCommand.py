@@ -7,7 +7,7 @@ from engine.component.TransformComponent import TransformComponent
 from engine.scene.MultiFrameCommandRunner import MultiFrameCommandRunner
 from engine.scene.World import World
 from engine.utils.Vec2 import Vec2
-from fieryDragons.Random import Random
+from engine.Random import Random
 from fieryDragons.observer.PlayerTurnEndEmitter import PlayerTurnEndEmitter
 from fieryDragons.Player import Player
 

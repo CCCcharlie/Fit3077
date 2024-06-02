@@ -1,10 +1,10 @@
 from typing import Dict, List
 
 from engine.utils import SingletonMeta
-from fieryDragons.Random import Random
+from engine.Random import Random
 from fieryDragons.save.FileDataHandler import FileDataHandler
 from fieryDragons.save.JsonDataHandler import JsonDataHandler
-from fieryDragons.save.Serializable import Serializable
+from engine.Serializable import Serializable
 
 
 class SaveManager(metaclass=SingletonMeta):

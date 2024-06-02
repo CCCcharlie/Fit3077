@@ -2,18 +2,19 @@ from enum import Enum
 from typing import Dict, List
 
 from engine.command.Command import Command
+from engine.component.TransformComponent import TransformComponent
 from engine.component.renderable.RenderableComponent import RenderableComponent
 from engine.entity.Updateable import Updateable
 from engine.observer.subscriber import Subscriber
 from fieryDragons.observer.PlayerTurnEndEmitter import PlayerTurnEndEmitter
-from fieryDragons.save.Serializable import Serializable
+from engine.Serializable import Serializable
 
 class State(Enum):
     HIDDEN = 1
     VISIBLE = 2
 
 class ChitCard(Subscriber, Updateable, Serializable):
-    def __init__(self, front: List[RenderableComponent], back: RenderableComponent, command: Command):
+    def __init__(self, transforms: List[TransformComponent], front: List[RenderableComponent], back: RenderableComponent, command: Command):
         """
         
         Args:
@@ -24,6 +25,8 @@ class ChitCard(Subscriber, Updateable, Serializable):
         self.__state: State = State.HIDDEN
         self.__command: Command = command
 
+        self.__transforms: List[TransformComponent] = transforms
+
         PlayerTurnEndEmitter().subscribe(self)
 
         self.__timer:float = -1
@@ -32,6 +35,8 @@ class ChitCard(Subscriber, Updateable, Serializable):
         for renderable in self.__front:
             
             renderable.hide()
+
+        self.__transformData = []
 
         super().__init__()
 
@@ -71,13 +76,10 @@ class ChitCard(Subscriber, Updateable, Serializable):
     def serialise(self) -> Dict:
         d: dict = {}
         d["state"] = self.__state.value
+        d["transforms"] = [transform.serialise() for transform in self.__transforms]
         return d
     
-    
-    def deserialise(self, data: Dict) -> None:
-        state = data["state"]
-        self.__state = State(state)
-
+    def inPosition(self) -> None:
         if self.__state == State.VISIBLE:
             for renderable in self.__front:
                 renderable.show()
@@ -87,4 +89,17 @@ class ChitCard(Subscriber, Updateable, Serializable):
                 renderable.hide()
             self.__back.show()
 
+        for (transform, data) in zip(self.__transforms, self.__transformData):
+            transform.deserialise(data)
+    
+    def deserialise(self, data: Dict) -> None:
+        ## deserialise state 
+        state = data["state"]
+        self.__state = State(state)
+
+        ## deserialise transforms
+        self.__transformData = data["transforms"]
+        print("transform data is ")
+        print(self.__transformData)
         
+
