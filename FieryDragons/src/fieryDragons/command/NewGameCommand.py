@@ -21,7 +21,7 @@ class NewGameCommand(Command):
     Random().generateSeed()
 
     #create scene
-    print(f"generating scene with {numSegments} segments and {numPlayers} players")
+    # print(f"generating scene with {numSegments} segments and {numPlayers} players")
     gameSceneBuilder = (
       GameSceneBuilder()
       .setNumSegmentPerVolcanoCard(numSegments)

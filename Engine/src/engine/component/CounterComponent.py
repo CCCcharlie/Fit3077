@@ -8,9 +8,9 @@ class CounterComponent:
 
   def increment(self, amount: int):
     self.__value += amount
-    print(f"New value is {self.__value}")
+    # print(f"New value is {self.__value}")
     self.__textComponent.setText(str(self.__value))
 
   def value(self) -> int:
-    print(f"value is {self.__value}")
+    # print(f"value is {self.__value}")
     return self.__value
