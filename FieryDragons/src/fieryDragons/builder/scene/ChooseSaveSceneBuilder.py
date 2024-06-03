@@ -2,10 +2,12 @@ from __future__ import annotations
 from typing import List
 
 from engine.builder.entity.ButtonBuilder import ButtonBuilder
+from engine.command.ChangeSceneCommand import ChangeSceneCommand
 from engine.scene.Scene import Scene
 from engine.scene.World import World
 from engine.utils.Vec2 import Vec2
 from engine.builder.SceneBuilder import SceneBuilder
+from fieryDragons.builder.scene.ChooseOptionsSceneBuilder import ChooseOptionsSceneBuilder
 from fieryDragons.command.LoadGameCommand import LoadGameCommand
 from fieryDragons.save.SaveManager import SaveManager
 
@@ -21,10 +23,12 @@ class ChooseSaveSceneBuilder(SceneBuilder):
       .setPosition(pos)
     )
     
-    #load none
-    newGame = LoadGameCommand()
+    #load new
+
+    newOnClick = ChangeSceneCommand(ChooseOptionsSceneBuilder())
+    
     bb.setText("New Game")
-    bb.setOnClick(newGame)
+    bb.setOnClick(newOnClick)
     s.addEntity(bb.build())
 
     saves: List[int] = SaveManager().getAllSaves()
