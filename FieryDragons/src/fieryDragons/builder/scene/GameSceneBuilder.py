@@ -81,7 +81,7 @@ class GameSceneBuilder(SceneBuilder):
         for index, t in enumerate(vc_iter):
             # Determine if this vc has a cave
             hasCave: bool = (index % (self.__numVolcanoCards // self.__numPlayers)) == 0
-       
+            
             # add this volcano card 
             es = (
                 volcanoCardBuilder
@@ -146,13 +146,15 @@ class GameSceneBuilder(SceneBuilder):
 
         # add restartButton
         # late import to prevent circular dep
-        from fieryDragons.command.LoadGameCommand import LoadGameCommand
+        from engine.command.ChangeSceneCommand import ChangeSceneCommand
+        from fieryDragons.builder.scene.ChooseOptionsSceneBuilder import ChooseOptionsSceneBuilder
+
         restartButtonBuilder = (
             ButtonBuilder()
             .setText("Restart")
             .setPosition(Vec2(1500, 300))
             .setRectDetails(200,50)
-            .setOnClick(LoadGameCommand())
+            .setOnClick(ChangeSceneCommand(ChooseOptionsSceneBuilder()))
         )
 
         s.addEntity(restartButtonBuilder.build())

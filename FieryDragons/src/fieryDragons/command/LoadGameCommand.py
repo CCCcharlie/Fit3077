@@ -1,34 +1,32 @@
-import random
 from engine.command.ChangeSceneCommand import ChangeSceneCommand
 from engine.command.Command import Command
 from engine.Random import Random
 from fieryDragons.builder.scene.GameSceneBuilder import GameSceneBuilder
-from engine.builder.SceneBuilder import SceneBuilder
 from fieryDragons.save.SaveManager import SaveManager
 
 
 class LoadGameCommand(Command):
-  def __init__(self, saveId: int| None = None):
-    self.__saveId = saveId
-  
+  def __init__(self, saveId):
+    self.__saveId = saveId  
 
   def run(self):
-
-    
     #load game data 
-    if self.__saveId is None:
-      Random().generateSeed()
-    else:
-      Random().setSeed(SaveManager().getSeed(self.__saveId))
+    Random().setSeed(SaveManager().getSeed(self.__saveId))
+    numPlayers = SaveManager().getNumPlayers(self.__saveId)
+    numSegments = SaveManager().getNumSegments(self.__saveId)
 
 
     #create scene
-    gameSceneBuilder = GameSceneBuilder()
+    gameSceneBuilder = (
+      GameSceneBuilder()
+      .setNumSegmentPerVolcanoCard(numSegments)
+      .setNumPlayers(numPlayers)
+    )
+
     ChangeSceneCommand(gameSceneBuilder).run()
 
-      # load in data
-    if self.__saveId is not None:
-      SaveManager().load(self.__saveId)
+    # load in all serialisable data
+    SaveManager().load(self.__saveId)
 
 
    

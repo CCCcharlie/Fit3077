@@ -148,8 +148,8 @@ class VolcanoCardBuilder:
         if self.__hasCave:
             # Calculate caves new transform
             caveTransform = self.__transform.clone()
-            offset = pygame.Vector2(0,-240)
-            offset = offset.rotate(caveTransform.rotation)
+            offset = pygame.Vector2(0,240)
+            offset = offset.rotate(-caveTransform.rotation)
             caveTransform.position += Vec2(offset.x, offset.y)
 
             e = (

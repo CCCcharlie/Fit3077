@@ -77,6 +77,7 @@ class ChitCard(Subscriber, Updateable, Serializable):
         d: dict = {}
         d["state"] = self.__state.value
         d["transforms"] = [transform.serialise() for transform in self.__transforms]
+        d["info"] = str(self.__command)
         return d
     
     def inPosition(self) -> None:
@@ -93,9 +94,11 @@ class ChitCard(Subscriber, Updateable, Serializable):
             transform.deserialise(data)
     
     def deserialise(self, data: Dict) -> None:
+        print("loading chit card data " + str(self.__command))
         ## deserialise state 
         state = data["state"]
         self.__state = State(state)
+        
 
         ## deserialise transforms
         self.__transformData = data["transforms"]

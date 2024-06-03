@@ -8,5 +8,6 @@ class NotifyChitCardInPositionCommand(Command):
     self.__chitCard: ChitCard = chitCard
   
   def run(self):
+    print("Moving ")
     self.__chitCard.inPosition()
     
