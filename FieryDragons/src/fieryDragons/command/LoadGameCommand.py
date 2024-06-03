@@ -12,13 +12,20 @@ class LoadGameCommand(Command):
   def run(self):
     #load game data 
     Random().setSeed(SaveManager().getSeed(self.__saveId))
+    numPlayers = SaveManager().getNumPlayers(self.__saveId)
+    numSegments = SaveManager().getNumSegments(self.__saveId)
 
 
     #create scene
-    gameSceneBuilder = GameSceneBuilder()
+    gameSceneBuilder = (
+      GameSceneBuilder()
+      .setNumSegmentPerVolcanoCard(numSegments)
+      .setNumPlayers(numPlayers)
+    )
+
     ChangeSceneCommand(gameSceneBuilder).run()
 
-    # load in data
+    # load in all serialisable data
     SaveManager().load(self.__saveId)
 
 

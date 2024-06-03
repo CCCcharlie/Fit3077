@@ -3,6 +3,7 @@ from engine.command.Command import Command
 from engine.Random import Random
 from engine.component.CounterComponent import CounterComponent
 from fieryDragons.builder.scene.GameSceneBuilder import GameSceneBuilder
+from fieryDragons.save.SaveManager import SaveManager
 
 
 class NewGameCommand(Command):
@@ -17,6 +18,9 @@ class NewGameCommand(Command):
     numPlayers: int = self.__playerCounter.value()
     numSegments: int = self.__segmentsCounter.value()
 
+    # save this to the save manager
+    SaveManager().setNumPlayers(numPlayers)
+    SaveManager().setNumSegments(numSegments)
 
     Random().generateSeed()
 
