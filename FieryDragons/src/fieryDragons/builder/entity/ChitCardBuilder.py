@@ -114,6 +114,7 @@ class ChitCardBuilder:
     if self.__positionChanged is False:
       raise IncompleteBuilderError("ChitCard", "Position")
     
+    # overrides
     if self.__animalType is not None:
         self.__chitCards = list(filter(lambda x : x[0] == self.__animalType, self.__chitCards))
     animalType, imageLocation, command = self.__chitCards.pop()
@@ -207,7 +208,7 @@ class ChitCardBuilder:
       imageDelayMove.run()
 
       #finally notify the chit card that it is in position after the slam
-      finishCommand = DelayExecuteMFCommand(NotifyChitCardInPositionCommand(ccComponent), 5500 + 250 * (self.__numChitCards + 1))
+      finishCommand = DelayExecuteMFCommand(NotifyChitCardInPositionCommand(ccComponent), 5500 + 250 * (self.__numChitCards + 2))
       MultiFrameCommandRunner().addCommand(finishCommand)
       finishCommand.run()
 
