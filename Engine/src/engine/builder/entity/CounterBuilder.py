@@ -36,6 +36,9 @@ class CounterBuilder:
     self.__counterText: str = None
     self.__transformComponent: TransformComponent = None
 
+    # internal varaibles
+    self.__counter: CounterComponent = None
+
   def setDefaultValue(self, value: int) -> CounterBuilder:
     self.__defaultValue = value
     return self
@@ -47,6 +50,9 @@ class CounterBuilder:
   def setTransformComponent(self, t: TransformComponent) -> CounterBuilder:
     self.__transformComponent = t
     return self 
+  
+  def getCounter(self) -> CounterComponent:
+    return self.__counter
   
   def build(self) -> List[Entity]:
     #checks
@@ -89,15 +95,16 @@ class CounterBuilder:
 
     # create the counter component
     counterComponent = CounterComponent(self.__defaultValue, counterText)
-
-    # create the increment button
-    incrementCommand = IncrementCounterCommand(counterComponent, 1)
+    self.__counter = counterComponent # store the counter for return 
+    
+    # create the decrement button
+    incrementCommand = IncrementCounterCommand(counterComponent, -1)
     incrementPosition = self.__transformComponent.clone().position
     incrementPosition += Vec2(10, 200)
     incrementButton = (
       ButtonBuilder()
       .setRectDetails(50,50)
-      .setText("+")
+      .setText("-")
       .setPosition(incrementPosition)
       .setOnClick(incrementCommand)
       .build()

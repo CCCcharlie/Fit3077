@@ -8,8 +8,8 @@ from engine.entity.Entity import Entity
 from engine.scene.Scene import Scene
 from engine.scene.World import World
 from engine.utils.Vec2 import Vec2
-from fieryDragons.command.LoadGameCommand import LoadGameCommand
 from engine.builder.SceneBuilder import SceneBuilder
+from fieryDragons.command.NewGameCommand import NewGameCommand
 
 
 class ChooseOptionsSceneBuilder(SceneBuilder):
@@ -19,26 +19,26 @@ class ChooseOptionsSceneBuilder(SceneBuilder):
 
     playerCounterTransform: TransformComponent = TransformComponent()
     playerCounterTransform.position = Vec2(World().SCREEN_WIDTH//2 - 170 , 100)
-    playerCounterEntities: List[Entity] = (
+    playerCounterBuilder: CounterBuilder = (
       CounterBuilder()
       .setDefaultValue(2)
       .setCounterText("Num Players")
       .setTransformComponent(playerCounterTransform)
-      .build()
     )
+    playerCounterEntities: List[Entity] = playerCounterBuilder.build()
 
     for e in playerCounterEntities:
       s.addEntity(e)
 
     segmentsPerCaveTransform: TransformComponent = playerCounterTransform.clone()
     segmentsPerCaveTransform.position += Vec2(0, 300)
-    segmentsPerCaveEntities: List[Entity] = (
+    segmentsCounterBuilder: CounterBuilder = (
       CounterBuilder()
       .setDefaultValue(3)
       .setCounterText("Num Segments")
       .setTransformComponent(segmentsPerCaveTransform)
-      .build()
     )
+    segmentsPerCaveEntities: List[Entity] = segmentsCounterBuilder.build()
 
     for e in segmentsPerCaveEntities:
       s.addEntity(e)
@@ -53,7 +53,10 @@ class ChooseOptionsSceneBuilder(SceneBuilder):
     )
 
     # add start button    
-    loadGameCommand = LoadGameCommand()
+    loadGameCommand = NewGameCommand(
+      playerCounterBuilder.getCounter(),
+      segmentsCounterBuilder.getCounter()
+    )
     bb.setOnClick(loadGameCommand)
     bb.setText("Start")
     s.addEntity(bb.build())
