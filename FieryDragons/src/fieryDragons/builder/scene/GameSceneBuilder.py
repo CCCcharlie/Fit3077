@@ -2,6 +2,7 @@ from __future__ import annotations
 from typing import List
 
 from engine.builder.entity.ButtonBuilder import ButtonBuilder
+from engine.command.QuitCommand import QuitCommand
 from engine.component.TransformComponent import TransformComponent
 from engine.component.renderable.SpriteComponent import SpriteComponent
 from engine.entity.Entity import Entity
@@ -156,8 +157,19 @@ class GameSceneBuilder(SceneBuilder):
             .setRectDetails(200,50)
             .setOnClick(ChangeSceneCommand(ChooseOptionsSceneBuilder()))
         )
-
         s.addEntity(restartButtonBuilder.build())
+
+        
+        # add quit button
+        quitButtonBuilder = (
+            ButtonBuilder()
+            .setText("Quit")
+            .setPosition(Vec2(1500, 360))
+            .setRectDetails(200,50)
+            .setOnClick(QuitCommand())
+        )
+        s.addEntity(quitButtonBuilder.build())
+
 
 
         return s
