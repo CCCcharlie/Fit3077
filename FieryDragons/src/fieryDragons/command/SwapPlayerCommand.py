@@ -14,20 +14,21 @@ class SwapPlayerCommand(Command):
         closest_player = None
         for player in players:
             if not player.getPosition().isCave():
+                # modify player position
                 distance = abs(active_player.position - player.position)
                 if distance < min_distance:
                     min_distance = distance
                     closest_player = player
+                    
         
         # Swap positions if a closest player is found
         if closest_player:
-            temp_position = active_player.position
+            # transfom 
             temp_transform = active_player.transformComponent.clone()
+            closest_player_copy = closest_player.transformComponent.clone()
 
-            active_player.position = closest_player.position
-            active_player.transformComponent.copy(closest_player.transformComponent)
+            active_player.transformComponent.copy(closest_player_copy)
 
-            closest_player.position = temp_position
             closest_player.transformComponent.copy(temp_transform)
             
 
