@@ -30,7 +30,8 @@ class SwapPlayerCommand(Command):
             active_player.transformComponent.copy(closest_player_copy)
 
             closest_player.transformComponent.copy(temp_transform)
-            
+
+
 
         
 
